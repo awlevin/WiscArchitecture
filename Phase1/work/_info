@@ -1,0 +1,315 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dC:/Users/renzo/OneDrive/Documents/ECE552/HW5
+vadder_16bit
+Z0 !s110 1538782080
+!i10b 1
+!s100 1n1`i73j?^^2hMoY4YzS=2
+I0OPE5>ZWzWbMmI]Kd]f7g0
+Z1 VDg1SIo80bB@j0V0VzS_@n1
+Z2 dC:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1
+Z3 w1538782076
+Z4 8C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/ALU.v
+Z5 FC:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/ALU.v
+L0 111
+Z6 OP;L;10.4a;61
+r1
+!s85 0
+31
+Z7 !s108 1538782079.000000
+Z8 !s107 C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/ALU.v|
+Z9 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/ALU.v|
+!s101 -O0
+!i113 1
+Z10 o-work work -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact -O0
+vALU
+R0
+!i10b 1
+!s100 RB]J:mL0a0aU8z]B;Jf`42
+IW0iFm8znZzJ_5HkV6TdG_1
+R1
+R2
+R3
+R4
+R5
+L0 5
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!s101 -O0
+!i113 1
+R10
+n@a@l@u
+vALU_tb
+DXx6 sv_std 3 std 0 22 WmjPaeP=7F5?QFXzJ>D[Q2
+!s110 1538781677
+!i10b 1
+!s100 nSQZZMZc2YUScnLFh92W51
+IOXHmfD?agK^i6ma=4mN891
+R1
+!s105 ALU_tb_sv_unit
+S1
+R2
+w1538781593
+8C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/ALU_tb.sv
+FC:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/ALU_tb.sv
+L0 1
+R6
+r1
+!s85 0
+31
+!s108 1538781677.000000
+!s107 C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/ALU_tb.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/ALU_tb.sv|
+!s101 -O0
+!i113 1
+o-work work -sv -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact -O0
+n@a@l@u_tb
+vBitCell
+Z11 !s110 1538623539
+!i10b 1
+!s100 UAVOM;Ro0ES0V@5jA:WKR0
+IG2NF3i[V`VbZ7j1LkQ8fF2
+R1
+R2
+Z12 w1538623537
+Z13 8C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/RegisterFile.v
+Z14 FC:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/RegisterFile.v
+L0 81
+R6
+r1
+!s85 0
+31
+Z15 !s108 1538623539.000000
+Z16 !s107 C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/RegisterFile.v|
+Z17 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/RegisterFile.v|
+!s101 -O0
+!i113 1
+R10
+n@bit@cell
+vCLA_4bit
+R0
+!i10b 1
+!s100 z9XgmiFYONE2:Nj3TPM>b2
+If7=`RGGIDdJYknPbSEmM[3
+R1
+R2
+R3
+R4
+R5
+L0 193
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!s101 -O0
+!i113 1
+R10
+n@c@l@a_4bit
+vdff
+!s110 1538601774
+!i10b 1
+!s100 PV_CoVVQ]?nI;J@mj=Gn=3
+IZljL;A;<h4`?SWBb:ea>G2
+R1
+R2
+w1538533326
+8C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/D-Flip-Flop.v
+FC:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/D-Flip-Flop.v
+L0 3
+R6
+r1
+!s85 0
+31
+!s108 1538601774.000000
+!s107 C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/D-Flip-Flop.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/D-Flip-Flop.v|
+!s101 -O0
+!i113 1
+R10
+vpaddsb_16bit
+R0
+!i10b 1
+!s100 6QRLIge[]XUR:7B4gBfCP2
+I>f2F<_Z0_W<cU=Z]14Q>[2
+R1
+R2
+R3
+R4
+R5
+L0 137
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!s101 -O0
+!i113 1
+R10
+vReadDecoder_4_16
+R11
+!i10b 1
+!s100 haPLe>NfSYS^M=03WB=7e2
+IFCP@;WQeh5^5Mf=;jkR5A0
+R1
+R2
+R12
+R13
+R14
+L0 125
+R6
+r1
+!s85 0
+31
+R15
+R16
+R17
+!s101 -O0
+!i113 1
+R10
+n@read@decoder_4_16
+vred_16bit
+R0
+!i10b 1
+!s100 ?@j3heabWS9moEModPFoa3
+IMH0ZX`XFQ?26VciZ8d[3e2
+R1
+R2
+R3
+R4
+R5
+L0 161
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!s101 -O0
+!i113 1
+R10
+vRegister
+R11
+!i10b 1
+!s100 mZ_6R@iOOYg]15f8IgS8_3
+I@L29VKij>[:;kh?<OH:<O0
+R1
+R2
+R12
+R13
+R14
+L0 37
+R6
+r1
+!s85 0
+31
+R15
+R16
+R17
+!s101 -O0
+!i113 1
+R10
+n@register
+vRegisterFile
+R11
+!i10b 1
+!s100 jSO::2E@U84hoC>MCNGMz2
+I_a=3e2TH[]FAOeoNoal5b1
+R1
+R2
+R12
+R13
+R14
+L0 1
+R6
+r1
+!s85 0
+31
+R15
+R16
+R17
+!s101 -O0
+!i113 1
+R10
+n@register@file
+vshift_rotate
+R0
+!i10b 1
+!s100 ]i?PO?4F]8;j:2nYK5Rae3
+IM[df^9kIVlAhG^mmCNDMX0
+R1
+R2
+R3
+R4
+R5
+L0 52
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!s101 -O0
+!i113 1
+R10
+vWriteDecoder_4_16
+R11
+!i10b 1
+!s100 JY?^AE6a91^b>2WCMX1Re2
+IS5HafSHPnZnXeIN9zo23f1
+R1
+R2
+R12
+R13
+R14
+Z18 L0 97
+R6
+r1
+!s85 0
+31
+R15
+R16
+R17
+!s101 -O0
+!i113 1
+R10
+n@write@decoder_4_16
+vxor_16bit
+R0
+!i10b 1
+!s100 oc=_YT8El1E[ea`2ac6133
+I=T4[e_XYaH:fII:eo<2nJ2
+R1
+R2
+R3
+R4
+R5
+R18
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!s101 -O0
+!i113 1
+R10

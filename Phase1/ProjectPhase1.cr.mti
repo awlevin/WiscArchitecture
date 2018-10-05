@@ -1,0 +1,26 @@
+C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/ALU_tb.sv {1 {vlog -work work -sv -stats=none C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/ALU_tb.sv
+Model Technology ModelSim PE Student Edition vlog 10.4a Compiler 2015.03 Apr  7 2015
+-- Compiling module ALU_tb
+
+Top level modules:
+	ALU_tb
+
+} {} {}} C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/D-Flip-Flop.v {1 {vlog -work work -stats=none C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/D-Flip-Flop.v
+Model Technology ModelSim PE Student Edition vlog 10.4a Compiler 2015.03 Apr  7 2015
+-- Compiling module dff
+
+Top level modules:
+	dff
+
+} {} {}} C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/RegisterFile.v {1 {vlog -work work -stats=none C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/RegisterFile.v
+Model Technology ModelSim PE Student Edition vlog 10.4a Compiler 2015.03 Apr  7 2015
+-- Compiling module RegisterFile
+-- Compiling module Register
+-- Compiling module BitCell
+-- Compiling module WriteDecoder_4_16
+-- Compiling module ReadDecoder_4_16
+
+Top level modules:
+	RegisterFile
+
+} {} {}}
