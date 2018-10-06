@@ -1,4 +1,22 @@
-C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/ALU.v {1 {vlog -work work -stats=none C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/ALU.v
+{C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/RegisterFile.v} {1 {vlog -work work -stats=none {C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/RegisterFile.v}
+Model Technology ModelSim PE Student Edition vlog 10.4a Compiler 2015.03 Apr  7 2015
+-- Compiling module RegisterFile
+-- Compiling module Register
+-- Compiling module BitCell
+-- Compiling module WriteDecoder_4_16
+-- Compiling module ReadDecoder_4_16
+
+Top level modules:
+	RegisterFile
+
+} {} {}} {C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/D-Flip-Flop.v} {1 {vlog -work work -stats=none {C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/D-Flip-Flop.v}
+Model Technology ModelSim PE Student Edition vlog 10.4a Compiler 2015.03 Apr  7 2015
+-- Compiling module dff
+
+Top level modules:
+	dff
+
+} {} {}} {C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/ALU.v} {1 {vlog -work work -stats=none {C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/ALU.v}
 Model Technology ModelSim PE Student Edition vlog 10.4a Compiler 2015.03 Apr  7 2015
 -- Compiling module ALU
 -- Compiling module shift_rotate
@@ -10,23 +28,5 @@ Model Technology ModelSim PE Student Edition vlog 10.4a Compiler 2015.03 Apr  7 
 
 Top level modules:
 	ALU
-
-} {} {}} C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/D-Flip-Flop.v {1 {vlog -work work -stats=none C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/D-Flip-Flop.v
-Model Technology ModelSim PE Student Edition vlog 10.4a Compiler 2015.03 Apr  7 2015
--- Compiling module dff
-
-Top level modules:
-	dff
-
-} {} {}} C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/RegisterFile.v {1 {vlog -work work -stats=none C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/RegisterFile.v
-Model Technology ModelSim PE Student Edition vlog 10.4a Compiler 2015.03 Apr  7 2015
--- Compiling module RegisterFile
--- Compiling module Register
--- Compiling module BitCell
--- Compiling module WriteDecoder_4_16
--- Compiling module ReadDecoder_4_16
-
-Top level modules:
-	RegisterFile
 
 } {} {}}

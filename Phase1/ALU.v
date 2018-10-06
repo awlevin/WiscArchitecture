@@ -143,9 +143,9 @@ output [15:0] Sum; // Sum output
 wire [3:0] sum0, sum1, sum2, sum3, preSatSum0, preSatSum1, preSatSum2, preSatSum3, carry, ov;
 
 CLA_4bit CLA0(.S(preSatSum0), .Cout(carry[0]), .A(A[3:0]), .B(B[3:0]), .Cin(1'b0), .Ov(ov[0])),
-	 CLA1(.S(preSatSum1), .Cout(carry[1]), .A(A[7:4]), .B(B[7:4]), .Cin(carry[0]), .Ov(ov[1])),
-	 CLA2(.S(preSatSum2), .Cout(carry[2]), .A(A[11:8]), .B(B[11:8]), .Cin(carry[1]), .Ov(ov[2])),
-	 CLA3(.S(preSatSum3), .Cout(carry[3]), .A(A[15:12]), .B(B[15:12]), .Cin(carry[2]), .Ov(ov[3]));
+	 CLA1(.S(preSatSum1), .Cout(carry[1]), .A(A[7:4]), .B(B[7:4]), .Cin(1'b0), .Ov(ov[1])),
+	 CLA2(.S(preSatSum2), .Cout(carry[2]), .A(A[11:8]), .B(B[11:8]), .Cin(1'b0), .Ov(ov[2])),
+	 CLA3(.S(preSatSum3), .Cout(carry[3]), .A(A[15:12]), .B(B[15:12]), .Cin(1'b0), .Ov(ov[3]));
 
 assign sum0 = ov[0] ? preSatSum0[3] ? 4'h7 : 4'h8 : preSatSum0;
 assign sum1 = ov[1] ? preSatSum1[3] ? 4'h7 : 4'h8 : preSatSum1;
