@@ -61,30 +61,30 @@ output Zero;
 wire [15:0] stg1, stg2, stg3;
 
 assign stg1 = Shift_Val[0] ?						// 1 bit
-		~|Mode ? {Shift_In[14:0], 1'b0} :			// SLL
-		~Mode[1] & Mode[0] ? {Shift_In[15], Shift_In[15:1]} :	// SRA
-		Mode[1] & ~Mode[0] ? {Shift_In[0], Shift_In[15:1]} :	// ROR
+		(~Mode[1] & ~Mode[0]) ? {Shift_In[14:0], 1'b0} :		// SLL
+		(~Mode[1] & Mode[0]) ? {Shift_In[15], Shift_In[15:1]} :	// SRA
+		(Mode[1] & ~Mode[0]) ? {Shift_In[0], Shift_In[15:1]} :	// ROR
 		Shift_In :						// bad mode
 		Shift_In;						// Don't shift
 
 assign stg2 = Shift_Val[1] ?						// 2 bits
-		~|Mode ? {stg1[13:0], 2'b0} :				// SLL
+		~Mode[1] & ~Mode[0] ? {stg1[13:0], 2'b0} :		// SLL
 		~Mode[1] & Mode[0] ? {{2{stg1[15]}}, stg1[15:2]} :	// SRA
 		Mode[1] & ~Mode[0] ? {stg1[1:0], stg1[15:2]} :		// ROR
 		Shift_In :						// bad mode
 		stg1;							// Don't shift
 
-assign stg3 = Shift_Val[2] ?						//4 bits
-		~|Mode ? {stg2[11:0], 4'b0} :				// SLL
+assign stg3 = Shift_Val[2] ?						// 4 bits
+		~Mode[1] & ~Mode[0] ? {stg2[11:0], 4'b0} :		// SLL
 		~Mode[1] & Mode[0] ? {{4{stg2[15]}}, stg2[15:4]} :	// SRA
 		Mode[1] & ~Mode[0] ? {stg2[3:0], stg2[15:4]} :		// ROR
 		Shift_In :						// bad mode
 		stg2;							// Don't shift
 
 assign Shift_Out = Shift_Val[3] ?					// 8 bits
-		~|Mode ? {stg3[7:0], 8'b0} :				// SLL
+		~Mode[1] & ~Mode[0] ? {stg3[7:0], 8'b0} :		// SLL
 		~Mode[1] & Mode[0] ? {{8{stg3[15]}}, stg3[15:8]} :	// SRA 
-		Mode[1] & ~Mode[0] ? {stg3[8:0], stg3[15:9]} :		// ROR
+		Mode[1] & ~Mode[0] ? {stg3[7:0], stg3[15:8]} :		// ROR
 		Shift_In :						// bad mode
 		stg3;							// Don't shift
 
@@ -142,7 +142,7 @@ output [15:0] Sum; // Sum output
 
 wire [3:0] sum0, sum1, sum2, sum3, preSatSum0, preSatSum1, preSatSum2, preSatSum3, carry, ov;
 
-CLA_4bit CLA0(.S(preSatSum0), .Cout(carry[0]), .A(A[3:0]), .B(B[3:0]), .Cin(0), .Ov(ov[0])),
+CLA_4bit CLA0(.S(preSatSum0), .Cout(carry[0]), .A(A[3:0]), .B(B[3:0]), .Cin(1'b0), .Ov(ov[0])),
 	 CLA1(.S(preSatSum1), .Cout(carry[1]), .A(A[7:4]), .B(B[7:4]), .Cin(carry[0]), .Ov(ov[1])),
 	 CLA2(.S(preSatSum2), .Cout(carry[2]), .A(A[11:8]), .B(B[11:8]), .Cin(carry[1]), .Ov(ov[2])),
 	 CLA3(.S(preSatSum3), .Cout(carry[3]), .A(A[15:12]), .B(B[15:12]), .Cin(carry[2]), .Ov(ov[3]));
@@ -184,7 +184,7 @@ CLA_4bit CLA4(.S(sum1), .Cout(carry[4]), .A(sumab[3:0]), .B(sumcd[3:0]), .Cin(1'
 	 CLA5(.S(sum2), .Cout(carry[5]), .A(sumab[7:4]), .B(sumcd[7:4]), .Cin(carry[4]), .Ov(ov[5])),
 	 CLA6(.S(sum3), .Cout(carry[6]), .A({3'b000, sumab[8]}), .B({3'b000, sumcd[8]}), .Cin(carry[5]), .Ov(ov[6]));
 
-assign Sum = {{4{sum3[3]}}, sum3, sum2, sum1};
+assign Sum = {{8{sum3[0]}}, sum2, sum1};
 
 endmodule
 

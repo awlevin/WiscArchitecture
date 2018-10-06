@@ -1,9 +1,15 @@
-C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/ALU_tb.sv {1 {vlog -work work -sv -stats=none C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/ALU_tb.sv
+C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/ALU.v {1 {vlog -work work -stats=none C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/ALU.v
 Model Technology ModelSim PE Student Edition vlog 10.4a Compiler 2015.03 Apr  7 2015
--- Compiling module ALU_tb
+-- Compiling module ALU
+-- Compiling module shift_rotate
+-- Compiling module xor_16bit
+-- Compiling module adder_16bit
+-- Compiling module paddsb_16bit
+-- Compiling module red_16bit
+-- Compiling module CLA_4bit
 
 Top level modules:
-	ALU_tb
+	ALU
 
 } {} {}} C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/D-Flip-Flop.v {1 {vlog -work work -stats=none C:/Users/renzo/OneDrive/Documents/ECE552/ProjectPhase1/D-Flip-Flop.v
 Model Technology ModelSim PE Student Edition vlog 10.4a Compiler 2015.03 Apr  7 2015
