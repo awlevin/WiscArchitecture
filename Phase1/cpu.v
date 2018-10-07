@@ -23,7 +23,7 @@ reg [3:0] aluOp;
 
 // Memory Vars
 reg [15:0] offset;
-reg [15:0] address, dataMemOur, dataMemIn;
+reg [15:0] address, memDataIn, memDataOut;
 reg dataWr, dataEnable;
 
 
