@@ -8,28 +8,28 @@ input WriteReg;
 input [15:0] DstData;
 inout [15:0] SrcData1, SrcData2;
 
-wire [15:0] read_sel_1, read_sel_2; // 1-hot selectors
+wire [15:0] read_sel_1, read_sel_2, write_sel; // 1-hot selectors
 
 
 ReadDecoder_4_16 read_decoder1(.RegId(SrcReg1), .Wordline(read_sel_1));
 ReadDecoder_4_16 read_decoder2(.RegId(SrcReg2), .Wordline(read_sel_2));
-WriteDecoder_4_16 write_decoder(.RegId(DstReg), .WriteReg(WriteReg), .Wordline(DstData));
+WriteDecoder_4_16 write_decoder(.RegId(DstReg), .WriteReg(WriteReg), .Wordline(write_sel));
 
-Register r0(.clk(clk), .rst(rst), .D(DstData[0]), .WriteReg(WriteReg), .ReadEnable1(read_sel_1), .ReadEnable2(read_sel_2), .Bitline1(SrcData1[0]), .Bitline2(SrcData2[0]));
-Register r1(.clk(clk), .rst(rst), .D(DstData[1]), .WriteReg(WriteReg), .ReadEnable1(read_sel_1), .ReadEnable2(read_sel_2), .Bitline1(SrcData1[1]), .Bitline2(SrcData2[1]));
-Register r2(.clk(clk), .rst(rst), .D(DstData[2]), .WriteReg(WriteReg), .ReadEnable1(read_sel_1), .ReadEnable2(read_sel_2), .Bitline1(SrcData1[2]), .Bitline2(SrcData2[2]));
-Register r3(.clk(clk), .rst(rst), .D(DstData[3]), .WriteReg(WriteReg), .ReadEnable1(read_sel_1), .ReadEnable2(read_sel_2), .Bitline1(SrcData1[3]), .Bitline2(SrcData2[3]));
-Register r4(.clk(clk), .rst(rst), .D(DstData[4]), .WriteReg(WriteReg), .ReadEnable1(read_sel_1), .ReadEnable2(read_sel_2), .Bitline1(SrcData1[4]), .Bitline2(SrcData2[4]));
-Register r5(.clk(clk), .rst(rst), .D(DstData[5]), .WriteReg(WriteReg), .ReadEnable1(read_sel_1), .ReadEnable2(read_sel_2), .Bitline1(SrcData1[5]), .Bitline2(SrcData2[5]));
-Register r6(.clk(clk), .rst(rst), .D(DstData[6]), .WriteReg(WriteReg), .ReadEnable1(read_sel_1), .ReadEnable2(read_sel_2), .Bitline1(SrcData1[6]), .Bitline2(SrcData2[6]));
-Register r7(.clk(clk), .rst(rst), .D(DstData[7]), .WriteReg(WriteReg), .ReadEnable1(read_sel_1), .ReadEnable2(read_sel_2), .Bitline1(SrcData1[7]), .Bitline2(SrcData2[7]));
-Register r8(.clk(clk), .rst(rst), .D(DstData[8]), .WriteReg(WriteReg), .ReadEnable1(read_sel_1), .ReadEnable2(read_sel_2), .Bitline1(SrcData1[8]), .Bitline2(SrcData2[8]));
-Register r9(.clk(clk), .rst(rst), .D(DstData[9]), .WriteReg(WriteReg), .ReadEnable1(read_sel_1), .ReadEnable2(read_sel_2), .Bitline1(SrcData1[9]), .Bitline2(SrcData2[9]));
-Register r10(.clk(clk), .rst(rst), .D(DstData[10]), .WriteReg(WriteReg), .ReadEnable1(read_sel_1), .ReadEnable2(read_sel_2), .Bitline1(SrcData1[10]), .Bitline2(SrcData2[10]));
-Register r11(.clk(clk), .rst(rst), .D(DstData[11]), .WriteReg(WriteReg), .ReadEnable1(read_sel_1), .ReadEnable2(read_sel_2), .Bitline1(SrcData1[11]), .Bitline2(SrcData2[11]));
-Register r12(.clk(clk), .rst(rst), .D(DstData[12]), .WriteReg(WriteReg), .ReadEnable1(read_sel_1), .ReadEnable2(read_sel_2), .Bitline1(SrcData1[12]), .Bitline2(SrcData2[12]));
-Register r13(.clk(clk), .rst(rst), .D(DstData[13]), .WriteReg(WriteReg), .ReadEnable1(read_sel_1), .ReadEnable2(read_sel_2), .Bitline1(SrcData1[13]), .Bitline2(SrcData2[13]));
-Register r14(.clk(clk), .rst(rst), .D(DstData[14]), .WriteReg(WriteReg), .ReadEnable1(read_sel_1), .ReadEnable2(read_sel_2), .Bitline1(SrcData1[14]), .Bitline2(SrcData2[14]));
-Register r15(.clk(clk), .rst(rst), .D(DstData[15]), .WriteReg(WriteReg), .ReadEnable1(read_sel_1), .ReadEnable2(read_sel_2), .Bitline1(SrcData1[15]), .Bitline2(SrcData2[15]));
+Register r0(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[0]), .ReadEnable1(read_sel_1[0]), .ReadEnable2(read_sel_2[0]), .Bitline1(SrcData1), .Bitline2(SrcData2));
+Register r1(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[1]), .ReadEnable1(read_sel_1[1]), .ReadEnable2(read_sel_2[1]), .Bitline1(SrcData1), .Bitline2(SrcData2));
+Register r2(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[2]), .ReadEnable1(read_sel_1[2]), .ReadEnable2(read_sel_2[2]), .Bitline1(SrcData1), .Bitline2(SrcData2));
+Register r3(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[3]), .ReadEnable1(read_sel_1[3]), .ReadEnable2(read_sel_2[3]), .Bitline1(SrcData1), .Bitline2(SrcData2));
+Register r4(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[4]), .ReadEnable1(read_sel_1[4]), .ReadEnable2(read_sel_2[4]), .Bitline1(SrcData1), .Bitline2(SrcData2));
+Register r5(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[5]), .ReadEnable1(read_sel_1[5]), .ReadEnable2(read_sel_2[5]), .Bitline1(SrcData1), .Bitline2(SrcData2));
+Register r6(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[6]), .ReadEnable1(read_sel_1[6]), .ReadEnable2(read_sel_2[6]), .Bitline1(SrcData1), .Bitline2(SrcData2));
+Register r7(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[7]), .ReadEnable1(read_sel_1[7]), .ReadEnable2(read_sel_2[7]), .Bitline1(SrcData1), .Bitline2(SrcData2));
+Register r8(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[8]), .ReadEnable1(read_sel_1[8]), .ReadEnable2(read_sel_2[8]), .Bitline1(SrcData1), .Bitline2(SrcData2));
+Register r9(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[9]), .ReadEnable1(read_sel_1[9]), .ReadEnable2(read_sel_2[9]), .Bitline1(SrcData1), .Bitline2(SrcData2));
+Register r10(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[10]), .ReadEnable1(read_sel_1[10]), .ReadEnable2(read_sel_2[10]), .Bitline1(SrcData1), .Bitline2(SrcData2));
+Register r11(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[11]), .ReadEnable1(read_sel_1[11]), .ReadEnable2(read_sel_2[11]), .Bitline1(SrcData1), .Bitline2(SrcData2));
+Register r12(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[12]), .ReadEnable1(read_sel_1[12]), .ReadEnable2(read_sel_2[12]), .Bitline1(SrcData1), .Bitline2(SrcData2));
+Register r13(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[13]), .ReadEnable1(read_sel_1[13]), .ReadEnable2(read_sel_2[13]), .Bitline1(SrcData1), .Bitline2(SrcData2));
+Register r14(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[14]), .ReadEnable1(read_sel_1[14]), .ReadEnable2(read_sel_2[14]), .Bitline1(SrcData1), .Bitline2(SrcData2));
+Register r15(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[15]), .ReadEnable1(read_sel_1[15]), .ReadEnable2(read_sel_2[15]), .Bitline1(SrcData1), .Bitline2(SrcData2));
 
 endmodule
