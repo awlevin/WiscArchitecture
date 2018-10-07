@@ -22,7 +22,7 @@ reg [2:0] aluFlagsIn, aluFlagsOut;
 reg [3:0] aluOp;
 
 // Memory Vars
-reg [4:0] offset; // 5 bits instead of 4 so we can shift left by 1
+reg [15:0] offset;
 reg [15:0] address, dataMemOur, dataMemIn;
 reg dataWr, dataEnable;
 
@@ -70,21 +70,23 @@ case(instr[15:12])
 /*LW*/	4'b1000 : 
 	begin
 		// Parse instruction
-		dstReg = instr[11:8];  
+		dstReg = instr[11:8]; // rt 
 		srcReg1 = instr[7:4];
-		offset[3:0] = instr[3:0] << 1; // TODO: (feel like there'll be a bug here) Phase 1 instructions specify "oooo is the offset in two's complement but right-shifted by 1 bit." So we should shift it left again?
+		offset[15:0] = { {11{instr[3]}}, instr[3:0], 1'b0}; // TODO: (feel like there'll be a bug here) Phase 1 instructions specify "oooo is the offset in two's complement but right-shifted by 1 bit." So we should shift it left again?
 		
 		// Send base and offset to ALU
 		aluOp = 4'b0000; // tell ALU to do an ADD -- TODO: does it matter if this is before the ALU inputs are set?
 		aluIn1 = srcData1;
-		aluIn2 = { {11{offset[4]}}, offset[4:0]}; // sign extend
+		aluIn2 = offset;
 		address = aluOut;
 		dataEnable = 1; // Enable=1 and Wr=1 --> data_out=M[addr] 
 		dataWr = 0;	// Enable=1 and Wr=1 --> data_out=M[addr]
 		dstData = memDataOut; // The output of memData module is the M[addr] value we want to store to a register
 		writeReg = 1; // Write the data to the destination register
 	end 
-	4'b1001 : begin  end // SW
+/*SW*/	4'b1001 : 
+	begin 
+	end
 	4'b1010 : begin  end // LLB
 	4'b1011 : begin  end // LHB
 	4'b1100 : begin  end // B
