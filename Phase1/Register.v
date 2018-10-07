@@ -1,0 +1,27 @@
+
+module Register(clk, rst, D, WriteReg, ReadEnable1, ReadEnable2, Bitline1, Bitline2);
+
+input clk;
+input rst;
+input [15:0] D;
+input WriteReg, ReadEnable1, ReadEnable2;
+inout [15:0] Bitline1, Bitline2;
+
+BitCell b0(.clk(clk), .rst(rst), .D(D), .WriteReg(WriteReg), .ReadEnable1(ReadEnable1), .ReadEnable2(ReadEnable2), .Bitline1(Bitline1[0]), .Bitline2(Bitline2[0]));
+BitCell b1(.clk(clk), .rst(rst), .D(D), .WriteReg(WriteReg), .ReadEnable1(ReadEnable1), .ReadEnable2(ReadEnable2), .Bitline1(Bitline1[1]), .Bitline2(Bitline2[1]));
+BitCell b2(.clk(clk), .rst(rst), .D(D), .WriteReg(WriteReg), .ReadEnable1(ReadEnable1), .ReadEnable2(ReadEnable2), .Bitline1(Bitline1[2]), .Bitline2(Bitline2[2]));
+BitCell b3(.clk(clk), .rst(rst), .D(D), .WriteReg(WriteReg), .ReadEnable1(ReadEnable1), .ReadEnable2(ReadEnable2), .Bitline1(Bitline1[3]), .Bitline2(Bitline2[3]));
+BitCell b4(.clk(clk), .rst(rst), .D(D), .WriteReg(WriteReg), .ReadEnable1(ReadEnable1), .ReadEnable2(ReadEnable2), .Bitline1(Bitline1[4]), .Bitline2(Bitline2[4]));
+BitCell b5(.clk(clk), .rst(rst), .D(D), .WriteReg(WriteReg), .ReadEnable1(ReadEnable1), .ReadEnable2(ReadEnable2), .Bitline1(Bitline1[5]), .Bitline2(Bitline2[5]));
+BitCell b6(.clk(clk), .rst(rst), .D(D), .WriteReg(WriteReg), .ReadEnable1(ReadEnable1), .ReadEnable2(ReadEnable2), .Bitline1(Bitline1[6]), .Bitline2(Bitline2[6]));
+BitCell b7(.clk(clk), .rst(rst), .D(D), .WriteReg(WriteReg), .ReadEnable1(ReadEnable1), .ReadEnable2(ReadEnable2), .Bitline1(Bitline1[7]), .Bitline2(Bitline2[7]));
+BitCell b8(.clk(clk), .rst(rst), .D(D), .WriteReg(WriteReg), .ReadEnable1(ReadEnable1), .ReadEnable2(ReadEnable2), .Bitline1(Bitline1[8]), .Bitline2(Bitline2[8]));
+BitCell b9(.clk(clk), .rst(rst), .D(D), .WriteReg(WriteReg), .ReadEnable1(ReadEnable1), .ReadEnable2(ReadEnable2), .Bitline1(Bitline1[9]), .Bitline2(Bitline2[9]));
+BitCell b10(.clk(clk), .rst(rst), .D(D), .WriteReg(WriteReg), .ReadEnable1(ReadEnable1), .ReadEnable2(ReadEnable2), .Bitline1(Bitline1[10]), .Bitline2(Bitline2[10]));
+BitCell b11(.clk(clk), .rst(rst), .D(D), .WriteReg(WriteReg), .ReadEnable1(ReadEnable1), .ReadEnable2(ReadEnable2), .Bitline1(Bitline1[11]), .Bitline2(Bitline2[11]));
+BitCell b12(.clk(clk), .rst(rst), .D(D), .WriteReg(WriteReg), .ReadEnable1(ReadEnable1), .ReadEnable2(ReadEnable2), .Bitline1(Bitline1[12]), .Bitline2(Bitline2[12]));
+BitCell b13(.clk(clk), .rst(rst), .D(D), .WriteReg(WriteReg), .ReadEnable1(ReadEnable1), .ReadEnable2(ReadEnable2), .Bitline1(Bitline1[13]), .Bitline2(Bitline2[13]));
+BitCell b14(.clk(clk), .rst(rst), .D(D), .WriteReg(WriteReg), .ReadEnable1(ReadEnable1), .ReadEnable2(ReadEnable2), .Bitline1(Bitline1[14]), .Bitline2(Bitline2[14]));
+BitCell b15(.clk(clk), .rst(rst), .D(D), .WriteReg(WriteReg), .ReadEnable1(ReadEnable1), .ReadEnable2(ReadEnable2), .Bitline1(Bitline1[15]), .Bitline2(Bitline2[15]));
+
+endmodule
