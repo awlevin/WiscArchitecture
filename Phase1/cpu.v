@@ -70,7 +70,7 @@ case(instr[15:12])
 /*LW*/	4'b1000 : 
 	begin
 		// Parse instruction
-		dstReg = instr[11:8]; // rt 
+		dstReg = instr[11:8];
 		srcReg1 = instr[7:4];
 		offset[15:0] = { {11{instr[3]}}, instr[3:0], 1'b0}; // TODO: (feel like there'll be a bug here) Phase 1 instructions specify "oooo is the offset in two's complement but right-shifted by 1 bit." So we should shift it left again?
 		
@@ -86,6 +86,17 @@ case(instr[15:12])
 	end 
 /*SW*/	4'b1001 : 
 	begin 
+		srcReg1 = instr[11:8];
+		srcReg2 = instr[7:4]; // add data in this register to immediate offset
+		offset[15:0] = { {11{instr[3]}}, instr[3:0], 1'b0};
+		
+		aluOp = 4'b0000;
+		aluIn1 = srcData2; // add data in this register output to the immediate offset
+		aluIn2 = offset;
+		address = aluOut;
+		memDataIn = srcData1;
+		dataEnable = 1;
+		dataWr = 1;
 	end
 	4'b1010 : begin  end // LLB
 	4'b1011 : begin  end // LHB
@@ -93,7 +104,7 @@ case(instr[15:12])
 	4'b1101 : begin  end // BR
 	4'b1110 : begin  end // PCS
 	4'b1111 : begin  end // HLT
-	default : begin writeReg = 0; end // DEFAULT
+	default : begin writeReg = 0; dataEnable = 0; dataWr = 0; end // DEFAULT
 endcase 
 
 endmodule
