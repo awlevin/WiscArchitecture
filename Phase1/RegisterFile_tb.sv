@@ -20,16 +20,15 @@ repeat(2) @(posedge clk);
 
 rst = 0; // turn off reset
 
-SetRegister(16'h0000, 16'hABCD);
+SetRegister(0, 16'hABCD);
+SetRegister(1, 16'hBFF0);
+CheckRegisters(0, 1, 16'hABCD, 16'hBFF0);
 
-repeat(1) @(posedge clk);
-
-SetRegister(16'h0001, 16'hBFF0);
-
-repeat(1) @(posedge clk);
-
-CheckRegisters(16'h0000, 16'h0001, 16'hABCD, 16'hBFF0);
-
+SetRegister(0, 16'hBEAD);
+SetRegister(3, 16'hACDC);
+SetRegister(5, 16'hFEED);
+CheckRegisters(0, 3, 16'hBEAD, 16'hACDC);
+CheckRegisters(1, 5, 16'hBFF0, 16'hFEED);
 
 $stop;
 end
