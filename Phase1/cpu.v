@@ -11,11 +11,13 @@ output wire [15:0] pc;
 // Register Vars
 reg [3:0] srcReg1, srcReg2, dstReg;
 reg writeReg; // 1=write, 0=don't write
-reg [15:0] srcData1, srcData2, dstData;
+wire [15:0] srcData1, srcData2;
+reg [15:0] dstData;
 
 // ALU Vars
-reg [15:0] aluIn1, aluIn2, aluOut;
-reg [2:0] aluFlagsOut;
+reg [15:0] aluIn1, aluIn2;
+wire [15:0] aluOut;
+wire [2:0] aluFlagsOut;
 reg [3:0] aluOp;
 reg [2:0] aluFlagsIn;
 reg [2:0] aluFlags;
@@ -25,15 +27,16 @@ reg [15:0] immediate;
 
 // Memory Vars
 reg [15:0] offset;
-reg [15:0] address, memDataIn, memDataOut;
+reg [15:0] address, memDataIn;
+wire [15:0] memDataOut;
 reg dataWr, dataEnable;
 
 //Control Instr's
 reg [15:0] nextPC;
 reg takeBranch;
 wire [15:0] instr,pc_plus_four_output,pc_plus_two_output,br_output; // bits [15:12] are the opcode
-adder_16bit pc_plus_two    (.A(pc), .B(16'h0002), .Sub(0), .Sum(pc_plus_two_output), .Zero(), .Ovfl(), .Sign()); // will always have the current PC + 2
-adder_16bit branch_output  (.A(pc_plus_two_output), .B(immediate), .Sub(0), .Sum(br_output), .Zero(), .Ovfl(), .Sign()); // will always have the current PC + 2
+adder_16bit pc_plus_two    (.A(pc), .B(16'h0002), .Sub(1'b0), .Sum(pc_plus_two_output), .Zero(), .Ovfl(), .Sign()); // will always have the current PC + 2
+adder_16bit branch_output  (.A(pc_plus_two_output), .B(immediate), .Sub(1'b0), .Sum(br_output), .Zero(), .Ovfl(), .Sign()); // will always have the current PC + 2
 
 /////////////////////
 //     Modules	   //
@@ -44,7 +47,7 @@ memory1c inst_mem(.clk(clk), .rst(rst_n), .data_out(instr), .data_in(16'h0000), 
 memory1c data_mem(.clk(clk), .rst(rst_n), .data_out(memDataOut), .data_in(memDataIn), .addr(address), .enable(dataEnable), .wr(dataWr));
 
 // Registers
-RegisterFile(.clk(clk), .rst(rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg2), .DstReg(dstReg), .WriteReg(writeReg), .DstData(dstData), .SrcData1(srcData1), .SrcData2(srcData2));
+RegisterFile regFile(.clk(clk), .rst(rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg2), .DstReg(dstReg), .WriteReg(writeReg), .DstData(dstData), .SrcData1(srcData1), .SrcData2(srcData2));
 
 // ALU Module
 ALU alu(.Opcode(aluOp), .Input1(aluIn1), .Input2(aluIn2), .Output(aluOut), .flagsIn(aluFlagsIn), .flagsOut(aluFlagsOut));

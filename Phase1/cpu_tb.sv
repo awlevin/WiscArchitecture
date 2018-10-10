@@ -27,6 +27,8 @@ repeat (100) begin
 	release iDUT.instr;
 end
 */
+
+$stop;
 end
 
 always #5 clk = ~clk;
@@ -79,7 +81,7 @@ end
 if ((RegData1 !== ExpectedData1) || (RegData2 !== ExpectedData2)) $write("INCORRECT - ");
 else $write("CORRECT - ");
 
-$display("Reg1=%h, Reg2=%h, ActualData1=%h, ActualData2=%h, ExpectedData1=%h, ExpectedData2=%h", Reg1, Reg2, RegData1, RegData2, ExpectedData1, ExpectedData2);
+$display("Reg1=%d, Reg2=%d, ActualData1=%h, ActualData2=%h, ExpectedData1=%d, ExpectedData2=%d", Reg1, Reg2, RegData1, RegData2, ExpectedData1, ExpectedData2);
 
 endtask
 
