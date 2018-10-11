@@ -3,7 +3,7 @@ module PC_control(C, I, F, PC_in, PC_out);
 
 input [2:0] C; // ccc - condition encodings
 input [8:0] I; // immediate offset
-input [2:0] F; // flags (N, Z, V)
+input [2:0] F; // flags (Z, V, N)
 input [15:0] PC_in; 
 output [15:0] PC_out;
 
