@@ -1,4 +1,4 @@
-module CPU(clk, rst_n, hlt, pc);
+module cpu(clk, rst_n, hlt, pc);
 
 input clk, rst_n;
 output hlt;
@@ -35,7 +35,9 @@ reg dataWr, dataEnable;
 reg [15:0] nextPC;
 reg takeBranch;
 wire [15:0] instr; // bits [15:12] are the opcode
-
+reg [8:0] pc_imm;
+reg [15:0] pc_in;
+reg [2:0] ccc;
 
 /////////////////////
 //     Modules	   //
@@ -52,7 +54,7 @@ RegisterFile regFile(.clk(clk), .rst(rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg2
 ALU alu(.Opcode(aluOp), .Input1(aluIn1), .Input2(aluIn2), .Output(aluOut), .flagsIn(aluFlagsIn), .flagsOut(aluFlagsOut));
 
 // PC Control Module
-PC_control(.C(ccc), .I(pc_imm), .F(aluFlagsOut), .PC_in(pc_in), .PC_out(pc));
+PC_control pc_control_module(.C(ccc), .I(pc_imm), .F(aluFlagsOut), .PC_in(pc_in), .PC_out(pc));
 
 always @(*) 
 casex(instr[15:12])
@@ -134,8 +136,9 @@ casex(instr[15:12])
 	/* BR */
 	4'b1101 :
 	begin
-		pc_in = pc;
+		ccc = instr[10:8];
 		srcReg1 = instr[7:4];
+		pc_in = pc;
 		pc_in = srcData1;
 		pc_imm = 9'd0;
 	end
@@ -143,8 +146,6 @@ casex(instr[15:12])
 	4'b1110 : 
 	begin  
 		dstReg = instr[11:8];
-		dstData = pc_plus_two_output;
-		nextPC = pc_plus_two_output;
 	end // PCS
 	4'b1111 :
 	begin 

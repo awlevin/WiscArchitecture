@@ -3,32 +3,48 @@ module cpu_tb();
 reg clk, rst_n, hlt;
 reg [15:0] pc;
 
-CPU iDUT(.clk(clk), .rst_n(rst_n), .hlt(hlt), .pc(pc));
+cpu iDUT(.clk(clk), .rst_n(rst_n), .hlt(hlt), .pc(pc));
 
 logic [15:0] instruction;
 logic [15:0] Output;
 
+//initial begin
+//clk = 0;
+//rst_n = 0;
+//
+//force iDUT.instr = 16'h0000;
+//#20 rst_n = 1;
+//
+//SetRegister(4, 16'd16);
+//SetRegister(5, 16'd3);
+//CheckRegisters(4, 5, 16'd16, 16'd3);
+///*
+//repeat (100) begin
+//
+//	Do_ALU_Instruction();
+//	
+//	#10;
+//	release iDUT.instr;
+//end
+//*/
+//
+//$stop;
+//end
+//
+
 initial begin
+
 clk = 0;
 rst_n = 0;
 
-force iDUT.instr = 16'h0000;
-#20 rst_n = 1;
+repeat(2) @(posedge clk);
 
-SetRegister(4, 16'd16);
-SetRegister(5, 16'd3);
-CheckRegisters(4, 5, 16'd16, 16'd3);
-/*
-repeat (100) begin
+@(posedge clk) rst_n = 1;
 
-	Do_ALU_Instruction();
-	
-	#10;
-	release iDUT.instr;
-end
-*/
+repeat(20) @(posedge clk);
 
 $stop;
+
 end
 
 always #5 clk = ~clk;
