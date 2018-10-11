@@ -9,10 +9,10 @@ output [15:0] PC_out;
 
 reg takeBranch; // 1 if we should branch, 0 if we should increment PC by 2
 wire [15:0] PC_plus_2, PC_plus_2_imm; // PC_plus_2 = PC + 2, PC_plus_2_imm = PC + 2 + imm
-wire Z_flag, F_flag, N_flag;
+wire Z_flag, V_flag, N_flag;
 
-adder_16bit add_2_module(.A(PC_in), .B(16'd2), .Sub(), .Sum(PC_plus_2), .Zero(), .Ovfl(), .Sign());
-adder_16bit add_imm_module(.A(PC_plus_2), .B({{7{I[8]}}, I}), .Sub(), .Sum(PC_plus_2_imm), .Zero(), .Ovfl(), .Sign());
+adder_16bit add_2_module(.A(PC_in), .B(16'd2), .Sub(1'b0), .Sum(PC_plus_2), .Zero(), .Ovfl(), .Sign());
+adder_16bit add_imm_module(.A(PC_plus_2), .B({{7{I[8]}}, I}), .Sub(1'b0), .Sum(PC_plus_2_imm), .Zero(), .Ovfl(), .Sign());
 
 assign PC_out = (takeBranch) ? PC_plus_2_imm : PC_plus_2;
 
