@@ -121,23 +121,23 @@ R7
 R10
 n@c@l@a_4bit
 vCPU
-R0
+Z14 !s110 1539221733
 !i10b 1
 !s100 XV:j^>aC>feUMi9aRLB@d3
 IeWJlgA1m`>=6g;0jYY7bg0
 R1
 R2
-R3
-Z14 8C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/cpu.v
-Z15 FC:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/cpu.v
+Z15 w1539221694
+Z16 8C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/cpu.v
+Z17 FC:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/cpu.v
 L0 1
 R6
 r1
 !s85 0
 31
-R7
-Z16 !s107 C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/cpu.v|
-Z17 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/cpu.v|
+!s108 1539221732.000000
+Z18 !s107 C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/cpu.v|
+Z19 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/cpu.v|
 !s101 -O0
 !i113 1
 R10
@@ -195,16 +195,16 @@ IFab9G98>MHfJ3?hX>1fk23
 R1
 R2
 w1538872249
-R14
-R15
+R16
+R17
 L0 104
 R6
 r1
 !s85 0
 31
 !s108 1538872255.000000
-R16
-R17
+R18
+R19
 !s101 -O0
 !i113 1
 R10
@@ -275,7 +275,7 @@ R10
 n@p@c_control
 vPC_control_tb
 R11
-!s110 1539220333
+R14
 !i10b 1
 !s100 :b=oWYiQC^`n4=@8hVETG1
 I=L<h:PB_QQN7Z4H_GKk?g1
@@ -283,7 +283,7 @@ R1
 !s105 PC_control_tb_sv_unit
 S1
 R2
-w1539220327
+R15
 8C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/PC_control_tb.sv
 FC:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/PC_control_tb.sv
 L0 2
@@ -291,7 +291,7 @@ R6
 r1
 !s85 0
 31
-!s108 1539220333.000000
+!s108 1539221733.000000
 !s107 C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/PC_control_tb.sv|
 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/PC_control_tb.sv|
 !s101 -O0
@@ -300,7 +300,7 @@ R13
 n@p@c_control_tb
 vReadDecoder_4_16
 R11
-Z18 !s110 1539214707
+Z20 !s110 1539214707
 !i10b 1
 !s100 Z>bQcNSo5nXg6826GI74K1
 IBKcf[06zCaPc<PFNcal6H2
@@ -316,7 +316,7 @@ R6
 r1
 !s85 0
 31
-Z19 !s108 1539214707.000000
+Z21 !s108 1539214707.000000
 !s107 C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/ReadDecoder_4_16.sv|
 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/ReadDecoder_4_16.sv|
 !s101 -O0
@@ -345,7 +345,7 @@ R9
 !i113 1
 R10
 vRegister
-R18
+R20
 !i10b 1
 !s100 5iEmFj>[_Q^F^=1PYS7SH0
 IdiS8aQ9R=`g6led3hngeG3
@@ -359,7 +359,7 @@ R6
 r1
 !s85 0
 31
-R19
+R21
 !s107 C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/Register.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/Register.v|
 !s101 -O0
@@ -367,7 +367,7 @@ R19
 R10
 n@register
 vRegisterFile
-R18
+R20
 !i10b 1
 !s100 FULH6Nnoi<amLDWd<4n0l2
 IP5kS>HSFHHg>D=2bbY;hO1
@@ -381,7 +381,7 @@ R6
 r1
 !s85 0
 31
-R19
+R21
 !s107 C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/RegisterFile.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/RegisterFile.v|
 !s101 -O0
@@ -390,7 +390,7 @@ R10
 n@register@file
 vRegisterFile_tb
 R11
-R18
+R20
 !i10b 1
 !s100 7eXbm;Kf8Vaa`56dQ;C3>3
 IDdk84k]KQQZU=P@MZF:Ee2
@@ -406,7 +406,7 @@ R6
 r1
 !s85 0
 31
-R19
+R21
 !s107 C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/RegisterFile_tb.sv|
 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/RegisterFile_tb.sv|
 !s101 -O0
@@ -435,74 +435,74 @@ R9
 !i113 1
 R10
 vShifter
-R18
+R20
 !i10b 1
 !s100 ?nk?^<zhM=dNL>iLWz7Te3
 I?7RBbeCUNSR;kOz4<lg902
 R1
 R2
 R3
-Z20 8C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/Shifter.v
-Z21 FC:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/Shifter.v
+Z22 8C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/Shifter.v
+Z23 FC:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/Shifter.v
 L0 2
 R6
 r1
 !s85 0
 31
-R19
-Z22 !s107 C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/Shifter.v|
-Z23 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/Shifter.v|
+R21
+Z24 !s107 C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/Shifter.v|
+Z25 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/Shifter.v|
 !s101 -O0
 !i113 1
 R10
 n@shifter
 vShifter_SLL
-R18
+R20
 !i10b 1
 !s100 l3IjHhCSh8L0QzCcZOAWE3
 I1==VZ5A`2JH`X6oWY[dTb0
 R1
 R2
 R3
-R20
-R21
+R22
+R23
 L0 18
 R6
 r1
 !s85 0
 31
-R19
-R22
-R23
+R21
+R24
+R25
 !s101 -O0
 !i113 1
 R10
 n@shifter_@s@l@l
 vShifter_SRA
-R18
+R20
 !i10b 1
 !s100 z9>g[?C[_6B<;aLM3K;Dc3
 IDBHkAUa:k[edh9kVS:K=l3
 R1
 R2
 R3
-R20
-R21
+R22
+R23
 L0 35
 R6
 r1
 !s85 0
 31
-R19
-R22
-R23
+R21
+R24
+R25
 !s101 -O0
 !i113 1
 R10
 n@shifter_@s@r@a
 vShifter_tb
 R11
-R18
+R20
 !i10b 1
 !s100 ]VL87JZ_>W[=6jEGg9oaT1
 I^:Xm<mYh9R5zJ`f3`N8N80
@@ -518,7 +518,7 @@ R6
 r1
 !s85 0
 31
-R19
+R21
 !s107 C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/Shifter_tb.sv|
 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/Shifter_tb.sv|
 !s101 -O0
