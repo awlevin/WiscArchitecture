@@ -17,10 +17,8 @@ reg [15:0] dstData;
 // ALU Vars
 reg [15:0] aluIn1, aluIn2;
 wire [15:0] aluOut;
-wire [2:0] aluFlagsOut; // FLAGS ==>> (N, Z, V)
+wire [2:0] aluFlags; // FLAGS ==>> (Z, V, N)
 reg [3:0] aluOp;
-reg [2:0] aluFlagsIn;
-reg [2:0] aluFlags;
 
 //LHB/LLB
 reg [15:0] immediate;
@@ -51,10 +49,10 @@ memory1c data_mem(.clk(clk), .rst(rst_n), .data_out(memDataOut), .data_in(memDat
 RegisterFile regFile(.clk(clk), .rst(rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg2), .DstReg(dstReg), .WriteReg(writeReg), .DstData(dstData), .SrcData1(srcData1), .SrcData2(srcData2));
 
 // ALU Module
-ALU alu(.Opcode(aluOp), .Input1(aluIn1), .Input2(aluIn2), .Output(aluOut), .flagsIn(aluFlagsIn), .flagsOut(aluFlagsOut));
+ALU alu(.Opcode(aluOp), .Input1(aluIn1), .Input2(aluIn2), .Output(aluOut), .flagsOut(aluFlags));
 
 // PC Control Module
-PC_control pc_control_module(.C(ccc), .I(pc_imm), .F(aluFlagsOut), .PC_in(pc_in), .PC_out(pc));
+PC_control pc_control_module(.C(ccc), .I(pc_imm), .F(aluFlags), .PC_in(pc_in), .PC_out(pc));
 
 always @(*) 
 casex(instr[15:12])
@@ -120,10 +118,12 @@ casex(instr[15:12])
 		// Parse instruction
 		dstReg = instr[11:8];
 		srcReg1 = instr[11:8]; // add data in this register to immediate offset
-		immediate = instr[8] ? //if 9th bit = 0, then instr is a LLB, otherwise an LHB
-			{ instr[7:0], {8{1'b1}}} : //LHB
-			{ {8{1'b1}},  instr[7:0]}; //LLB
-		dstData = srcData1 & immediate;
+		immediate = instr[12] ? //if 13th bit = 0, then instr is LLB, otherwise it's LHB
+			{ instr[7:0], {8{1'b0}}} : //LHB
+			{ {8{1'b0}},  instr[7:0]}; //LLB
+		dstData = instr[12] ? //if 13th bit = 0, then instr is LLB, otherwise it's LHB
+			(srcData1 & 16'h00FF) | immediate : //LHB
+			(srcData1 & 16'hFF00) | immediate;  //LLB
 	end 
 
 	/* B */
