@@ -1,11 +1,12 @@
 
-module PC_control(C, I, F, PC_in, BR, PC_out);
+module PC_control(C, I, F, PC_in, BR, En, PC_out);
 
 input  [2:0] C; 	// ccc - condition encodings
 input  [8:0] I; 	// immediate offset
 input  [2:0] F; 	// flags (N, Z, V)
 input  [15:0] PC_in; 	// current PC Value
 input  [15:0] BR;	// value to branch to, LSB is used to signify BR vs B: (0 - BR, 1 - B)
+input  En;		// 0: Branching is NOT enabled (PC = PC + 2), 1: Branching is enabled
 output [15:0] PC_out;	// Output of PC control
 
 reg takeBranch; // 1 if we should branch, 0 if we should increment PC by 2
@@ -15,7 +16,7 @@ wire Z_flag, V_flag, N_flag;
 adder_16bit add_2_module(.A(PC_in), .B(16'h0002), .Sub(1'b0), .Sum(PC_plus_2), .Zero(), .Ovfl(), .Sign());
 adder_16bit add_imm_module(.A(PC_plus_2), .B(Imm_Shftd_Sign_Ext), .Sub(1'b0), .Sum(PC_plus_2_imm), .Zero(), .Ovfl(), .Sign());
 
-assign PC_out = (takeBranch) ? 
+assign PC_out = (takeBranch & En) ? 
 			((BR[0]) ? PC_plus_2_imm : BR): //BR vs B if branch is taken
 		 PC_plus_2; // Branch is not taken
 

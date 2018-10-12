@@ -6,6 +6,7 @@ logic [8:0] I_dut; // immediate offset
 logic [2:0] F_dut; // flags (Z, V, N)
 logic [15:0] PC_in_dut; 
 logic [15:0] BR_dut;
+logic En_dut;
 logic [15:0] PC_out_dut;
 
 logic clk;
@@ -32,7 +33,7 @@ logic [15:0] BR_tb;
 // 110	Overflow (V = 1)
 // 111	Unconditional
 
-PC_control iDUT(.C(C_dut), .I(I_dut), .F(F_dut), .PC_in(PC_in_dut), .PC_out(PC_out_dut), .BR(BR_dut));
+PC_control iDUT(.C(C_dut), .I(I_dut), .F(F_dut), .PC_in(PC_in_dut), .BR(BR_dut), .En(En_dut),.PC_out(PC_out_dut));
 
 initial begin
 clk = 0;
@@ -40,6 +41,22 @@ clk = 0;
 imm_tb = 9'h004;
 PC_tb = 16'h0000;
 BR_tb = 16'hFF00;
+
+
+//Test if  Enable signal is working
+@(posedge clk) begin
+	C_dut = 3'b000;
+	I_dut = 9'h000;
+	F_dut = 3'h0;
+	PC_in_dut = PC_tb;
+	BR_dut = 16'h0000;
+	En_dut = 0;
+end
+@(negedge clk) begin
+if(PC_out_dut != (PC_tb + 2)) $display("PC_control en signal is not working");
+end
+
+En_dut = 1;
 
 // CORRECT TESTS (when branch SHOULD be taken for each condition code)
 PC_Test(Not_Equal,imm_tb, PC_tb, BR_tb); // Z = 0
