@@ -2,7 +2,7 @@ module cpu(clk, rst_n, hlt, pc);
 
 input clk, rst_n;
 output hlt;
-output wire [15:0] pc;
+output reg [15:0] pc;
 
 /////////////////////
 // Local Variables //
@@ -30,12 +30,14 @@ wire [15:0] memDataOut;
 reg dataWr, dataEnable;
 
 // Control Instr's
-reg [15:0] nextPC;
 reg takeBranch;
 wire [15:0] instr; // bits [15:12] are the opcode
 reg [8:0] pc_imm;
 reg [15:0] pc_in;
 reg [2:0] ccc;
+reg [15:0] BR_value; //value use for BR instructor
+reg PC_Control_BR_B_En;
+reg [15:0] nextPC; //Output PC of Control module
 
 /////////////////////
 //     Modules	   //
@@ -52,7 +54,7 @@ RegisterFile regFile(.clk(clk), .rst(rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg2
 ALU alu(.Opcode(aluOp), .Input1(aluIn1), .Input2(aluIn2), .Output(aluOut), .flagsOut(aluFlags));
 
 // PC Control Module
-PC_control pc_control_module(.C(ccc), .I(pc_imm), .F(aluFlags), .PC_in(pc_in), .PC_out(pc));
+PC_control pc_control_module(.C(ccc), .I(pc_imm), .F(aluFlags), .PC_in(pc), .BR(BR_value), .En(PC_Control_BR_B_En) , .PC_out(nextPC));
 
 always @(*) 
 casex(instr[15:12])
@@ -61,7 +63,6 @@ casex(instr[15:12])
 	4'b00xx,4'b0111 : 
 	begin 
 		// Parse the instruction, set RegisterFile to read correctly
-		pc_in = pc;
 		dstReg = instr[11:8]; 
 		srcReg1 = instr[7:4]; 
 		srcReg2 = instr[3:0];
@@ -71,13 +72,14 @@ casex(instr[15:12])
 		aluIn2 = srcData2;
 		dstData = aluOut;
 		writeReg = 1'b1; 
+		PC_Control_BR_B_En = 1'b0;
+		pc = nextPC;
 	end
 
 	/*SLL SRA ROR */	
 	4'b0100,4'b0101,4'b0110 : 
 	begin 
 		// Parse the instruction, set RegisterFile to read correctly
-		pc_in = pc;
 		dstReg = instr[11:8]; 
 		srcReg1 = instr[7:4]; 
 		// Set inputs for ALU based on RegisterFile outputs 
@@ -86,12 +88,15 @@ casex(instr[15:12])
 		aluIn2 = instr[3:0];
 		dstData = aluOut;
 		writeReg = 1'b1; 
+
+		//PC Logic
+		PC_Control_BR_B_En = 1'b0;
+		pc = nextPC;
 	end
 
 	/* LW SW */	
 	4'b100x : 
 	begin
-		pc_in = pc;
 		// Parse instruction
 		dstReg = instr[11:8];
 		srcReg1 = instr[7:4]; // add data in this register to immediate offset
@@ -110,11 +115,14 @@ casex(instr[15:12])
 		dataWr = instr[8]; //LW = 4'b1000 SW = 4'b10001, so last bit of the instruction corresponds to the write data
 
 		writeReg = ~instr[8]; // Write the data to the destination register, with opposite logic to dataWr
+	
+		//PC Logic
+		PC_Control_BR_B_En = 1'b0;
+		pc = nextPC;
 	end 
 	/* LLB LHB */
 	4'b101x : 
 	begin  
-		pc_in = pc;
 		// Parse instruction
 		dstReg = instr[11:8];
 		srcReg1 = instr[11:8]; // add data in this register to immediate offset
@@ -124,32 +132,40 @@ casex(instr[15:12])
 		dstData = instr[12] ? //if 13th bit = 0, then instr is LLB, otherwise it's LHB
 			(srcData1 & 16'h00FF) | immediate : //LHB
 			(srcData1 & 16'hFF00) | immediate;  //LLB
+
+		//PC Logic
+		PC_Control_BR_B_En = 1'b0;
+		pc = nextPC;
 	end 
 
-	/* B */
-	4'b1100 : 
+	/* B(1100) BR(1101) */
+	4'b110x : 
 	begin  
-		pc_in = pc;
-		pc_imm = instr[8:0];
-	end
-
-	/* BR */
-	4'b1101 :
-	begin
+		pc = nextPC;
+		PC_Control_BR_B_En = 1'b1;
 		ccc = instr[10:8];
+
+		//Only used for B Instr's
+		pc_imm = instr[8:0];
+		
+		//Only used for BR instr's
 		srcReg1 = instr[7:4];
-		pc_in = pc;
-		pc_in = srcData1;
-		pc_imm = 9'd0;
+		
+		//Set based on B vs BR
+		BR_value =  instr[8] ? srcData1 : 16'hFFFF;// 0: instr is B so set FFFF , 1: instr is BR so set value in srcReg1
 	end
 
 	4'b1110 : 
 	begin  
+		pc = nextPC;
 		dstReg = instr[11:8];
+		PC_Control_BR_B_En = 1'b0;
 	end // PCS
 	4'b1111 :
 	begin 
-	nextPC = pc;
+
+		//nextPC = pc;
+		//PC_Control_BR_B_En = 1'b0;
 	end // HLT
 	default
 	begin 
