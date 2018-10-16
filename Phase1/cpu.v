@@ -48,6 +48,9 @@ assign pc_to_save = pc;
 //     Modules	   //
 /////////////////////
 
+// PC Module
+PC_Register pc_reg(.clk(clk), .rst_n(rst_n), .next_pc(nextPC), .pc_out(pc));
+
 // Memory Modules
 memory1c inst_mem(.clk(clk), .rst(~rst_n), .data_out(instr), .data_in(16'h0000), .addr(pc), .enable(rst_n), .wr(1'b0));
 memory1c data_mem(.clk(clk), .rst(~rst_n), .data_out(memDataOut), .data_in(memDataIn), .addr(address), .enable(dataEnable), .wr(dataWr));
@@ -57,10 +60,11 @@ RegisterFile regFile(.clk(clk), .rst(~rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg
 
 // ALU Module
 ALU alu(.Opcode(aluOp), .Input1(aluIn1), .Input2(aluIn2), .Output(aluOut), .flagsOut(aluFlags));
+FlagsRegister flags_reg(.clk(clk), .rst_n(rst_n), .set(set_flags), .flags_in(aluFlags), .flags_out(flags));
 
 // PC Control Module
 PC_control pc_control_module(.C(ccc), .I(pc_imm), .F(flags), .PC_in(pc), .BR(BR_value), .En(PC_Control_BR_B_En) , .PC_out(nextPC));
-
+/*
 always @(posedge clk, negedge rst_n)
 	if(!rst_n) begin
 		pc <= 16'h0000;
@@ -72,7 +76,7 @@ always @(posedge clk, negedge rst_n)
 		pc <= nextPC;
 		flags <= set_flags ? aluFlags : flags;
 	end
-
+*/
 always @(*)
 casex(instr[15:12])
 
@@ -239,6 +243,7 @@ casex(instr[15:12])
 	4'b1111 :
 	begin 
 		pc = pc;
+		nextPC = pc;
 		writeReg = 1'b0; 
 		set_flags = 0;
 		PC_Control_BR_B_En = 1'b0;
