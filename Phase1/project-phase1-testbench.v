@@ -1,7 +1,6 @@
 module cpu_master_tb();
   
-
-   wire [15:0] PC;
+  wire [15:0] PC;
    wire [15:0] Inst;           /* This should be the 15 bits of the FF that
                                   stores instructions fetched from instruction memory
                                */
@@ -60,16 +59,16 @@ module cpu_master_tb();
       #201 rst_n = 1; // delay until slightly after two clock periods
     end
 
-    always #50 begin   // delay 1/2 clock period each time thru loop
+    always #50 begin  // delay 1/2 clock period each time thru loop
       clk = ~clk;
     end
-	
+  
     always @(posedge clk) begin
-    	cycle_count = cycle_count + 1;
-	if (cycle_count > 100000) begin
-		$display("hmm....more than 100000 cycles of simulation...error?\n");
-		$finish;
-	end
+      cycle_count = cycle_count + 1;
+  if (cycle_count > 100000) begin
+    $display("hmm....more than 100000 cycles of simulation...error?\n");
+    $stop;
+  end
     end
 
 
@@ -81,6 +80,9 @@ module cpu_master_tb();
 
   /* Stats */
    always @ (posedge clk) begin
+
+     Print_Instruction(Inst,PC);
+
       if (rst_n) begin
          if (Halt || RegWrite || MemWrite) begin
             inst_count = inst_count + 1;
@@ -98,7 +100,7 @@ module cpu_master_tb();
                   MemData);
          if (RegWrite) begin
             if (MemRead) begin
-               // ld
+              // ld
                $fdisplay(trace_file,"INUM: %8d PC: 0x%04x REG: %d VALUE: 0x%04x ADDR: 0x%04x",
                          (inst_count-1),
                         PC,
@@ -123,18 +125,18 @@ module cpu_master_tb();
             $fclose(trace_file);
             $fclose(sim_log_file);
             
-            $finish;
+            $stop;
          end else begin
             if (MemWrite) begin
-               // st
+              // st
                $fdisplay(trace_file,"INUM: %8d PC: 0x%04x ADDR: 0x%04x VALUE: 0x%04x",
                          (inst_count-1),
                         PC,
                         MemAddress,
                         MemData);
             end else begin
-               // conditional branch or NOP
-               // Need better checking in pipelined testbench
+              // conditional branch or NOP
+              // Need better checking in pipelined testbench
                inst_count = inst_count + 1;
                $fdisplay(trace_file, "INUM: %8d PC: 0x%04x",
                          (inst_count-1),
@@ -150,37 +152,132 @@ module cpu_master_tb();
       The internal module names and signal names will vary depending
       on your naming convention and your design */
 
-   // Edit the example below. You must change the signal
-   // names on the right hand side
+  // Edit the example below. You must change the signal
+  // names on the right hand side
     
-//   assign PC = DUT.fetch0.pcCurrent; //You won't need this because it's part of the main cpu interface
-   assign Inst = DUT.instr;//DUT.fetch0.instr;
+//  assign PC = DUT.fetch0.pcCurrent; //You won't need this because it's part of the main cpu interface
+  assign Inst = DUT.instr;//DUT.fetch0.instr;
    
-   assign RegWrite = DUT.writeReg;//DUT.decode0.regFile0.write;
-   // Is memory being read, one bit signal (1 means yes, 0 means no)
+  assign RegWrite = DUT.writeReg;//DUT.decode0.regFile0.write;
+  // Is memory being read, one bit signal (1 means yes, 0 means no)
    
-   assign WriteRegister = DUT.dstReg;//DUT.decode0.regFile0.writeregsel;
-   // The name of the register being written to. (4 bit signal)
+  assign WriteRegister = DUT.dstReg;//DUT.decode0.regFile0.writeregsel;
+  // The name of the register being written to. (4 bit signal)
 
-   assign WriteData = DUT.dstData;//DUT.decode0.regFile0.writedata;
-   // Data being written to the register. (16 bits)
+  assign WriteData = DUT.dstData;//DUT.decode0.regFile0.writedata;
+  // Data being written to the register. (16 bits)
    
-   assign MemRead = (DUT.dataEnable & ~DUT.dataWr);//DUT.memory0.memRead;
-   // Is memory being read, one bit signal (1 means yes, 0 means no)
+  assign MemRead = (DUT.dataEnable & ~DUT.dataWr);//DUT.memory0.memRead;
+  // Is memory being read, one bit signal (1 means yes, 0 means no)
    
-   assign MemWrite = (DUT.dataEnable & DUT.dataWr);//(DUT.memory0.memReadorWrite & DUT.memory0.memWrite);
-   // Is memory being written to (1 bit signal)
+  assign MemWrite = (DUT.dataEnable & DUT.dataWr);//(DUT.memory0.memReadorWrite & DUT.memory0.memWrite);
+  // Is memory being written to (1 bit signal)
    
-   assign MemAddress = DUT.address;//DUT.memory0.aluResult;
-   // Address to access memory with (for both reads and writes to memory, 16 bits)
+  assign MemAddress = DUT.address;//DUT.memory0.aluResult;
+  // Address to access memory with (for both reads and writes to memory, 16 bits)
    
-   assign MemData = DUT.memDataIn;//DUT.memory0.writeData;
-   // Data to be written to memory for memory writes (16 bits)
+  assign MemData = DUT.memDataIn;//DUT.memory0.writeData;
+  // Data to be written to memory for memory writes (16 bits)
    
-//   assign Halt = DUT.memory0.halt; //You won't need this because it's part of the main cpu interface
-   // Is processor halted (1 bit signal)
+//  assign Halt = DUT.memory0.halt; //You won't need this because it's part of the main cpu interface
+  // Is processor halted (1 bit signal)
    
    /* Add anything else you want here */
 
-   
+task Print_Instruction;
+  input logic [15:0] instr,PC; 
+  casex(instr[15:12])
+
+  /* ADD */ 
+  4'h0 :
+  begin $display("ADD S%d S%d s%d",instr[11:8],instr[7:4],instr[3:0]); end
+
+  /* SUB */ 
+  4'h1 :
+  begin $display("SUB S%d S%d s%d",instr[11:8],instr[7:4],instr[3:0]); end
+
+  /* XOR */ 
+  4'h2 :
+  begin $display("XOR S%d S%d s%d",instr[11:8],instr[7:4],instr[3:0]); end
+
+  /* RED */ 
+  4'h3 :
+  begin $display("RED S%d S%d s%d",instr[11:8],instr[7:4],instr[3:0]); end
+
+  /* SLL */ 
+  4'h4 :
+  begin $display("SLL S%d S%d s%d",instr[11:8],instr[7:4],instr[3:0]); end
+
+  /* SRA */ 
+  4'h5 :
+  begin $display("SRA S%d S%d s%d",instr[11:8],instr[7:4],instr[3:0]); end
+
+  /* ROR */ 
+  4'h6 :
+  begin $display("ROR S%d S%d s%d",instr[11:8],instr[7:4],instr[3:0]); end
+
+  /* PADDSB */  
+  4'h7 :
+  begin $display("PADDSB S%d S%d s%d",instr[11:8],instr[7:4],instr[3:0]); end
+
+  /* LW */  
+  4'h8 : 
+  begin $display("LW S%d,%d(s%d)",instr[11:8],instr[7:4],{{11{instr[3]}}, instr[3:0], 1'b0}); end 
+
+  /* SW */  
+  4'h9  : 
+  begin $display("SW S%d,%d(s%d)",instr[11:8],instr[7:4],{{11{instr[3]}}, instr[3:0], 1'b0}); end 
+
+  /* LLB */ 
+  4'hA  : 
+  begin $display("LLB S%d S%d %d",instr[11:8],instr[11:8],instr[7:0]); end 
+
+  /* LHB */
+  4'hB : 
+  begin  $display("LHB S%d S%d %d",instr[11:8],instr[11:8],instr[7:0]); end 
+
+  /* B */
+  4'b1100 : 
+  begin  $display("B CCC:%h to:%d",instr[11:9],instr[8:0]); end
+
+  /* BR */
+  4'b1101 : 
+  begin  $display("BR CCC:%h to: S%d",instr[11:9],instr[7:4]); end
+
+  /* PCS */
+  4'b1110 : 
+  begin  $display("PCS S%d gets %h",instr[11:8],PC); end
+
+  /* HALT */
+  4'b1111 :
+  begin $display("HALT"); end
+  default
+  begin 
+/*
+    //wire [15:0] instr; // bits [15:12] are the opcode
+
+    // Register Vars
+    srcReg1    = 1'b0; 
+    srcReg2    = 1'b0;
+    dstReg     = 1'b0;
+    writeReg   = 1'b0;
+
+    // ALU Vars
+    aluIn1     = 16'h0000;
+    aluIn2     = 16'h0000;
+    aluOp    = 4'h0;
+
+    //LHB/LLB
+    immediate  = 16'h0000;
+
+    // Memory Vars
+    offset     = 16'h0000;
+    address    = 16'h0000;
+    memDataIn  = 16'h0000;
+    dataWr     = 1'b0;
+    dataEnable = 1'b0;
+*/
+  end 
+endcase 
+endtask
 endmodule
