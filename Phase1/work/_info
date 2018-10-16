@@ -9,216 +9,244 @@ z2
 cModel Technology
 dC:/Users/renzo/OneDrive/Documents/ECE552/HW5
 vadder_16bit
-Z0 !s110 1539471834
-!i10b 1
-!s100 Ad0A=@g>SiXTYIFl3U<Wz3
-IG=[Y4[bg^kQn;FA8]IHF`1
-Z1 VDg1SIo80bB@j0V0VzS_@n1
-Z2 dC:/Users/renzo/OneDrive/Documents/ECE552/Pull3
-Z3 w1539471687
-Z4 8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/ALU.v
-Z5 FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/ALU.v
-L0 110
-Z6 OP;L;10.4a;61
+Z0 V`JN@9S9cnhjKRR_L]QIcM3
 r1
 !s85 0
 31
-Z7 !s108 1539471834.000000
-Z8 !s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/ALU.v|
-Z9 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/ALU.v|
-!s101 -O0
-!i113 1
-Z10 o-work work -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact -O0
+!i10b 1
+!s100 Ad0A=@g>SiXTYIFl3U<Wz3
+IV_`U01W3bfI]aGTeEJ;H42
+Z1 dI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1
+Z2 w1539728160
+Z3 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ALU.v
+Z4 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ALU.v
+L0 110
+Z5 OE;L;10.3c;59
+Z6 !s108 1539732979.291000
+Z7 !s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ALU.v|
+Z8 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ALU.v|
+!i113 0
+Z9 o-work work -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
 vALU
 R0
+r1
+!s85 0
+31
 !i10b 1
-!s100 b;LMOQaR]6aac3X:I`HfH2
-IKS8?Hj3hUNTc3Bf]fI:VY1
+!s100 8BcAL_OH7mlNO;oQLRj<>0
+I[JJ5:?FG8]K8]e;_5@hf[1
 R1
 R2
 R3
 R4
-R5
 L0 5
+R5
 R6
-r1
-!s85 0
-31
 R7
 R8
+!i113 0
 R9
-!s101 -O0
-!i113 1
-R10
 n@a@l@u
 vALU_tb
-Z11 DXx6 sv_std 3 std 0 22 WmjPaeP=7F5?QFXzJ>D[Q2
-R0
+Z10 DXx6 sv_std 3 std 0 22 <EOTafDcUY:cQeO^ICn]m3
+!s110 1539732979
 !i10b 1
-!s100 N6Cf^aA>BOPC>VFR_Q6YM2
-I_S@>9VcLVT2=34NP0nKXl0
-R1
+!s100 _?fShd6[Pz9LJI[S9;>zn0
+IF[F9lOj8oWN2mj<H7jniR1
+R0
 !s105 ALU_tb_sv_unit
 S1
-R2
-Z12 w1539120884
-8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/ALU_tb.sv
-FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/ALU_tb.sv
+R1
+Z11 w1539732716
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ALU_tb.sv
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ALU_tb.sv
 L0 1
-R6
+R5
 r1
 !s85 0
 31
-R7
-!s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/ALU_tb.sv|
-!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/ALU_tb.sv|
-!s101 -O0
-!i113 1
-Z13 o-work work -sv -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact -O0
+!s108 1539732979.696000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ALU_tb.sv|
+!s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ALU_tb.sv|
+!i113 0
+Z12 o-work work -sv -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
 n@a@l@u_tb
 vBitCell
-!s110 1539622361
-!i10b 1
-!s100 3?IXnYXVoU:aHW;L@S8?C0
-I5^Y`nO]5@HgiK>heBFb<=0
-R1
-R2
-w1539622357
-8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/BitCell.v
-FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/BitCell.v
-L0 2
-R6
+R0
 r1
 !s85 0
 31
-!s108 1539622361.000000
-!s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/BitCell.v|
-!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/BitCell.v|
-!s101 -O0
-!i113 1
-R10
+!i10b 1
+!s100 3?IXnYXVoU:aHW;L@S8?C0
+I21gG^Oog4be`c[N[CSa0?3
+R1
+R2
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/BitCell.v
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/BitCell.v
+L0 2
+R5
+!s108 1539732980.098000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/BitCell.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/BitCell.v|
+!i113 0
+R9
 n@bit@cell
 vCLA_4bit
 R0
+r1
+!s85 0
+31
 !i10b 1
 !s100 YfgCDU;L8lHG_IoBYGTM<3
-IE9LGbkJRahhZ:7nP1?HeA3
+IUZFcdPbjRYZ0GL:mkRz0k1
 R1
 R2
-Z14 w1539288339
-8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/CLA_4bit.v
-FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/CLA_4bit.v
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/CLA_4bit.v
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/CLA_4bit.v
 L0 4
-R6
-r1
-!s85 0
-31
-R7
-!s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/CLA_4bit.v|
-!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/CLA_4bit.v|
-!s101 -O0
-!i113 1
-R10
+R5
+!s108 1539732980.451000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/CLA_4bit.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/CLA_4bit.v|
+!i113 0
+R9
 n@c@l@a_4bit
 vcpu
-!s110 1539629049
-!i10b 1
-!s100 i[k_fP2LH]g3fD[YniI[?2
-I8j7[bVL6_nQ_ifk5;1hA90
-R1
-R2
-w1539629047
-8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/cpu.v
-FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/cpu.v
-L0 1
-R6
+R0
 r1
 !s85 0
 31
-!s108 1539629049.000000
-!s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/cpu.v|
-!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/cpu.v|
-!s101 -O0
-!i113 1
-R10
+!i10b 1
+!s100 GH`PcIQAgIFDZEfmEml=K2
+I?;:bjaXPa?@8M8iO6aUCP0
+R1
+w1539733690
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/cpu.v
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/cpu.v
+L0 1
+R5
+!s108 1539733781.861000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/cpu.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/cpu.v|
+!i113 0
+R9
 vcpu_master_tb
-!s110 1539570783
-!i10b 1
-!s100 8JflNIYd]=L=iIc7^2QkX3
-IU:eRkE2@j>JG@<<>^nLP`0
-R1
-R2
-w1539570780
-8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/project-phase1-testbench.v
-FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/project-phase1-testbench.v
-L0 1
-R6
+R10
+R0
 r1
 !s85 0
 31
-!s108 1539570783.000000
-!s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/project-phase1-testbench.v|
-!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/project-phase1-testbench.v|
-!s101 -O0
-!i113 1
-R10
-vcpu_tb
-R11
-Z15 !s110 1539471835
 !i10b 1
-!s100 93S<Hin23^7F4YBO]CzYN1
-I[T8hhhNTVf8dSCbkYB20`2
+!s100 `DLk=D=83o2Y;H60K9mon3
+IoacOXlmMl_P0NBfJUin6V2
+!s105 project2dphase12dtestbench_v_unit
+S1
 R1
+w1539732742
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/project-phase1-testbench.v
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/project-phase1-testbench.v
+L0 1
+R5
+!s108 1539733049.042000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/project-phase1-testbench.v|
+!s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/project-phase1-testbench.v|
+!i113 0
+R12
+vcpu_tb
+R10
+!s110 1539732981
+!i10b 1
+!s100 U4dh3JBC^cn^8@<@9R8UD2
+Ii[7_Tmk@^z[znc>^:j6bo0
+R0
 !s105 cpu_tb_sv_unit
 S1
-R2
-R14
-8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/cpu_tb.sv
-FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/cpu_tb.sv
-L0 1
-R6
-r1
-!s85 0
-31
-Z16 !s108 1539471835.000000
-!s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/cpu_tb.sv|
-!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/cpu_tb.sv|
-!s101 -O0
-!i113 1
-R13
-vdff
-R15
-!i10b 1
-!s100 PV_CoVVQ]?nI;J@mj=Gn=3
-IjCAgU1Rh`<WP5oGPSBe4B0
 R1
 R2
-w1538791876
-8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/D-Flip-Flop.v
-FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/D-Flip-Flop.v
-L0 3
-R6
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/cpu_tb.sv
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/cpu_tb.sv
+L0 1
+R5
 r1
 !s85 0
 31
-R16
-!s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/D-Flip-Flop.v|
-!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/D-Flip-Flop.v|
-!s101 -O0
-!i113 1
-R10
+!s108 1539732981.208000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/cpu_tb.sv|
+!s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/cpu_tb.sv|
+!i113 0
+R12
+vdff
+R0
+r1
+!s85 0
+31
+!i10b 1
+!s100 hnSNYQ@_M6T1KGh@C1^Bg1
+IQ2^];8<:I3HNi]?Ib>haN3
+R1
+R2
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/D-Flip-Flop.v
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/D-Flip-Flop.v
+L0 3
+R5
+!s108 1539732981.606000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/D-Flip-Flop.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/D-Flip-Flop.v|
+!i113 0
+R9
+vFlags_Register
+!s110 1539733097
+!i10b 1
+!s100 XeK_9h9Vf7=<fD:z>el3d3
+IISJXgZCde;2knmmXAb6cS0
+R0
+R1
+w1539733093
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Flags_Register.v
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Flags_Register.v
+L0 1
+R5
+r1
+!s85 0
+31
+!s108 1539733097.335000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Flags_Register.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Flags_Register.v|
+!i113 0
+R9
+n@flags_@register
+vFlagsRegister
+R0
+r1
+!s85 0
+31
+!i10b 1
+!s100 W47goX`:VZE_UFYL@mW0j3
+I1n:>A=jdHWiDf@5oGzzFz3
+R1
+w1539733154
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/FlagsRegister.v
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/FlagsRegister.v
+L0 1
+R5
+!s108 1539733202.188000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/FlagsRegister.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/FlagsRegister.v|
+!i113 0
+R9
+n@flags@register
 vLoadWordModule
 !s110 1538872255
 !i10b 1
 !s100 Pj5fecOoMnPTX_?UX_>FG0
 IFab9G98>MHfJ3?hX>1fk23
-R1
+Z13 VDg1SIo80bB@j0V0VzS_@n1
 dC:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1
 w1538872249
 8C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/cpu.v
 FC:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/cpu.v
 L0 104
-R6
+Z14 OP;L;10.4a;61
 r1
 !s85 0
 31
@@ -227,386 +255,377 @@ r1
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/cpu.v|
 !s101 -O0
 !i113 1
-R10
+Z15 o-work work -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact -O0
 n@load@word@module
 vmemory1c
-!s110 1539566632
-!i10b 1
-!s100 VflSSeV]8PIcL_XhM^Kie2
-Ifj`EDG6MnRoF=5hWMg0L63
-R1
-R2
-w1539566630
-8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/memory.v
-FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/memory.v
-L0 31
-R6
+R0
 r1
 !s85 0
 31
-!s108 1539566632.000000
-!s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/memory.v|
-!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/memory.v|
-!s101 -O0
-!i113 1
-R10
+!i10b 1
+!s100 BJYf9M`Ta0HR1hY0^8[500
+IoP=JJ=Bd80QJOTD=;BNgb2
+R1
+w1539728161
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/memory.v
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/memory.v
+L0 31
+R5
+!s108 1539732982.365000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/memory.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/memory.v|
+!i113 0
+R9
 vpaddsb_16bit
 R0
+r1
+!s85 0
+31
 !i10b 1
 !s100 gK>ME@6^ii>Wk=Ykhd4I=2
-I4H^6kFaPFaH>F?EBR0oOB3
+Ihe]hd7:P3B@`RmdA^f8JD0
 R1
 R2
 R3
 R4
-R5
 L0 136
+R5
 R6
-r1
-!s85 0
-31
 R7
 R8
+!i113 0
 R9
-!s101 -O0
-!i113 1
-R10
 vPC_control
-R15
-!i10b 1
-!s100 e^5PA7_Rn>`oMClgIgP@63
-I1f[S;3?ZX^MS0Ta0?>`Mk0
-R1
-R2
-R3
-8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/PC_control.v
-FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/PC_control.v
-L0 2
-R6
+R0
 r1
 !s85 0
 31
-R16
-!s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/PC_control.v|
-!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/PC_control.v|
-!s101 -O0
-!i113 1
-R10
+!i10b 1
+!s100 OM21FFVSKT8U084l1ZmTn1
+IK7cKQHMR^PjT<eSR6G8D@2
+R1
+R2
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_control.v
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_control.v
+L0 2
+R5
+!s108 1539732982.741000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_control.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_control.v|
+!i113 0
+R9
 n@p@c_control
 vPC_control_tb
-R11
-R15
+R10
+!s110 1539732983
 !i10b 1
-!s100 h<d5ORzoc5a[[[0Ujk6_a0
-I2BV3ZXM<Ra5O2C@kCPO0j2
-R1
+!s100 5jAi:`WTKkBEN_Tnj^^<;2
+Ib2SL8][l_dZ[j4n]3o3]T0
+R0
 !s105 PC_control_tb_sv_unit
 S1
+R1
 R2
-R3
-8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/PC_control_tb.sv
-FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/PC_control_tb.sv
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_control_tb.sv
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_control_tb.sv
 L0 2
-R6
+R5
 r1
 !s85 0
 31
-R16
-!s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/PC_control_tb.sv|
-!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/PC_control_tb.sv|
-!s101 -O0
-!i113 1
-R13
+!s108 1539732983.166000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_control_tb.sv|
+!s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_control_tb.sv|
+!i113 0
+R12
 n@p@c_control_tb
+vPC_Register
+R0
+r1
+!s85 0
+31
+!i10b 1
+!s100 o<I;V5O46<^e9eK[@]ohC1
+I?bhFBoa_6;<RKcTE39k>f3
+R1
+w1539733956
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_Register.v
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_Register.v
+L0 1
+R5
+!s108 1539733957.646000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_Register.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_Register.v|
+!i113 0
+R9
+n@p@c_@register
 vReadDecoder_4_16
-R11
-!s110 1539471836
+R10
+R0
+r1
+!s85 0
+31
 !i10b 1
 !s100 Z>bQcNSo5nXg6826GI74K1
-IHAZFLbCNDc1iQ61k<jOeh1
-R1
+IMZnG6D[cz6[5>iTB<PKc62
 !s105 ReadDecoder_4_16_sv_unit
 S1
+R1
 R2
-R12
-8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/ReadDecoder_4_16.sv
-FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/ReadDecoder_4_16.sv
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ReadDecoder_4_16.sv
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ReadDecoder_4_16.sv
 L0 2
-R6
-r1
-!s85 0
-31
-!s108 1539471836.000000
-!s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/ReadDecoder_4_16.sv|
-!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/ReadDecoder_4_16.sv|
-!s101 -O0
-!i113 1
-R13
+R5
+!s108 1539732984.278000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ReadDecoder_4_16.sv|
+!s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ReadDecoder_4_16.sv|
+!i113 0
+R12
 n@read@decoder_4_16
 vred_16bit
 R0
+r1
+!s85 0
+31
 !i10b 1
 !s100 YW_z`SPE0b?jdaUi:>^EE2
-In1d>UgX0nWdXB:lde[]XJ1
+IIk[Z=NQ>`<ID0Y90aeRS`1
 R1
 R2
 R3
 R4
-R5
 L0 160
+R5
 R6
-r1
-!s85 0
-31
 R7
 R8
+!i113 0
 R9
-!s101 -O0
-!i113 1
-R10
 vRegister
-!s110 1539583762
-!i10b 1
-!s100 JfR[8LL09L^D`J1ncX^CV2
-IdfaF9b:[OSahMcMNY9meX2
-R1
-R2
-w1539583749
-Z17 8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Register.v
-Z18 FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Register.v
-L0 2
-R6
+R0
 r1
 !s85 0
 31
-!s108 1539583762.000000
-Z19 !s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Register.v|
-Z20 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Register.v|
-!s101 -O0
-!i113 1
-R10
+!i10b 1
+!s100 JfR[8LL09L^D`J1ncX^CV2
+I>2Q5V5H?F2loiFzJMJ3Kb3
+R1
+R2
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Register.v
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Register.v
+L0 2
+R5
+!s108 1539732984.683000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Register.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Register.v|
+!i113 0
+R9
 n@register
 vRegister3
 !s110 1539583198
 !i10b 1
 !s100 gSYzg>o4m@DoBd87CoPXf3
 IXidIY@`z4WQWG@YEH9@fH3
-R1
-R2
+R13
+dC:/Users/renzo/OneDrive/Documents/ECE552/Pull3
 w1539583184
-R17
-R18
+8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Register.v
+FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Register.v
 L0 30
-R6
+R14
 r1
 !s85 0
 31
 !s108 1539583198.000000
-R19
-R20
+!s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Register.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Register.v|
 !s101 -O0
 !i113 1
-R10
+R15
 n@register3
 vRegisterFile
-!s110 1539586973
+R0
+r1
+!s85 0
+31
 !i10b 1
 !s100 R??]YlNaXS22AEZ@BlZ>;3
-I=4]z@JWA=G=Kek84_PH<Y2
+IncFI9dBKL=?<afNjoI`L[3
 R1
-R2
-w1539586971
-8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/RegisterFile.v
-FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/RegisterFile.v
+R11
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/RegisterFile.v
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/RegisterFile.v
 L0 2
-R6
-r1
-!s85 0
-31
-!s108 1539586973.000000
-!s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/RegisterFile.v|
-!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/RegisterFile.v|
-!s101 -O0
-!i113 1
-R10
+R5
+!s108 1539732985.051000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/RegisterFile.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/RegisterFile.v|
+!i113 0
+R9
 n@register@file
 vRegisterFile_tb
-R11
-R0
+R10
+!s110 1539732985
 !i10b 1
-!s100 7eXbm;Kf8Vaa`56dQ;C3>3
-IK@aJjO4ldcfV_F]7B:cnD2
-R1
+!s100 Q2cd_aLe[WS?cV42M0`523
+IXGT6`7TNSijAB7GOKYfbA1
+R0
 !s105 RegisterFile_tb_sv_unit
 S1
+R1
 R2
-R12
-8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/RegisterFile_tb.sv
-FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/RegisterFile_tb.sv
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/RegisterFile_tb.sv
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/RegisterFile_tb.sv
 L0 2
-R6
+R5
 r1
 !s85 0
 31
-!s108 1539471833.000000
-!s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/RegisterFile_tb.sv|
-!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/RegisterFile_tb.sv|
-!s101 -O0
-!i113 1
-R13
+!s108 1539732985.455000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/RegisterFile_tb.sv|
+!s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/RegisterFile_tb.sv|
+!i113 0
+R12
 n@register@file_tb
 vshift_rotate
 R0
+r1
+!s85 0
+31
 !i10b 1
 !s100 ajieFKlooHI_il<=@cHAl2
-InA`<7J>>?mTMNWZ1RJ0_Q0
+I:M?gEN;zE4YiQO^`iTPGO2
 R1
 R2
 R3
 R4
-R5
 L0 51
+R5
 R6
-r1
-!s85 0
-31
 R7
 R8
+!i113 0
 R9
-!s101 -O0
-!i113 1
-R10
 vShifter
-Z21 !s110 1539570612
+R0
+r1
+!s85 0
+31
 !i10b 1
 !s100 ?nk?^<zhM=dNL>iLWz7Te3
-IhijTNWl:`nF=YeWXM@_VZ0
+I7BC@EV=F;Nj?AQJX:aPd22
 R1
 R2
-R12
-Z22 8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Shifter.v
-Z23 FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Shifter.v
+Z16 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter.v
+Z17 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter.v
 L0 2
-R6
-r1
-!s85 0
-31
-Z24 !s108 1539570612.000000
-Z25 !s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Shifter.v|
-Z26 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Shifter.v|
-!s101 -O0
-!i113 1
-R10
+R5
+Z18 !s108 1539732985.866000
+Z19 !s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter.v|
+Z20 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter.v|
+!i113 0
+R9
 n@shifter
 vShifter_SLL
-R21
+R0
+r1
+!s85 0
+31
 !i10b 1
 !s100 l3IjHhCSh8L0QzCcZOAWE3
-I]V0DiVV]eRCg_1[DGJjTK2
+Im=jOcSa[JRSf2f:l78FnN3
 R1
 R2
-R12
-R22
-R23
+R16
+R17
 L0 18
-R6
-r1
-!s85 0
-31
-R24
-R25
-R26
-!s101 -O0
-!i113 1
-R10
+R5
+R18
+R19
+R20
+!i113 0
+R9
 n@shifter_@s@l@l
 vShifter_SRA
-R21
+R0
+r1
+!s85 0
+31
 !i10b 1
 !s100 z9>g[?C[_6B<;aLM3K;Dc3
-IHI:lNg4_U_:6V;DinSWJk2
+In89kh<ODDaa`aXhMo[U0;1
 R1
 R2
-R12
-R22
-R23
+R16
+R17
 L0 35
-R6
-r1
-!s85 0
-31
-R24
-R25
-R26
-!s101 -O0
-!i113 1
-R10
+R5
+R18
+R19
+R20
+!i113 0
+R9
 n@shifter_@s@r@a
 vShifter_tb
-R11
-R21
+R10
+!s110 1539732986
 !i10b 1
-!s100 ]VL87JZ_>W[=6jEGg9oaT1
-IbLWPe]<:YC85VWjd:I;aB3
-R1
+!s100 ?UhI;k5SD[MhBd1JVRViO3
+I5kn<dFeTYbP=?m3]Kj9;j1
+R0
 !s105 Shifter_tb_sv_unit
 S1
-R2
-R12
-8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Shifter_tb.sv
-FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Shifter_tb.sv
-L0 1
-R6
-r1
-!s85 0
-31
-R24
-!s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Shifter_tb.sv|
-!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Shifter_tb.sv|
-!s101 -O0
-!i113 1
-R13
-n@shifter_tb
-vWriteDecoder_4_16
-!s110 1539570685
-!i10b 1
-!s100 ZOckX:IM0PS:4Xnej>n=60
-IIoTQ[]fK2Hc_U_?Q?R7P41
 R1
 R2
-R12
-8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/WriteDecoder_4_16.v
-FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/WriteDecoder_4_16.v
-L0 2
-R6
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter_tb.sv
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter_tb.sv
+L0 1
+R5
 r1
 !s85 0
 31
-!s108 1539570685.000000
-!s107 C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/WriteDecoder_4_16.v|
-!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/WriteDecoder_4_16.v|
-!s101 -O0
-!i113 1
-R10
+!s108 1539732986.383000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter_tb.sv|
+!s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter_tb.sv|
+!i113 0
+R12
+n@shifter_tb
+vWriteDecoder_4_16
+R0
+r1
+!s85 0
+31
+!i10b 1
+!s100 ZOckX:IM0PS:4Xnej>n=60
+IgT=d<6I1NBdYR4?@mB>Yn1
+R1
+R2
+8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/WriteDecoder_4_16.v
+FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/WriteDecoder_4_16.v
+L0 2
+R5
+!s108 1539732978.890000
+!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/WriteDecoder_4_16.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/WriteDecoder_4_16.v|
+!i113 0
+R9
 n@write@decoder_4_16
 vxor_16bit
 R0
+r1
+!s85 0
+31
 !i10b 1
 !s100 JhC]oNP07G2a8Ynalc>Ah2
-IHQKEVQd0=ARAgj569j=:K0
+IoFePLNLPan`;Z9jVn:9]83
 R1
 R2
 R3
 R4
-R5
 L0 96
+R5
 R6
-r1
-!s85 0
-31
 R7
 R8
+!i113 0
 R9
-!s101 -O0
-!i113 1
-R10

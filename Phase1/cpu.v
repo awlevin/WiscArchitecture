@@ -2,7 +2,7 @@ module cpu(clk, rst_n, hlt, pc);
 
 input clk, rst_n;
 output reg hlt;
-output reg [15:0] pc;
+output wire [15:0] pc;
 
 /////////////////////
 // Local Variables //
@@ -40,7 +40,7 @@ reg PC_Control_BR_B_En;
 wire [15:0] nextPC; //Output PC of Control module
 wire [15:0] pc_to_save;
 reg set_flags;
-reg [2:0] flags; // FLAGS ==>> (Z, V, N)
+wire [2:0] flags; // FLAGS ==>> (Z, V, N)
 
 assign pc_to_save = pc;
 
@@ -50,6 +50,9 @@ assign pc_to_save = pc;
 
 // PC Module
 PC_Register pc_reg(.clk(clk), .rst_n(rst_n), .next_pc(nextPC), .pc_out(pc));
+
+// PC Control Module
+PC_control pc_control_module(.C(ccc), .I(pc_imm), .F(flags), .PC_in(pc), .BR(BR_value), .En(PC_Control_BR_B_En) , .PC_out(nextPC));
 
 // Memory Modules
 memory1c inst_mem(.clk(clk), .rst(~rst_n), .data_out(instr), .data_in(16'h0000), .addr(pc), .enable(rst_n), .wr(1'b0));
@@ -62,8 +65,7 @@ RegisterFile regFile(.clk(clk), .rst(~rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg
 ALU alu(.Opcode(aluOp), .Input1(aluIn1), .Input2(aluIn2), .Output(aluOut), .flagsOut(aluFlags));
 FlagsRegister flags_reg(.clk(clk), .rst_n(rst_n), .set(set_flags), .flags_in(aluFlags), .flags_out(flags));
 
-// PC Control Module
-PC_control pc_control_module(.C(ccc), .I(pc_imm), .F(flags), .PC_in(pc), .BR(BR_value), .En(PC_Control_BR_B_En) , .PC_out(nextPC));
+
 /*
 always @(posedge clk, negedge rst_n)
 	if(!rst_n) begin
@@ -93,7 +95,7 @@ casex(instr[15:12])
 		aluIn2 = srcData2;
 		dstData = aluOut;
 		writeReg = 1'b1;
-		set_flags = 1;
+		set_flags = 1'b1;
 		PC_Control_BR_B_En = 1'b0;
 		dataEnable = 1'b0;
 		//pc = nextPC;
@@ -111,7 +113,7 @@ casex(instr[15:12])
 		aluIn2 = srcData2;
 		dstData = aluOut;
 		writeReg = 1'b1;
-		set_flags = 0;
+		set_flags = 1'b0;
 		PC_Control_BR_B_En = 1'b0;
 		dataEnable = 1'b0;
 		//pc = nextPC;
@@ -129,7 +131,7 @@ casex(instr[15:12])
 		aluIn2 = instr[3:0];
 		dstData = aluOut;
 		writeReg = 1'b1; 
-		set_flags = 1;
+		set_flags = 1'b1;
 
 		dataEnable = 1'b0;
 
@@ -158,7 +160,7 @@ casex(instr[15:12])
 		dataWr = instr[12]; //LW = 4'b1000 SW = 4'b1001, so last bit of the instruction corresponds to the write data
 
 		writeReg = ~instr[12]; // Write the data to the destination register, with opposite logic to dataWr
-		set_flags = 0;
+		set_flags = 1'b0;
 		//PC Logic
 		PC_Control_BR_B_En = 1'b0;
 		//pc = nextPC;
@@ -204,7 +206,7 @@ casex(instr[15:12])
 
 		dataEnable = 1'b0;
 
-		set_flags = 0;
+		set_flags = 1'b0;
 		//PC Logic
 		PC_Control_BR_B_En = 1'b0;
 		//pc = nextPC;
@@ -230,29 +232,28 @@ casex(instr[15:12])
 		dataEnable = 1'b0;
 	end
 
-	4'b1110 : 
+	4'b1110 : // PCS
 	begin  
 		dstReg = instr[11:8];
 		writeReg = 1'b1;
-		set_flags = 0;
+		set_flags = 1'b0;
 		dstData = pc_to_save;
 		//pc = nextPC;
 		PC_Control_BR_B_En = 1'b0;
 		dataEnable = 1'b0;
-	end // PCS
-	4'b1111 :
+	end 
+	4'b1111 : // HLT
 	begin 
-		pc = pc;
-		nextPC = pc;
+		//nextPC = pc;
 		writeReg = 1'b0; 
-		set_flags = 0;
+		set_flags = 1'b0;
 		PC_Control_BR_B_En = 1'b0;
 		dataEnable = 1'b0;    // Enable=1 and Wr=1 --> data_out=M[addr] 
 		dataWr = 1'b0;
-		hlt = 1;
+		hlt = 1'b1;
 		//nextPC = pc;
 		//PC_Control_BR_B_En = 1'b0;
-	end // HLT
+	end 
 	default
 	begin 
 /*
