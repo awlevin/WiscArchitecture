@@ -26,7 +26,7 @@ reg [15:0] immediate;
 // Memory Vars
 wire [15:0] offset;
 wire [15:0] address;
-reg [15:0] memDataIn;
+wire [15:0] memDataIn;
 wire [15:0] memDataOut;
 reg dataWr, dataEnable;
 
@@ -45,6 +45,9 @@ wire [2:0] flags; // FLAGS ==>> (Z, V, N)
 
 assign offset = { {11{instr[3]}}, instr[3:0], 1'b0}; 
 assign address = aluOut;
+
+// only used for mem writes (store word instructions). UNKNOWN what to default to if not used
+assign memDataIn = srcData1;
 
 assign hlt = &instr[15:12]; // reductive AND (hlt should only be 1 if it's the halt instruction i.e. 0xFFFF)
 
@@ -188,9 +191,6 @@ casex(instr[15:12])
 		aluOp = 4'b0000; // tell ALU to do an ADD -- TODO: does it matter if this is before the ALU inputs are set?
 		aluIn1 = srcData2;
 		aluIn2 = offset;
-		
-
-		memDataIn = srcData1; //only used for mem writes
 
 		dataEnable = 1'b1;    // Enable=1 and Wr=1 --> data_out=M[addr] 
 		dataWr = instr[12]; //LW = 4'b1000 SW = 4'b1001, so last bit of the instruction corresponds to the write data
