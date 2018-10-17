@@ -1,8 +1,8 @@
 module cpu(clk, rst_n, hlt, pc);
 
 input clk, rst_n;
-output reg hlt;
-output wire [15:0] pc;
+output hlt;
+output [15:0] pc;
 
 /////////////////////
 // Local Variables //
@@ -24,32 +24,45 @@ reg [3:0] aluOp;
 reg [15:0] immediate;
 
 // Memory Vars
-reg [15:0] offset;
-reg [15:0] address, memDataIn;
+wire [15:0] offset;
+wire [15:0] address;
+reg [15:0] memDataIn;
 wire [15:0] memDataOut;
 reg dataWr, dataEnable;
+
+
 
 // Control Instr's
 reg takeBranch;
 wire [15:0] instr; // bits [15:12] are the opcode
-reg [8:0] pc_imm;
-reg [15:0] pc_in;
-reg [2:0] ccc;
-reg [15:0] BR_value; //value use for BR instructor
+wire [8:0] pc_imm;
+wire [2:0] ccc;
+wire [15:0] BR_value; //value use for BR instructor
 reg PC_Control_BR_B_En;
 wire [15:0] nextPC; //Output PC of Control module
-wire [15:0] pc_to_save;
 reg set_flags;
 wire [2:0] flags; // FLAGS ==>> (Z, V, N)
 
-assign pc_to_save = pc;
+assign offset = { {11{instr[3]}}, instr[3:0], 1'b0}; 
+assign address = aluOut;
+
+assign hlt = &instr[15:12]; // reductive AND (hlt should only be 1 if it's the halt instruction i.e. 0xFFFF)
+
+assign ccc = instr[11:9];
+
+// Set based on B vs BR
+assign BR_value =  instr[12] ? srcData1 : 16'hFFFF;// 0: instr is B so set FFFF , 1: instr is BR so set value in srcReg1
+
+// Only used for B Instr's
+assign pc_imm = instr[8:0];
+
 
 /////////////////////
 //     Modules	   //
 /////////////////////
 
 // PC Module
-PC_Register pc_reg(.clk(clk), .rst_n(rst_n), .next_pc(nextPC), .pc_out(pc));
+PC_Register pc_reg(.clk(clk), .rst(~rst_n), .next_pc(nextPC), .pc_out(pc));
 
 // PC Control Module
 PC_control pc_control_module(.C(ccc), .I(pc_imm), .F(flags), .PC_in(pc), .BR(BR_value), .En(PC_Control_BR_B_En) , .PC_out(nextPC));
@@ -63,7 +76,7 @@ RegisterFile regFile(.clk(clk), .rst(~rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg
 
 // ALU Module
 ALU alu(.Opcode(aluOp), .Input1(aluIn1), .Input2(aluIn2), .Output(aluOut), .flagsOut(aluFlags));
-FlagsRegister flags_reg(.clk(clk), .rst_n(rst_n), .set(set_flags), .flags_in(aluFlags), .flags_out(flags));
+FlagsRegister flags_reg(.clk(clk), .rst(~rst_n), .set(set_flags), .flags_in(aluFlags), .flags_out(flags));
 
 
 /*
@@ -146,13 +159,12 @@ casex(instr[15:12])
 		// Parse instruction
 		dstReg = instr[11:8];
 		srcReg2 = instr[7:4]; // add data in this register to immediate offset
-		offset = { {11{instr[3]}}, instr[3:0], 1'b0}; // TODO: (feel like there'll be a bug here) Phase 1 instructions specify "oooo is the offset in two's complement but right-shifted by 1 bit." So we should shift it left again?
-		
+
 		// Send base and offset to ALU
 		aluOp = 4'b0000; // tell ALU to do an ADD -- TODO: does it matter if this is before the ALU inputs are set?
 		aluIn1 = srcData2;
 		aluIn2 = offset;
-		address = aluOut;
+		
 
 		dstData = memDataOut; // The output of memData module is the M[addr] value we want to store to a register
 
@@ -171,13 +183,12 @@ casex(instr[15:12])
 		// Parse instruction
 		srcReg1 = instr[11:8];
 		srcReg2 = instr[7:4]; // add data in this register to immediate offset
-		offset = { {11{instr[3]}}, instr[3:0], 1'b0}; // TODO: (feel like there'll be a bug here) Phase 1 instructions specify "oooo is the offset in two's complement but right-shifted by 1 bit." So we should shift it left again?
-		
+
 		// Send base and offset to ALU
 		aluOp = 4'b0000; // tell ALU to do an ADD -- TODO: does it matter if this is before the ALU inputs are set?
 		aluIn1 = srcData2;
 		aluIn2 = offset;
-		address = aluOut;
+		
 
 		memDataIn = srcData1; //only used for mem writes
 
@@ -217,16 +228,9 @@ casex(instr[15:12])
 	begin  
 		//pc = nextPC;
 		PC_Control_BR_B_En = 1'b1;
-		ccc = instr[11:9];
-
-		//Only used for B Instr's
-		pc_imm = instr[8:0];
 		
 		//Only used for BR instr's
 		srcReg1 = instr[7:4];
-		
-		//Set based on B vs BR
-		BR_value =  instr[12] ? srcData1 : 16'hFFFF;// 0: instr is B so set FFFF , 1: instr is BR so set value in srcReg1
 
 		writeReg = 1'b0;
 		dataEnable = 1'b0;
@@ -237,7 +241,7 @@ casex(instr[15:12])
 		dstReg = instr[11:8];
 		writeReg = 1'b1;
 		set_flags = 1'b0;
-		dstData = pc_to_save;
+		dstData = nextPC;
 		//pc = nextPC;
 		PC_Control_BR_B_En = 1'b0;
 		dataEnable = 1'b0;
@@ -250,7 +254,6 @@ casex(instr[15:12])
 		PC_Control_BR_B_En = 1'b0;
 		dataEnable = 1'b0;    // Enable=1 and Wr=1 --> data_out=M[addr] 
 		dataWr = 1'b0;
-		hlt = 1'b1;
 		//nextPC = pc;
 		//PC_Control_BR_B_En = 1'b0;
 	end 

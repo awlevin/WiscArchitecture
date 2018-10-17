@@ -17,12 +17,12 @@ r1
 !s100 Ad0A=@g>SiXTYIFl3U<Wz3
 IV_`U01W3bfI]aGTeEJ;H42
 Z1 dI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1
-Z2 w1539728160
+Z2 w1539738259
 Z3 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ALU.v
 Z4 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ALU.v
 L0 110
 Z5 OE;L;10.3c;59
-Z6 !s108 1539732979.291000
+Z6 !s108 1539738260.202000
 Z7 !s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ALU.v|
 Z8 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ALU.v|
 !i113 0
@@ -33,8 +33,8 @@ r1
 !s85 0
 31
 !i10b 1
-!s100 8BcAL_OH7mlNO;oQLRj<>0
-I[JJ5:?FG8]K8]e;_5@hf[1
+!s100 UlJ2j^5dz;Pg`SW9A1FD20
+IDnjO?eLRSida94=dbf_OQ2
 R1
 R2
 R3
@@ -80,7 +80,7 @@ r1
 !s100 3?IXnYXVoU:aHW;L@S8?C0
 I21gG^Oog4be`c[N[CSa0?3
 R1
-R2
+Z13 w1539728160
 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/BitCell.v
 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/BitCell.v
 L0 2
@@ -97,17 +97,17 @@ r1
 !s85 0
 31
 !i10b 1
-!s100 YfgCDU;L8lHG_IoBYGTM<3
-IUZFcdPbjRYZ0GL:mkRz0k1
+!s100 PBnVKPE;U=IU:MWQ=BIb73
+IWCj_6K?>IH]OEd[OVN1n20
 R1
 R2
-8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/CLA_4bit.v
-FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/CLA_4bit.v
-L0 4
+R3
+R4
+L0 192
 R5
-!s108 1539732980.451000
-!s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/CLA_4bit.v|
-!s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/CLA_4bit.v|
+R6
+R7
+R8
 !i113 0
 R9
 n@c@l@a_4bit
@@ -117,15 +117,15 @@ r1
 !s85 0
 31
 !i10b 1
-!s100 GH`PcIQAgIFDZEfmEml=K2
-I?;:bjaXPa?@8M8iO6aUCP0
+!s100 9^ZDH8Hh^NojQfS8hZ`4W0
+IKaBfW>W<`G:?g4T:^K;Ue0
 R1
-w1539733690
+w1539740450
 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/cpu.v
 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/cpu.v
 L0 1
 R5
-!s108 1539733781.861000
+!s108 1539740452.733000
 !s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/cpu.v|
 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/cpu.v|
 !i113 0
@@ -137,17 +137,17 @@ r1
 !s85 0
 31
 !i10b 1
-!s100 `DLk=D=83o2Y;H60K9mon3
-IoacOXlmMl_P0NBfJUin6V2
+!s100 Ba?kP6cSN;`6HbBc?J:N^1
+I9lzZK;RCZmLE4NY4cUWTI1
 !s105 project2dphase12dtestbench_v_unit
 S1
 R1
-w1539732742
+w1539735468
 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/project-phase1-testbench.v
 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/project-phase1-testbench.v
 L0 1
 R5
-!s108 1539733049.042000
+!s108 1539735472.129000
 !s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/project-phase1-testbench.v|
 !s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/project-phase1-testbench.v|
 !i113 0
@@ -162,7 +162,7 @@ R0
 !s105 cpu_tb_sv_unit
 S1
 R1
-R2
+R13
 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/cpu_tb.sv
 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/cpu_tb.sv
 L0 1
@@ -184,7 +184,7 @@ r1
 !s100 hnSNYQ@_M6T1KGh@C1^Bg1
 IQ2^];8<:I3HNi]?Ib>haN3
 R1
-R2
+R13
 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/D-Flip-Flop.v
 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/D-Flip-Flop.v
 L0 3
@@ -221,15 +221,15 @@ r1
 !s85 0
 31
 !i10b 1
-!s100 W47goX`:VZE_UFYL@mW0j3
-I1n:>A=jdHWiDf@5oGzzFz3
+!s100 bOeago^I5X7FB126K>;4K1
+IhXg]kLj>c2gDic>5Ii7@>0
 R1
-w1539733154
+w1539735266
 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/FlagsRegister.v
 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/FlagsRegister.v
 L0 1
 R5
-!s108 1539733202.188000
+!s108 1539735278.383000
 !s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/FlagsRegister.v|
 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/FlagsRegister.v|
 !i113 0
@@ -240,13 +240,13 @@ vLoadWordModule
 !i10b 1
 !s100 Pj5fecOoMnPTX_?UX_>FG0
 IFab9G98>MHfJ3?hX>1fk23
-Z13 VDg1SIo80bB@j0V0VzS_@n1
+Z14 VDg1SIo80bB@j0V0VzS_@n1
 dC:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1
 w1538872249
 8C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/cpu.v
 FC:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/cpu.v
 L0 104
-Z14 OP;L;10.4a;61
+Z15 OP;L;10.4a;61
 r1
 !s85 0
 31
@@ -255,7 +255,7 @@ r1
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/Aaron Levin/Desktop/ECE 552/WiscArchitecture/Phase1/cpu.v|
 !s101 -O0
 !i113 1
-Z15 o-work work -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact -O0
+Z16 o-work work -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact -O0
 n@load@word@module
 vmemory1c
 R0
@@ -263,15 +263,15 @@ r1
 !s85 0
 31
 !i10b 1
-!s100 BJYf9M`Ta0HR1hY0^8[500
-IoP=JJ=Bd80QJOTD=;BNgb2
+!s100 kN5Va^Td>Hb]>C88dk4Xg3
+IDEI:PD;XiK`;Rn3AITXaA0
 R1
-w1539728161
+w1539739974
 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/memory.v
 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/memory.v
 L0 31
 R5
-!s108 1539732982.365000
+!s108 1539739980.738000
 !s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/memory.v|
 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/memory.v|
 !i113 0
@@ -304,7 +304,7 @@ r1
 !s100 OM21FFVSKT8U084l1ZmTn1
 IK7cKQHMR^PjT<eSR6G8D@2
 R1
-R2
+R13
 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_control.v
 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_control.v
 L0 2
@@ -325,7 +325,7 @@ R0
 !s105 PC_control_tb_sv_unit
 S1
 R1
-R2
+R13
 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_control_tb.sv
 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_control_tb.sv
 L0 2
@@ -345,15 +345,15 @@ r1
 !s85 0
 31
 !i10b 1
-!s100 o<I;V5O46<^e9eK[@]ohC1
-I?bhFBoa_6;<RKcTE39k>f3
+!s100 TOeL[6FMAVk7l8NTXQRVn2
+I2zd]J`bJJn90g6l66P`YG1
 R1
-w1539733956
+w1539735263
 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_Register.v
 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_Register.v
 L0 1
 R5
-!s108 1539733957.646000
+!s108 1539735277.744000
 !s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_Register.v|
 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/PC_Register.v|
 !i113 0
@@ -371,7 +371,7 @@ IMZnG6D[cz6[5>iTB<PKc62
 !s105 ReadDecoder_4_16_sv_unit
 S1
 R1
-R2
+R13
 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ReadDecoder_4_16.sv
 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/ReadDecoder_4_16.sv
 L0 2
@@ -410,7 +410,7 @@ r1
 !s100 JfR[8LL09L^D`J1ncX^CV2
 I>2Q5V5H?F2loiFzJMJ3Kb3
 R1
-R2
+R13
 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Register.v
 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Register.v
 L0 2
@@ -426,13 +426,13 @@ vRegister3
 !i10b 1
 !s100 gSYzg>o4m@DoBd87CoPXf3
 IXidIY@`z4WQWG@YEH9@fH3
-R13
+R14
 dC:/Users/renzo/OneDrive/Documents/ECE552/Pull3
 w1539583184
 8C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Register.v
 FC:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Register.v
 L0 30
-R14
+R15
 r1
 !s85 0
 31
@@ -441,7 +441,7 @@ r1
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/renzo/OneDrive/Documents/ECE552/Pull3/Register.v|
 !s101 -O0
 !i113 1
-R15
+R16
 n@register3
 vRegisterFile
 R0
@@ -473,7 +473,7 @@ R0
 !s105 RegisterFile_tb_sv_unit
 S1
 R1
-R2
+R13
 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/RegisterFile_tb.sv
 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/RegisterFile_tb.sv
 L0 2
@@ -515,14 +515,14 @@ r1
 !s100 ?nk?^<zhM=dNL>iLWz7Te3
 I7BC@EV=F;Nj?AQJX:aPd22
 R1
-R2
-Z16 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter.v
-Z17 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter.v
+R13
+Z17 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter.v
+Z18 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter.v
 L0 2
 R5
-Z18 !s108 1539732985.866000
-Z19 !s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter.v|
-Z20 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter.v|
+Z19 !s108 1539732985.866000
+Z20 !s107 I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter.v|
+Z21 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter.v|
 !i113 0
 R9
 n@shifter
@@ -535,14 +535,14 @@ r1
 !s100 l3IjHhCSh8L0QzCcZOAWE3
 Im=jOcSa[JRSf2f:l78FnN3
 R1
-R2
-R16
+R13
 R17
+R18
 L0 18
 R5
-R18
 R19
 R20
+R21
 !i113 0
 R9
 n@shifter_@s@l@l
@@ -555,14 +555,14 @@ r1
 !s100 z9>g[?C[_6B<;aLM3K;Dc3
 In89kh<ODDaa`aXhMo[U0;1
 R1
-R2
-R16
+R13
 R17
+R18
 L0 35
 R5
-R18
 R19
 R20
+R21
 !i113 0
 R9
 n@shifter_@s@r@a
@@ -576,7 +576,7 @@ R0
 !s105 Shifter_tb_sv_unit
 S1
 R1
-R2
+R13
 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter_tb.sv
 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/Shifter_tb.sv
 L0 1
@@ -599,7 +599,7 @@ r1
 !s100 ZOckX:IM0PS:4Xnej>n=60
 IgT=d<6I1NBdYR4?@mB>Yn1
 R1
-R2
+R13
 8I:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/WriteDecoder_4_16.v
 FI:/Win/Desktop/PortableGit/WiscArchitecture/Phase1/WriteDecoder_4_16.v
 L0 2

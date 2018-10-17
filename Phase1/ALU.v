@@ -25,23 +25,23 @@ red_16bit redOp(.Sum(redResult), .A(Input1), .B(Input2));
 
 always @(*)
 case(Opcode)
-	4'b0000 : begin assign Output = adderResult; assign flagsOut = {adderZFlag, adderVFlag, adderNFlag}; end
-	4'b0001 : begin assign Output = adderResult; assign flagsOut = {adderZFlag, adderVFlag, adderNFlag}; end
-	4'b0010 : begin assign Output = xorResult; assign flagsOut = {xorZFlag, 2'b00}; end
-	4'b0011 : begin assign Output = redResult; assign flagsOut = 3'bxxx; end
-	4'b0100 : begin assign Output = shifterResult; assign flagsOut = {shifterZFlag, 2'b00}; end
-	4'b0101 : begin assign Output = shifterResult; assign flagsOut = {shifterZFlag, 2'b00}; end
-	4'b0110 : begin assign Output = shifterResult; assign flagsOut = {shifterZFlag, 2'b00}; end
-	4'b0111 : begin assign Output = paddsbResult; assign flagsOut = 3'bxxx; end
-	4'b1000 : begin assign Output = adderResult; assign flagsOut = 3'bxxx; end
-	4'b1001 : begin assign Output = adderResult; assign flagsOut = 3'bxxx; end
-	4'b1010 : begin assign Output = 16'bxxxxxxxxxxxxxxxx; assign flagsOut = 3'bxxx; end
-	4'b1011 : begin assign Output = 16'bxxxxxxxxxxxxxxxx; assign flagsOut = 3'bxxx; end
-	4'b1100 : begin assign Output = 16'bxxxxxxxxxxxxxxxx; assign flagsOut = 3'bxxx; end
-	4'b1101 : begin assign Output = 16'bxxxxxxxxxxxxxxxx; assign flagsOut = 3'bxxx; end
-	4'b1110 : begin assign Output = 16'bxxxxxxxxxxxxxxxx; assign flagsOut = 3'bxxx; end
-	4'b1111 : begin assign Output = 16'bxxxxxxxxxxxxxxxx; assign flagsOut = 3'bxxx; end
-	default : begin assign Output = 16'bxxxxxxxxxxxxxxxx; assign flagsOut = 3'bxxx; end
+	4'b0000 : begin Output = adderResult; flagsOut = {adderZFlag, adderVFlag, adderNFlag}; end
+	4'b0001 : begin Output = adderResult; flagsOut = {adderZFlag, adderVFlag, adderNFlag}; end
+	4'b0010 : begin Output = xorResult; flagsOut = {xorZFlag, 2'b00}; end
+	4'b0011 : begin Output = redResult; flagsOut = 3'bxxx; end
+	4'b0100 : begin Output = shifterResult; flagsOut = {shifterZFlag, 2'b00}; end
+	4'b0101 : begin Output = shifterResult; flagsOut = {shifterZFlag, 2'b00}; end
+	4'b0110 : begin Output = shifterResult; flagsOut = {shifterZFlag, 2'b00}; end
+	4'b0111 : begin Output = paddsbResult; flagsOut = 3'bxxx; end
+	4'b1000 : begin Output = adderResult; flagsOut = 3'bxxx; end
+	4'b1001 : begin Output = adderResult; flagsOut = 3'bxxx; end
+	4'b1010 : begin Output = 16'bxxxxxxxxxxxxxxxx; flagsOut = 3'bxxx; end
+	4'b1011 : begin Output = 16'bxxxxxxxxxxxxxxxx; flagsOut = 3'bxxx; end
+	4'b1100 : begin Output = 16'bxxxxxxxxxxxxxxxx; flagsOut = 3'bxxx; end
+	4'b1101 : begin Output = 16'bxxxxxxxxxxxxxxxx; flagsOut = 3'bxxx; end
+	4'b1110 : begin Output = 16'bxxxxxxxxxxxxxxxx; flagsOut = 3'bxxx; end
+	4'b1111 : begin Output = 16'bxxxxxxxxxxxxxxxx; flagsOut = 3'bxxx; end
+	default : begin Output = 16'bxxxxxxxxxxxxxxxx; flagsOut = 3'bxxx; end
 endcase
 
 endmodule

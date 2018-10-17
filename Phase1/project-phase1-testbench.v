@@ -190,51 +190,51 @@ task Print_Instruction;
 
   /* ADD */ 
   4'h0 :
-  begin $display("ADD S%d S%d s%d",instr[11:8],instr[7:4],instr[3:0]); end
+  begin $display("ADD %d %d %d",instr[11:8],instr[7:4],instr[3:0]); end
 
   /* SUB */ 
   4'h1 :
-  begin $display("SUB S%d S%d s%d",instr[11:8],instr[7:4],instr[3:0]); end
+  begin $display("SUB %d %d %d",instr[11:8],instr[7:4],instr[3:0]); end
 
   /* XOR */ 
   4'h2 :
-  begin $display("XOR S%d S%d s%d",instr[11:8],instr[7:4],instr[3:0]); end
+  begin $display("XOR %d %d %d",instr[11:8],instr[7:4],instr[3:0]); end
 
   /* RED */ 
   4'h3 :
-  begin $display("RED S%d S%d s%d",instr[11:8],instr[7:4],instr[3:0]); end
+  begin $display("RED %d %d %d",instr[11:8],instr[7:4],instr[3:0]); end
 
   /* SLL */ 
   4'h4 :
-  begin $display("SLL S%d S%d s%d",instr[11:8],instr[7:4],instr[3:0]); end
+  begin $display("SLL %d %d %d",instr[11:8],instr[7:4],instr[3:0]); end
 
   /* SRA */ 
   4'h5 :
-  begin $display("SRA S%d S%d s%d",instr[11:8],instr[7:4],instr[3:0]); end
+  begin $display("SRA %d %d %d",instr[11:8],instr[7:4],instr[3:0]); end
 
   /* ROR */ 
   4'h6 :
-  begin $display("ROR S%d S%d s%d",instr[11:8],instr[7:4],instr[3:0]); end
+  begin $display("ROR %d %d %d",instr[11:8],instr[7:4],instr[3:0]); end
 
   /* PADDSB */  
   4'h7 :
-  begin $display("PADDSB S%d S%d s%d",instr[11:8],instr[7:4],instr[3:0]); end
+  begin $display("PADDSB %d %d %d",instr[11:8],instr[7:4],instr[3:0]); end
 
   /* LW */  
   4'h8 : 
-  begin $display("LW S%d,%d(s%d)",instr[11:8],instr[7:4],{{11{instr[3]}}, instr[3:0], 1'b0}); end 
+  begin $display("LW %d,%d(%d)",instr[11:8],instr[7:4],{{11{instr[3]}}, instr[3:0], 1'b0}); end 
 
   /* SW */  
   4'h9  : 
-  begin $display("SW S%d,%d(s%d)",instr[11:8],instr[7:4],{{11{instr[3]}}, instr[3:0], 1'b0}); end 
+  begin $display("SW %d,%d(%d)",instr[11:8],instr[7:4],{{11{instr[3]}}, instr[3:0], 1'b0}); end 
 
   /* LLB */ 
   4'hA  : 
-  begin $display("LLB S%d S%d %d",instr[11:8],instr[11:8],instr[7:0]); end 
+  begin $display("LLB %d %d %d",instr[11:8],instr[11:8],instr[7:0]); end 
 
   /* LHB */
   4'hB : 
-  begin  $display("LHB S%d S%d %d",instr[11:8],instr[11:8],instr[7:0]); end 
+  begin  $display("LHB %d %d %d",instr[11:8],instr[11:8],instr[7:0]); end 
 
   /* B */
   4'b1100 : 
@@ -242,11 +242,11 @@ task Print_Instruction;
 
   /* BR */
   4'b1101 : 
-  begin  $display("BR CCC:%h to: S%d",instr[11:9],instr[7:4]); end
+  begin  $display("BR CCC:%h to: %d",instr[11:9],instr[7:4]); end
 
   /* PCS */
   4'b1110 : 
-  begin  $display("PCS S%d gets %h",instr[11:8],PC); end
+  begin  $display("PCS %d gets %h",instr[11:8],PC); end
 
   /* HALT */
   4'b1111 :
