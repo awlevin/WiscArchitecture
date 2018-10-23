@@ -10,7 +10,7 @@ output [15:0] pc; //PC value over course of execution
 // Local Variables //
 /////////////////////
 
-/**
+
 // Register Vars
 reg [3:0] srcReg1, srcReg2, dstReg;
 reg writeReg; // 1=write, 0=don't write
@@ -39,7 +39,7 @@ reg dataWr, dataEnable;
 reg takeBranch;
 wire [15:0] instr; // bits [15:12] are the opcode
 wire [8:0] pc_imm;
-wire [2:0] ccc;
+wire [2:0] ccc,ccc_in;
 wire [15:0] BR_value; //value use for BR instructor
 reg PC_Control_BR_B_En;
 wire [15:0] nextPC; //Output PC of Control module
@@ -54,14 +54,14 @@ assign memDataIn = srcData1;
 
 assign hlt = &instr[15:12]; // reductive AND (hlt should only be 1 if it's the halt instruction i.e. 0xFFFF)
 
-assign ccc = instr[11:9];
+assign ccc_in = instr[11:9];
 
 // Set based on B vs BR
 assign BR_value =  instr[12] ? srcData1 : 16'hFFFF;// 0: instr is B so set FFFF , 1: instr is BR so set value in srcReg1
 
 // Only used for B Instr's
 assign pc_imm = instr[8:0];
-**/
+
 
 /////////////////////
 //     Modules	   //
@@ -103,36 +103,47 @@ casex(instr[15:12])
 	4'b000x, 4'b0010 : //4'b00xx,4'b0111 : 
 	begin 
 		// Parse the instruction, set RegisterFile to read correctly
-		dstReg = instr[11:8]; 
-		srcReg1 = instr[7:4]; 
-		srcReg2 = instr[3:0];
+		dstReg_in = instr[11:8]; 
+		srcReg1_in = instr[7:4]; 
+		srcReg2_in = instr[3:0];
 		// Set inputs for ALU based on RegisterFile outputs 
-		aluOp = instr[15:12];
+		aluOp_in = instr[15:12];
+
+		/**fix
+
 		aluIn1 = srcData1;
 		aluIn2 = srcData2;
 		dstData = aluOut;
-		writeReg = 1'b1;
-		set_flags = 1;
-		PC_Control_BR_B_En = 1'b0;
-		dataEnable = 1'b0;
+
+		**/
+		writeReg_in = 1'b1;
+		set_flags_in = 1;
+		PC_Control_BR_B_En_in = 1'b0;
+		dataEnable_in = 1'b0;
 		//pc = nextPC;
 	end
 	/* RED, PADDSB*/
 	4'b0011, 4'b0111 : //4'b00xx,4'b0111 : 
 	begin 
 		// Parse the instruction, set RegisterFile to read correctly
-		dstReg = instr[11:8]; 
-		srcReg1 = instr[7:4]; 
-		srcReg2 = instr[3:0];
+		dstReg_in = instr[11:8]; 
+		srcReg1_in = instr[7:4]; 
+		srcReg2_in = instr[3:0];
 		// Set inputs for ALU based on RegisterFile outputs 
-		aluOp = instr[15:12];
+		aluOp_in = instr[15:12];
+
+		/**fix 
+
 		aluIn1 = srcData1;
 		aluIn2 = srcData2;
 		dstData = aluOut;
-		writeReg = 1'b1;
-		set_flags = 0;
-		PC_Control_BR_B_En = 1'b0;
-		dataEnable = 1'b0;
+
+		**/
+
+		writeReg_in = 1'b1;
+		set_flags_in = 1'b0;
+		PC_Control_BR_B_En_in = 1'b0;
+		dataEnable_in = 1'b0;
 		//pc = nextPC;
 	end
 
@@ -140,20 +151,25 @@ casex(instr[15:12])
 	4'b0100,4'b0101,4'b0110 : 
 	begin 
 		// Parse the instruction, set RegisterFile to read correctly
-		dstReg = instr[11:8]; 
-		srcReg1 = instr[7:4]; 
+		dstReg_in = instr[11:8]; 
+		srcReg1_in = instr[7:4]; 
 		// Set inputs for ALU based on RegisterFile outputs 
-		aluOp = instr[15:12];
+		aluOp_in = instr[15:12];
+
+		/**fix
+		
 		aluIn1 = srcData1;
 		aluIn2 = instr[3:0];
 		dstData = aluOut;
-		writeReg = 1'b1; 
-		set_flags = 1;
 
-		dataEnable = 1'b0;
+		**/ 
+		writeReg_in = 1'b1; 
+		set_flags_in = 1;
+
+		dataEnable_in = 1'b0;
 
 		//PC Logic
-		PC_Control_BR_B_En = 1'b0;
+		PC_Control_BR_B_En_in = 1'b0;
 		//pc = nextPC;
 	end
 
@@ -161,40 +177,52 @@ casex(instr[15:12])
 	4'b1000 : 
 	begin
 		// Parse instruction
-		dstReg = instr[11:8];
-		srcReg2 = instr[7:4]; // add data in this register to immediate offset
-		offset = { {11{instr[3]}}, instr[3:0], 1'b0}; // TODO: (feel like there'll be a bug here) Phase 1 instructions specify "oooo is the offset in two's complement but right-shifted by 1 bit." So we should shift it left again?
+		dstReg_in = instr[11:8];
+		srcReg2_in = instr[7:4]; // add data in this register to immediate offset
+		offset_in = { {11{instr[3]}}, instr[3:0], 1'b0}; // TODO: (feel like there'll be a bug here) Phase 1 instructions specify "oooo is the offset in two's complement but right-shifted by 1 bit." So we should shift it left again?
 		
 		// Send base and offset to ALU
-		aluOp = 4'b0000; // tell ALU to do an ADD -- TODO: does it matter if this is before the ALU inputs are set?
+		aluOp_in = 4'b0000; // tell ALU to do an ADD -- TODO: does it matter if this is before the ALU inputs are set?
+
+		/**fix
+
 		aluIn1 = srcData2;
 		aluIn2 = offset;
 		address = aluOut;
 
+
 		dstData = memDataOut; // The output of memData module is the M[addr] value we want to store to a register
+		**/
 
-		dataEnable = 1'b1;    // Enable=1 and Wr=1 --> data_out=M[addr] 
-		dataWr = instr[12]; //LW = 4'b1000 SW = 4'b1001, so last bit of the instruction corresponds to the write data
+		
 
-		writeReg = ~instr[12]; // Write the data to the destination register, with opposite logic to dataWr
-		set_flags = 0;
+		dataEnable_in = 1'b1;    // Enable=1 and Wr=1 --> data_out=M[addr] 
+		dataWr_in = instr[12]; //LW = 4'b1000 SW = 4'b1001, so last bit of the instruction corresponds to the write data
+
+		writeReg_in = ~instr[12]; // Write the data to the destination register, with opposite logic to dataWr
+		set_flags_in = 1'b0;
 		//PC Logic
-		PC_Control_BR_B_En = 1'b0;
+		PC_Control_BR_B_En_in = 1'b0;
 		//pc = nextPC;
 	end 
 	/* SW */	
 	4'b1001 : 
 	begin
 		// Parse instruction
-		srcReg1 = instr[11:8];
-		srcReg2 = instr[7:4]; // add data in this register to immediate offset
-		offset = { {11{instr[3]}}, instr[3:0], 1'b0}; // TODO: (feel like there'll be a bug here) Phase 1 instructions specify "oooo is the offset in two's complement but right-shifted by 1 bit." So we should shift it left again?
+		srcReg1_in = instr[11:8];
+		srcReg2_in = instr[7:4]; // add data in this register to immediate offset
+		offset_in = { {11{instr[3]}}, instr[3:0], 1'b0}; // TODO: (feel like there'll be a bug here) Phase 1 instructions specify "oooo is the offset in two's complement but right-shifted by 1 bit." So we should shift it left again?
 		
 		// Send base and offset to ALU
-		aluOp = 4'b0000; // tell ALU to do an ADD -- TODO: does it matter if this is before the ALU inputs are set?
+		aluOp_in = 4'b0000; // tell ALU to do an ADD -- TODO: does it matter if this is before the ALU inputs are set?
+
+		/**fix
+
 		aluIn1 = srcData2;
 		aluIn2 = offset;
 		address = aluOut;
+
+		**/
 
 		memDataIn = srcData1; //only used for mem writes
 
@@ -211,21 +239,26 @@ casex(instr[15:12])
 	4'b101x : 
 	begin  
 		// Parse instruction
-		dstReg = instr[11:8];
-		srcReg1 = instr[11:8]; // add data in this register to immediate offset
-		writeReg = 1'b1;
-		immediate = instr[12] ? //if 13th bit = 0, then instr is LLB, otherwise it's LHB
+		dstReg_in = instr[11:8];
+		srcReg1_in = instr[11:8]; // add data in this register to immediate offset
+		writeReg_in = 1'b1;
+		immediate_in = instr[12] ? //if 13th bit = 0, then instr is LLB, otherwise it's LHB
 			{ instr[7:0], {8{1'b0}}} : //LHB
 			{ {8{1'b0}},  instr[7:0]}; //LLB
+
+		/** fix
+
 		dstData = instr[12] ? //if 13th bit = 0, then instr is LLB, otherwise it's LHB
 			(srcData1 & 16'h00FF) | immediate : //LHB
 			(srcData1 & 16'hFF00) | immediate;  //LLB
 
-		dataEnable = 1'b0;
+		**/
 
-		set_flags = 0;
+		dataEnable_in = 1'b0;
+
+		set_flags_in = 1'h0;
 		//PC Logic
-		PC_Control_BR_B_En = 1'b0;
+		PC_Control_BR_B_En_in = 1'b0;
 		//pc = nextPC;
 	end 
 
@@ -233,41 +266,52 @@ casex(instr[15:12])
 	4'b110x : 
 	begin  
 		//pc = nextPC;
-		PC_Control_BR_B_En = 1'b1;
-		ccc = instr[11:9];
+		PC_Control_BR_B_En_in = 1'b1;
+		//ccc = instr[11:9];
 
 		//Only used for B Instr's
-		pc_imm = instr[8:0];
+		pc_imm_in = instr[8:0];
 		
+		/** fix
+
 		//Only used for BR instr's
 		srcReg1 = instr[7:4];
 		
 		//Set based on B vs BR
 		BR_value =  instr[12] ? srcData1 : 16'hFFFF;// 0: instr is B so set FFFF , 1: instr is BR so set value in srcReg1
-
-		writeReg = 1'b0;
-		dataEnable = 1'b0;
+		
+		**/
+		writeReg_in = 1'b0;
+		dataEnable_in = 1'b0;
 	end
 
 	4'b1110 : 
 	begin  
-		dstReg = instr[11:8];
-		writeReg = 1'b1;
-		set_flags = 0;
+		dstReg_in = instr[11:8];
+		writeReg_in = 1'b1;
+		set_flags_in = 1'b0;
+		
+		/**fix
+		
 		dstData = pc_to_save;
-		//pc = nextPC;
-		PC_Control_BR_B_En = 1'b0;
-		dataEnable = 1'b0;
+		
+		**/
+		PC_Control_BR_B_En_in = 1'b0;
+		dataEnable_in = 1'b0;
 	end // PCS
 	4'b1111 :
 	begin 
+		/**fix
+
 		pc = pc;
-		writeReg = 1'b0; 
-		set_flags = 0;
-		PC_Control_BR_B_En = 1'b0;
-		dataEnable = 1'b0;    // Enable=1 and Wr=1 --> data_out=M[addr] 
-		dataWr = 1'b0;
-		hlt = 1;
+
+		**/
+		writeReg_in = 1'b0; 
+		set_flags_in = 1'b0;
+		PC_Control_BR_B_En_in = 1'b0;
+		dataEnable_in = 1'b0;    // Enable=1 and Wr=1 --> data_out=M[addr] 
+		dataWr_in = 1'b0;
+		hlt_in = 1'b1;
 		//nextPC = pc;
 		//PC_Control_BR_B_En = 1'b0;
 	end // HLT

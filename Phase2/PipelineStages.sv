@@ -1,6 +1,6 @@
 module PipelineStages(clk,rst_n,
-	srcReg1_in,srcReg2_in,dstReg_in, //Fetch
-	srcReg1,srcReg2,dstReg,writeReg,dstData,srcData1,srcData2, //Decode
+	srcReg1_in,srcReg2_in,dstReg_in,ccc_in,writeReg_in //Fetch
+	srcReg1,srcReg2,dstReg,writeReg,dstData,srcData1,srcData2,ccc //Decode
 	dstData_out,srcData1_out,srcData2_out //Execute
 	); 
 
@@ -11,11 +11,14 @@ input rst_n;
 
 //Fetch Input/Output
 input [15:0] srcReg1_in,srcReg2_in,dstReg_in;
+input [2:0] ccc_in;
 input writeReg_in;
 
 //Decode Input/Output
+
 input dstData,srcData1,srcData2
 output [15:0] srcReg1,srcReg2,dstReg;
+output [2:0] ccc;
 
 //Execute Input/Output
 output dstData_out,srcData1_out,srcData2_out
