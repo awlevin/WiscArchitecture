@@ -12,8 +12,9 @@ output [15:0] pc; //PC value over course of execution
 
 
 // Register Vars
-reg [3:0] srcReg1, srcReg2, dstReg;
-reg writeReg; // 1=write, 0=don't write
+//should outputs of pipeline be wires?
+reg [3:0] srcReg1,srcReg1_in, srcReg2,srcReg2_in, dstReg,dstReg_in;
+reg writeReg,writeReg_in; // 1=write, 0=don't write
 wire [15:0] srcData1, srcData2;
 reg [15:0] dstData;
 
@@ -27,11 +28,11 @@ reg [3:0] aluOp;
 reg [15:0] immediate;
 
 // Memory Vars
-wire [15:0] offset;
+wire [15:0] offset,offset_in;
 wire [15:0] address;
 wire [15:0] memDataIn;
 wire [15:0] memDataOut;
-reg dataWr, dataEnable;
+reg dataWr,dataWr_in, dataEnable,dataEnable_in;
 
 
 
@@ -41,12 +42,12 @@ wire [15:0] instr; // bits [15:12] are the opcode
 wire [8:0] pc_imm;
 wire [2:0] ccc,ccc_in;
 wire [15:0] BR_value; //value use for BR instructor
-reg PC_Control_BR_B_En;
+reg PC_Control_BR_B_En,PC_Control_BR_B_En_in;
 wire [15:0] nextPC; //Output PC of Control module
-reg set_flags;
+reg set_flags,set_flags_in;
 wire [2:0] flags; // FLAGS ==>> (Z, V, N)
 
-assign offset = { {11{instr[3]}}, instr[3:0], 1'b0}; 
+assign offset_in = { {11{instr[3]}}, instr[3:0], 1'b0}; 
 assign address = aluOut;
 
 // only used for mem writes (store word instructions). UNKNOWN what to default to if not used
@@ -68,7 +69,11 @@ assign pc_imm = instr[8:0];
 /////////////////////
 
 //Pipeline Module
-PipelineStages pipelineModule();
+PipelineStages pipelineModule(.clk,.rst_n,
+	.srcReg1_in(),.srcReg2_in(),.dstReg_in(),.ccc_in(),.writeReg_in() //Fetch
+	.srcReg1(),.srcReg2(),.dstReg(),.writeReg(),.srcData1_in(),.srcData2_in(),.ccc() //Decode
+	.dstData_out,.srcData1_out,.srcData2_out //Execute
+	); 
 
 // PC Module
 PC_Register pc_reg(.clk(clk), .rst(~rst_n), .next_pc(nextPC), .pc_out(pc));
@@ -179,7 +184,7 @@ casex(instr[15:12])
 		// Parse instruction
 		dstReg_in = instr[11:8];
 		srcReg2_in = instr[7:4]; // add data in this register to immediate offset
-		offset_in = { {11{instr[3]}}, instr[3:0], 1'b0}; // TODO: (feel like there'll be a bug here) Phase 1 instructions specify "oooo is the offset in two's complement but right-shifted by 1 bit." So we should shift it left again?
+		//offset_in = { {11{instr[3]}}, instr[3:0], 1'b0}; // TODO: (feel like there'll be a bug here) Phase 1 instructions specify "oooo is the offset in two's complement but right-shifted by 1 bit." So we should shift it left again?
 		
 		// Send base and offset to ALU
 		aluOp_in = 4'b0000; // tell ALU to do an ADD -- TODO: does it matter if this is before the ALU inputs are set?
@@ -211,7 +216,7 @@ casex(instr[15:12])
 		// Parse instruction
 		srcReg1_in = instr[11:8];
 		srcReg2_in = instr[7:4]; // add data in this register to immediate offset
-		offset_in = { {11{instr[3]}}, instr[3:0], 1'b0}; // TODO: (feel like there'll be a bug here) Phase 1 instructions specify "oooo is the offset in two's complement but right-shifted by 1 bit." So we should shift it left again?
+		//offset_in = { {11{instr[3]}}, instr[3:0], 1'b0}; // TODO: (feel like there'll be a bug here) Phase 1 instructions specify "oooo is the offset in two's complement but right-shifted by 1 bit." So we should shift it left again?
 		
 		// Send base and offset to ALU
 		aluOp_in = 4'b0000; // tell ALU to do an ADD -- TODO: does it matter if this is before the ALU inputs are set?
@@ -315,33 +320,7 @@ casex(instr[15:12])
 		//nextPC = pc;
 		//PC_Control_BR_B_En = 1'b0;
 	end // HLT
-	default
-	begin 
-/*
-		//wire [15:0] instr; // bits [15:12] are the opcode
 
-		// Register Vars
-		srcReg1    = 1'b0; 
-		srcReg2    = 1'b0;
-		dstReg     = 1'b0;
-		writeReg   = 1'b0;
-
-		// ALU Vars
-		aluIn1     = 16'h0000;
-		aluIn2	   = 16'h0000;
-		aluOp	   = 4'h0;
-
-		//LHB/LLB
-		immediate  = 16'h0000;
-
-		// Memory Vars
-		offset     = 16'h0000;
-		address    = 16'h0000;
-		memDataIn  = 16'h0000;
-		dataWr     = 1'b0;
-		dataEnable = 1'b0;
-*/
-	end 
 endcase 
 
 

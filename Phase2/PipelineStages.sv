@@ -1,6 +1,6 @@
 module PipelineStages(clk,rst_n,
 	srcReg1_in,srcReg2_in,dstReg_in,ccc_in,writeReg_in //Fetch
-	srcReg1,srcReg2,dstReg,writeReg,dstData,srcData1,srcData2,ccc //Decode
+	srcReg1,srcReg2,dstReg,writeReg,dstData,srcData1_in,srcData2_in,ccc //Decode
 	dstData_out,srcData1_out,srcData2_out //Execute
 	); 
 
@@ -16,7 +16,7 @@ input writeReg_in;
 
 //Decode Input/Output
 
-input dstData,srcData1,srcData2
+input srcData1_in,srcData2_in
 output [15:0] srcReg1,srcReg2,dstReg;
 output [2:0] ccc;
 
@@ -32,10 +32,10 @@ output dataEnable,dataWr;
 //     Modules	   //
 /////////////////////
 Fetch fetchModule(.clk(clk),.rst_n(rst_n),.srcReg1_in(srcReg1_in),.srcReg2_in(srcReg2_in),.dstReg_in(dstReg_in),.writeReg_in(writeReg_in));
-Decode fetchModule();
-Execute fetchModule();
-Memory fetchModule();
-Execute fetchModule();
+Decode decodeModule(.clk(clk),.rst_n(rst_n),.srcReg1_in(srcReg1_in),.srcReg2_in(srcReg2_in),.dstReg_in(dstReg_in),.writeReg_in(writeReg_in)); 
+Execute executeModule(.clk(clk),.rst_n(rst_n));
+Memory memoryModule(.clk(clk),.rst_n(rst_n));
+WriteBack writeBackModule(.clk(clk),.rst_n(rst_n));
 
 endmodule
 
