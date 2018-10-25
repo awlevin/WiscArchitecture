@@ -4,274 +4,97 @@ input clk, rst_n;
 output hlt;
 output [15:0] pc;
 
-/////////////////////
-// Local Variables //
-/////////////////////
+// PC Wires
+wire [15:0] next_pc, pc_out, pc_plus_2, address_to_add_to_pc_for_b_or_br, pc_with_branch;
+assign pc = pc_out;
 
-// Register Vars
-reg [3:0] srcReg1, srcReg2, dstReg;
-reg writeReg; // 1=write, 0=don't write
-wire [15:0] srcData1, srcData2;
-reg [15:0] dstData;
+// Instruction
+wire [15:0] instr;
 
-// ALU Vars
-reg [15:0] aluIn1, aluIn2;
-wire [15:0] aluOut;
-wire [2:0] aluFlags; // FLAGS ==>> (Z, V, N)
-reg [3:0] aluOp;
+// Control Signals
+wire PCSrc, RegWrite, MemToReg;
 
-//LHB/LLB
-reg [15:0] immediate;
-
-// Memory Vars
-wire [15:0] offset;
-wire [15:0] address;
-wire [15:0] memDataIn;
-wire [15:0] memDataOut;
-reg dataWr, dataEnable;
-
-
-
-// Control Instr's
-reg takeBranch;
-wire [15:0] instr; // bits [15:12] are the opcode
-wire [8:0] pc_imm;
+// Decode Wires
+wire [15:0] if_id_pc_add_2_out, dec_instr, write_data, srcData1, srcData2;
+wire [3:0] srcReg1, srcReg2, dstReg;
+wire [8:0] pc_control_immediate;
+wire [15:0] dec_ex_sign_ext_alu_offset_in, dec_ex_sign_ext_alu_offset_out;
 wire [2:0] ccc;
-wire [15:0] BR_value; //value use for BR instructor
-reg PC_Control_BR_B_En;
-wire [15:0] nextPC; //Output PC of Control module
-reg set_flags;
 wire [2:0] flags; // FLAGS ==>> (Z, V, N)
 
-assign offset = { {11{instr[3]}}, instr[3:0], 1'b0}; 
-assign address = aluOut;
+// Execute Wires
+wire id_ex_aluSrc_out;
+wire [3:0] id_ex_aluOp_out;
+wire id_ex_memRead_out, id_ex_memWrite_out, id_ex_regWrite_out, id_ex_memToReg_out;
+wire [15:0] id_ex_rd1_out, id_ex_rd2_out;
+wire [15:0] aluSrc1, aluSrc2;
 
-// only used for mem writes (store word instructions). UNKNOWN what to default to if not used
-assign memDataIn = srcData1;
+// Memory Wires
+wire ex_mem_memRead_out, ex_mem_memWrite_out, ex_mem_regWrite_out, ex_mem_memToReg_out;
+wire [15:0] ex_mem_alu_result_in, ex_mem_alu_result_out, ex_mem_rd1_out, mem_wb_read_memData_in;
 
-assign hlt = &instr[15:12]; // reductive AND (hlt should only be 1 if it's the halt instruction i.e. 0xFFFF)
+// Writeback Wires
+wire mem_wb_MemToReg_out, mem_wb_regWrite_out;
+wire [3:0] writeback_write_reg;
+wire [15:0] writeback_write_data, mem_wb_read_data_out, mem_wb_alu_result_out;
 
-assign ccc = instr[11:9];
+////////////////////////
+// PIPELINE REGISTERS //
+////////////////////////
+Fetch_Decode_Reg IF_ID_Reg(.clk(clk), .rst_n(rst_n), .pc_add_in(pc_plus_2), .pc_add_out(if_id_pc_add_2_out), .instr_in(instr), .instr_out(dec_instr));
+Decode_Execute_Reg ID_EX_Reg(.clk(clk), .rst_n(rst_n), .rd1_in(srcData1), .rd2_in(srcData2), .rd1_out(id_ex_rd1_out), .rd2_out(id_ex_rd2_out), .sign_ext_in(dec_ex_sign_ext_alu_offset_in), .sign_ext_out(dec_ex_sign_ext_alu_offset_out), .dstReg_in(id_ex_dstReg_in), .dstReg_out(id_ex_dstReg_out));
+Execute_Memory_Reg EX_MEM_Reg(.clk(clk), .rst_n(rst_n), .zero_in(), .zero_out(), .alu_result_in(ex_mem_alu_result_in), .alu_result_out(ex_mem_alu_result_out), .rd1_in(id_ex_rd1_out), .rd1_out(ex_mem_rd1_out), .dstReg_in(d_ex_dstReg_out), .dstReg_out(ex_mem_dstReg_out));
+Memory_WriteBack_Reg MEM_WB_Reg(.clk(clk), .rst_n(rst_n), .read_data_in(mem_wb_read_memData_in), .read_data_out(mem_wb_read_data_out), .alu_result_in(ex_mem_alu_result_out), .alu_result_out(mem_wb_alu_result_out), .dstReg_in(ex_mem_dstReg_out), .dstReg_out(mem_wb_dstReg_out));
 
-// Set based on B vs BR
-assign BR_value =  instr[12] ? srcData1 : 16'hFFFF;// 0: instr is B so set FFFF , 1: instr is BR so set value in srcReg1
+/////////////////////
+//     FETCH	   //
+/////////////////////
+PC_Register pc_register(.clk(clk), .rst(~rst_n), .next_pc(next_pc), .pc_out(pc_out));
+memory1c instruction_mem(.clk(clk), .rst(~rst_n), .data_out(instr), .data_in(16'h0000), .addr(pc_out), .enable(rst_n), .wr(1'b0));
+adder_16bit pc_add_2_module(.A(pc_out), .B(16'h0002), .Sub(1'b0), .Sum(pc_plus_2), .Zero(), .Ovfl(), .Sign());
 
-// Only used for B Instr's
-assign pc_imm = instr[8:0];
+assign next_pc = (PCSrc) ? pc_with_branch : pc_plus_2;
+
+/////////////////////
+//       ID	   //
+/////////////////////
+
+assign srcReg1 = dec_instr[7:4];
+assign srcReg2 = dec_instr[3:0];
+assign id_ex_dstReg_in = dec_instr[11:8];
+assign pc_control_immediate = instr[8:0];
+assign ccc = dec_instr[11:9];
+assign dec_ex_sign_ext_alu_offset_in =  { {11{dec_instr[3]}}, dec_instr[3:0], 1'b0};
+assign dec_pc_imm_shftd_sign_ext = {{6{dec_instr[8]}}, dec_instr[8:0], 1'b0};
+assign address_to_add_to_pc_for_b_or_br = (dec_instr[15:12] == 4'b1100) ? dec_pc_imm_shftd_sign_ext : (dec_instr[15:12] == 4'b1101) ? srcData1 : 4'bz; // 1100=branch, 1101=branch_register
+
+adder_16bit pc_add_imm_module(.A(if_id_pc_add_2_out), .B(address_to_add_to_pc_for_b_or_br), .Sub(1'b0), .Sum(pc_with_branch), .Zero(), .Ovfl(), .Sign());
+RegisterFile regFile(.clk(clk), .rst(~rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg2), .DstReg(mem_wb_dstReg_out), .WriteReg(mem_wb_regWrite_out), .DstData(writeback_write_data), .SrcData1(srcData1), .SrcData2(srcData2));
+
+EX_Register ID_EX_Ex(.clk(clk), .rst_n(rst_n), .ALUSrc_in(), .ALUOp_in(), .ALUSrc_out(id_ex_aluSrc_out), .ALUOp_out(id_ex_aluOp_out));
+M_Register ID_EX_Mem(.clk(clk), .rst_n(rst_n), .MemRead_in(), .MemWrite_in(), .MemRead_out(id_ex_memRead_out), .MemWrite_out(id_ex_memWrite_out));
+WB_Register ID_EX_WriteBack(.clk(clk), .rst_n(rst_n), .RegWrite_in(), .MemToReg_in(), .RegWrite_out(id_ex_regWrite_out), .MemToReg_out(id_ex_memToReg_out));
+
+/////////////////////
+//       EX	   //
+/////////////////////
+assign aluSrc1 = id_ex_rd2_out; // first ALU input is always read_data1 from register file
+assign aluSrc2 = (id_ex_aluSrc_out) ? dec_ex_sign_ext_alu_offset_in : id_ex_rd1_out;
+
+ALU(.Opcode(id_ex_aluOp_out), .Input1(aluSrc1), .Input2(aluSrc2), .Output(ex_mem_alu_result_in), .flagsOut());
+
+M_Register EX_MEM_Mem(.clk(clk), .rst_n(rst_n), .MemRead_in(id_ex_memRead_out), .MemWrite_in(id_ex_memWrite_out), .MemRead_out(ex_mem_memRead_out), .MemWrite_out(ex_mem_memWrite_out));
+WB_Register EX_MEM_WriteBack(.clk(clk), .rst_n(rst_n), .RegWrite_in(id_ex_regWrite_out), .MemToReg_in(id_ex_memToReg_out), .RegWrite_out(ex_mem_regWrite_out), .MemToReg_out(ex_mem_memToReg_out));
 
 
 /////////////////////
-//     Modules	   //
+//       MEM	   //
 /////////////////////
 
-// PC Module
-PC_Register pc_reg(.clk(clk), .rst(~rst_n), .next_pc(nextPC), .pc_out(pc));
+memory1c data_mem(.clk(clk), .rst(~rst_n), .data_out(mem_wb_read_memData_in), .data_in(ex_mem_rd1_out), .addr(ex_mem_alu_result_out), .enable(ex_mem_memRead_out), .wr(ex_mem_memWrite_out));
 
-// PC Control Module
-PC_control pc_control_module(.C(ccc), .I(pc_imm), .F(flags), .PC_in(pc), .BR(BR_value), .En(PC_Control_BR_B_En) , .PC_out(nextPC));
-
-// Memory Modules
-memory1c inst_mem(.clk(clk), .rst(~rst_n), .data_out(instr), .data_in(16'h0000), .addr(pc), .enable(rst_n), .wr(1'b0));
-memory1c data_mem(.clk(clk), .rst(~rst_n), .data_out(memDataOut), .data_in(memDataIn), .addr(address), .enable(dataEnable), .wr(dataWr));
-
-// Registers
-RegisterFile regFile(.clk(clk), .rst(~rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg2), .DstReg(dstReg), .WriteReg(writeReg), .DstData(dstData), .SrcData1(srcData1), .SrcData2(srcData2));
-
-// ALU Module
-ALU alu(.Opcode(aluOp), .Input1(aluIn1), .Input2(aluIn2), .Output(aluOut), .flagsOut(aluFlags));
-FlagsRegister flags_reg(.clk(clk), .rst(~rst_n), .set(set_flags), .flags_in(aluFlags), .flags_out(flags));
-
-always @(*)
-casex(instr[15:12])
-
-	/*ADD SUB XOR */	
-	4'b000x, 4'b0010 : //4'b00xx,4'b0111 : 
-	begin 
-		// Parse the instruction, set RegisterFile to read correctly
-		dstReg = instr[11:8]; 
-		srcReg1 = instr[7:4]; 
-		srcReg2 = instr[3:0];
-		// Set inputs for ALU based on RegisterFile outputs 
-		aluOp = instr[15:12];
-		aluIn1 = srcData1;
-		aluIn2 = srcData2;
-		dstData = aluOut;
-		writeReg = 1'b1;
-		set_flags = 1'b1;
-		PC_Control_BR_B_En = 1'b0;
-		dataEnable = 1'b0;
-		//pc = nextPC;
-	end
-	/* RED, PADDSB*/
-	4'b0011, 4'b0111 : //4'b00xx,4'b0111 : 
-	begin 
-		// Parse the instruction, set RegisterFile to read correctly
-		dstReg = instr[11:8]; 
-		srcReg1 = instr[7:4]; 
-		srcReg2 = instr[3:0];
-		// Set inputs for ALU based on RegisterFile outputs 
-		aluOp = instr[15:12];
-		aluIn1 = srcData1;
-		aluIn2 = srcData2;
-		dstData = aluOut;
-		writeReg = 1'b1;
-		set_flags = 1'b0;
-		PC_Control_BR_B_En = 1'b0;
-		dataEnable = 1'b0;
-		//pc = nextPC;
-	end
-
-	/*SLL SRA ROR */	
-	4'b0100,4'b0101,4'b0110 : 
-	begin 
-		// Parse the instruction, set RegisterFile to read correctly
-		dstReg = instr[11:8]; 
-		srcReg1 = instr[7:4]; 
-		// Set inputs for ALU based on RegisterFile outputs 
-		aluOp = instr[15:12];
-		aluIn1 = srcData1;
-		aluIn2 = instr[3:0];
-		dstData = aluOut;
-		writeReg = 1'b1; 
-		set_flags = 1'b1;
-
-		dataEnable = 1'b0;
-
-		//PC Logic
-		PC_Control_BR_B_En = 1'b0;
-		//pc = nextPC;
-	end
-
-	/* LW */	
-	4'b1000 : 
-	begin
-		// Parse instruction
-		dstReg = instr[11:8];
-		srcReg2 = instr[7:4]; // add data in this register to immediate offset
-
-		// Send base and offset to ALU
-		aluOp = 4'b0000; // tell ALU to do an ADD -- TODO: does it matter if this is before the ALU inputs are set?
-		aluIn1 = srcData2;
-		aluIn2 = offset;
-		
-
-		dstData = memDataOut; // The output of memData module is the M[addr] value we want to store to a register
-
-		dataEnable = 1'b1;    // Enable=1 and Wr=1 --> data_out=M[addr] 
-		dataWr = instr[12]; //LW = 4'b1000 SW = 4'b1001, so last bit of the instruction corresponds to the write data
-
-		writeReg = ~instr[12]; // Write the data to the destination register, with opposite logic to dataWr
-		set_flags = 1'b0;
-		//PC Logic
-		PC_Control_BR_B_En = 1'b0;
-		//pc = nextPC;
-	end 
-	/* SW */	
-	4'b1001 : 
-	begin
-		// Parse instruction
-		srcReg1 = instr[11:8];
-		srcReg2 = instr[7:4]; // add data in this register to immediate offset
-
-		// Send base and offset to ALU
-		aluOp = 4'b0000; // tell ALU to do an ADD -- TODO: does it matter if this is before the ALU inputs are set?
-		aluIn1 = srcData2;
-		aluIn2 = offset;
-
-		dataEnable = 1'b1;    // Enable=1 and Wr=1 --> data_out=M[addr] 
-		dataWr = instr[12]; //LW = 4'b1000 SW = 4'b1001, so last bit of the instruction corresponds to the write data
-
-		writeReg = ~instr[12]; // Write the data to the destination register, with opposite logic to dataWr
-	
-		//PC Logic
-		PC_Control_BR_B_En = 1'b0;
-		//pc = nextPC;
-	end 
-	/* LLB LHB */
-	4'b101x : 
-	begin  
-		// Parse instruction
-		dstReg = instr[11:8];
-		srcReg1 = instr[11:8]; // add data in this register to immediate offset
-		writeReg = 1'b1;
-		immediate = instr[12] ? //if 13th bit = 0, then instr is LLB, otherwise it's LHB
-			{ instr[7:0], {8{1'b0}}} : //LHB
-			{ {8{1'b0}},  instr[7:0]}; //LLB
-		dstData = instr[12] ? //if 13th bit = 0, then instr is LLB, otherwise it's LHB
-			(srcData1 & 16'h00FF) | immediate : //LHB
-			(srcData1 & 16'hFF00) | immediate;  //LLB
-
-		dataEnable = 1'b0;
-
-		set_flags = 1'b0;
-		//PC Logic
-		PC_Control_BR_B_En = 1'b0;
-		//pc = nextPC;
-	end 
-
-	/* B(1100) BR(1101) */
-	4'b110x : 
-	begin  
-		//pc = nextPC;
-		PC_Control_BR_B_En = 1'b1;
-		
-		//Only used for BR instr's
-		srcReg1 = instr[7:4];
-
-		writeReg = 1'b0;
-		dataEnable = 1'b0;
-	end
-
-	4'b1110 : // PCS
-	begin  
-		dstReg = instr[11:8];
-		writeReg = 1'b1;
-		set_flags = 1'b0;
-		dstData = nextPC;
-		//pc = nextPC;
-		PC_Control_BR_B_En = 1'b0;
-		dataEnable = 1'b0;
-	end 
-	4'b1111 : // HLT
-	begin 
-		//nextPC = pc;
-		writeReg = 1'b0; 
-		set_flags = 1'b0;
-		PC_Control_BR_B_En = 1'b0;
-		dataEnable = 1'b0;    // Enable=1 and Wr=1 --> data_out=M[addr] 
-		dataWr = 1'b0;
-		//nextPC = pc;
-		//PC_Control_BR_B_En = 1'b0;
-	end 
-	default
-	begin 
-/*
-		//wire [15:0] instr; // bits [15:12] are the opcode
-
-		// Register Vars
-		srcReg1    = 1'b0; 
-		srcReg2    = 1'b0;
-		dstReg     = 1'b0;
-		writeReg   = 1'b0;
-
-		// ALU Vars
-		aluIn1     = 16'h0000;
-		aluIn2	   = 16'h0000;
-		aluOp	   = 4'h0;
-
-		//LHB/LLB
-		immediate  = 16'h0000;
-
-		// Memory Vars
-		offset     = 16'h0000;
-		address    = 16'h0000;
-		memDataIn  = 16'h0000;
-		dataWr     = 1'b0;
-		dataEnable = 1'b0;
-*/
-	end 
-endcase 
-
+WB_Register MEM_WB_WriteBack(.clk(clk), .rst_n(rst_n), .RegWrite_in(ex_mem_regWrite_out), .MemToReg_in(ex_mem_memToReg_out), .RegWrite_out(mem_wb_regWrite_out), .MemToReg_out(mem_wb_memToReg_out));
+assign writeback_write_data = (mem_wb_MemToReg_out) ? mem_wb_read_data_out : mem_wb_alu_result_out;
 
 endmodule
 
