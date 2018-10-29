@@ -78,9 +78,9 @@ assign id_ex_data2_in = (dec_instr[15:12] == 4'b1010) ? {8'b0, dec_instr[7:0]} :
 
 adder_16bit pc_add_imm_module(.A(if_id_pc_add_2_out), .B(address_to_add_to_pc_for_b_or_br), .Sub(1'b0), .Sum(pc_with_branch), .Zero(), .Ovfl(), .Sign());
 RegisterFile regFile(.clk(clk), .rst(~rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg2), .DstReg(mem_wb_dstReg_out), .WriteReg(mem_wb_regWrite_out), .DstData(writeback_write_data), .SrcData1(srcData1), .SrcData2(srcData2));
-//EX_Register ID_EX_Ex(.clk(clk), .rst_n(rst_n), .ALUSrc_in(), .ALUOp_in(), .ALUSrc_out(id_ex_aluSrc_out), .ALUOp_out(id_ex_aluOp_out));
-//M_Register ID_EX_Mem(.clk(clk), .rst_n(rst_n), .MemRead_in(), .MemWrite_in(), .MemRead_out(id_ex_memRead_out), .MemWrite_out(id_ex_memWrite_out));
-//WB_Register ID_EX_WriteBack(.clk(clk), .rst_n(rst_n), .RegWrite_in(), .MemToReg_in(), .RegWrite_out(id_ex_regWrite_out), .MemToReg_out(id_ex_memToReg_out));
+EX_Register ID_EX_Ex(.clk(clk), .rst_n(rst_n), .ALUSrc_in(), .ALUOp_in(), .ALUSrc_out(id_ex_aluSrc_out), .ALUOp_out(id_ex_aluOp_out));
+M_Register ID_EX_Mem(.clk(clk), .rst_n(rst_n), .MemRead_in(), .MemWrite_in(), .MemRead_out(id_ex_memRead_out), .MemWrite_out(id_ex_memWrite_out));
+WB_Register ID_EX_WriteBack(.clk(clk), .rst_n(rst_n), .RegWrite_in(), .MemToReg_in(), .RegWrite_out(id_ex_regWrite_out), .MemToReg_out(id_ex_memToReg_out));
 
 /////////////////////
 //       EX	   //
@@ -90,8 +90,8 @@ assign aluSrc2 = (id_ex_aluSrc_out) ? dec_ex_sign_ext_alu_offset_in : id_ex_rd1_
 
 ALU alu_module(.Opcode(id_ex_aluOp_out), .Input1(aluSrc1), .Input2(aluSrc2), .Output(ex_mem_alu_result_in), .flagsOut());
 
-//M_Register EX_MEM_Mem(.clk(clk), .rst_n(rst_n), .MemRead_in(id_ex_memRead_out), .MemWrite_in(id_ex_memWrite_out), .MemRead_out(ex_mem_memRead_out), .MemWrite_out(ex_mem_memWrite_out));
-//WB_Register EX_MEM_WriteBack(.clk(clk), .rst_n(rst_n), .RegWrite_in(id_ex_regWrite_out), .MemToReg_in(id_ex_memToReg_out), .RegWrite_out(ex_mem_regWrite_out), .MemToReg_out(ex_mem_memToReg_out));
+M_Register EX_MEM_Mem(.clk(clk), .rst_n(rst_n), .MemRead_in(id_ex_memRead_out), .MemWrite_in(id_ex_memWrite_out), .MemRead_out(ex_mem_memRead_out), .MemWrite_out(ex_mem_memWrite_out));
+WB_Register EX_MEM_WriteBack(.clk(clk), .rst_n(rst_n), .RegWrite_in(id_ex_regWrite_out), .MemToReg_in(id_ex_memToReg_out), .RegWrite_out(ex_mem_regWrite_out), .MemToReg_out(ex_mem_memToReg_out));
 
 
 /////////////////////
@@ -100,7 +100,7 @@ ALU alu_module(.Opcode(id_ex_aluOp_out), .Input1(aluSrc1), .Input2(aluSrc2), .Ou
 
 memory1c data_mem(.clk(clk), .rst(~rst_n), .data_out(mem_wb_read_memData_in), .data_in(ex_mem_rd1_out), .addr(ex_mem_alu_result_out), .enable(ex_mem_memRead_out), .wr(ex_mem_memWrite_out));
 
-//WB_Register MEM_WB_WriteBack(.clk(clk), .rst_n(rst_n), .RegWrite_in(ex_mem_regWrite_out), .MemToReg_in(ex_mem_memToReg_out), .RegWrite_out(mem_wb_regWrite_out), .MemToReg_out(mem_wb_memToReg_out));
+WB_Register MEM_WB_WriteBack(.clk(clk), .rst_n(rst_n), .RegWrite_in(ex_mem_regWrite_out), .MemToReg_in(ex_mem_memToReg_out), .RegWrite_out(mem_wb_regWrite_out), .MemToReg_out(mem_wb_memToReg_out));
 assign writeback_write_data = (mem_wb_MemToReg_out) ? mem_wb_read_data_out : mem_wb_alu_result_out;
 
 endmodule
