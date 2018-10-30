@@ -158,10 +158,10 @@ module cpu_master_tb();
 
   assign Inst = DUT.instr;//DUT.fetch0.instr;
    
-  assign RegWrite = DUT.RegWrite;
+  assign RegWrite = DUT.mem_wb_regWrite_out;
   // Is memory being read, one bit signal (1 means yes, 0 means no)
    
-  assign WriteRegister = DUT.mem_wb_regWrite_out;//DUT.decode0.regFile0.writeregsel;
+  assign WriteRegister = DUT.mem_wb_dstReg_out;//Dst reg??
   // The name of the register being written to. (4 bit signal)
 
   assign WriteData = DUT.writeback_write_data;
@@ -176,7 +176,7 @@ module cpu_master_tb();
   assign MemAddress = DUT.ex_mem_alu_result_out;
   // Address to access memory with (for both reads and writes to memory, 16 bits)
    
-  assign MemData = DUT.ex_mem_rd1_out;
+  assign MemData = DUT.ex_mem_dataIn_in;
   // Data to be written to memory for memory writes (16 bits)
    
 //  assign Halt = DUT.memory0.halt; //You won't need this because it's part of the main cpu interface

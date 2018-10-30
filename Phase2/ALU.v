@@ -35,13 +35,16 @@ case(Opcode)
 	4'b0111 : begin Output = paddsbResult; flagsOut = 3'bxxx; end
 	4'b1000 : begin Output = adderResult; flagsOut = 3'bxxx; end
 	4'b1001 : begin Output = adderResult; flagsOut = 3'bxxx; end
-	4'b1010 : begin Output = 16'bxxxxxxxxxxxxxxxx; flagsOut = 3'bxxx; end
-	4'b1011 : begin Output = 16'bxxxxxxxxxxxxxxxx; flagsOut = 3'bxxx; end
-	4'b1100 : begin Output = 16'bxxxxxxxxxxxxxxxx; flagsOut = 3'bxxx; end
-	4'b1101 : begin Output = 16'bxxxxxxxxxxxxxxxx; flagsOut = 3'bxxx; end
-	4'b1110 : begin Output = 16'bxxxxxxxxxxxxxxxx; flagsOut = 3'bxxx; end
-	4'b1111 : begin Output = 16'bxxxxxxxxxxxxxxxx; flagsOut = 3'bxxx; end
-	default : begin Output = 16'bxxxxxxxxxxxxxxxx; flagsOut = 3'bxxx; end
+
+	//with pipeline, a signal must be outputted, even if it won't be used
+	//All 1's is a random choice as none of these results should be used
+	4'b1010 : begin Output = 16'hFFFF; flagsOut = 3'b111; end
+	4'b1011 : begin Output = 16'hFFFF; flagsOut = 3'b111; end
+	4'b1100 : begin Output = 16'hFFFF; flagsOut = 3'b111; end
+	4'b1101 : begin Output = 16'hFFFF; flagsOut = 3'b111; end
+	4'b1110 : begin Output = 16'hFFFF; flagsOut = 3'b111; end
+	4'b1111 : begin Output = 16'hFFFF; flagsOut = 3'b111; end
+	default : begin Output = 16'hFFFF; flagsOut = 3'b111; end
 endcase
 
 endmodule
