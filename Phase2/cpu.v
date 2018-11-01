@@ -134,7 +134,7 @@ assign ex_mem_dataIn_in = id_ex_rd2_out; //as per zybooks diagram, value of reg2
 
 //TODO is memRead ever used? Also, since enable is a thing, if we used original signal(ex_mem_memWrite_out), will mem unit still work correctly?
 
-assign memEnable = hlt & (ex_mem_memRead_out | ex_mem_memRead_out); // instr must be a read or write (& not a halt)
+assign memEnable = ~hlt & (ex_mem_memRead_out | ex_mem_memWrite_out); // instr must be a read or write (& not a halt)
 
 memory1c data_mem(.clk(clk), .rst(~rst_n), .data_out(mem_wb_read_memData_in), .data_in(ex_mem_dataIn_out), .addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
 
