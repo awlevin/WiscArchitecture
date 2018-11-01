@@ -25,8 +25,8 @@ ADD R1,R1,R3     //R1 < 1 + 3 = 0x0004
 ADD R2,R2,R3     //R2 < -32768 + 3 = 0x8003
 SUB R3,R4,R6     //R3 < -256 - 22136 = 0xA888
 XOR R5,R5,R4     //R5 < 0x1234 ^ 0xFF00 = 0xED34
-RED R7,R6,R1     //R7 < (0x56 + 0x00) + (0x78 + 0x04) = 0xFFD2
-SLL R4,R4,0x4    //R4 < 0xFF00 << 4 = 0xF000
-SRA R2,R2,0xE    //R2 < 0x8003 >>> 14 = 0xFFFE
-ROR R2,R5,0x8    //R2 < 0xED34 ROR 8 = 0x34ED
-PADDSB R1, R1,R5 //R1 < {(0 + E) , (0 + D) , (0 + 3), (4 + 4) } 0xED37
+RED R7,R6,R1     //R7 < (0x56 + 0x00) + (0x78 + 0x04) = 0x00D2
+SLL R4,R4,4      //R4 < 0xFF00 << 4 = 0xF000
+SRA R2,R2,E      //R2 < 0x8003 >>> 14 = 0xFFFE
+ROR R2,R5,8      //R2 < 0xED34 ROR 8 = 0x34ED
+PADDSB R1,R1,R5  //R1 < {(0 + E) , (0 + D) , (0 + 3), (4 + 4) } 0xED37
