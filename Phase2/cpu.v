@@ -21,6 +21,7 @@ wire [8:0] pc_control_immediate;
 wire [15:0] dec_ex_sign_ext_alu_offset_in, dec_ex_sign_ext_alu_offset_out, id_ex_data1_in, id_ex_data2_in;
 wire [2:0] ccc;
 wire [2:0] flags; // FLAGS ==>> (Z, V, N)
+wire is_LLB_or_LHB;
 wire id_ex_regWrite_in,id_ex_memToReg_in,id_ex_memRead_in,id_ex_memWrite_in,id_ex_aluSrc_in;
 
 // Execute Wires
@@ -69,8 +70,9 @@ assign next_pc_or_halt = hlt ? pc_out : next_pc;
 assign hlt = &dec_instr[15:12];
 
 //ALU
+assign is_LLB_or_LHB = (dec_instr[15:13]==3'b101);
 assign id_ex_dstReg_in = dec_instr[11:8];
-assign srcReg1 =  dec_instr[7:4];
+assign srcReg1 = is_LLB_or_LHB ? dec_instr[11:8] : dec_instr[7:4];
 assign srcReg2 = id_ex_memWrite_in ? dec_instr[11:8] : dec_instr[3:0]; // if instr is SW, as per diagram, srcReg2's value will be stored
 
 assign id_ex_aluSrc_in = dec_instr[11]; //  0: ALU instr's [0,7] 1: Memory & Control instr [8,15]
@@ -92,6 +94,8 @@ assign id_ex_data1_in = (dec_instr[15:12] == 4'b1010) ? (srcData1 & 16'hFF00) :	
 
 assign id_ex_data2_in = (dec_instr[15:12] == 4'b1010) ? {8'b0, dec_instr[7:0]} :		// Use byte from instruction for LLB
 			(dec_instr[15:12] == 4'b1011) ? {dec_instr[7:0], 8'b0} :		// Use byte from instruction for LHB
+			(dec_instr[15:13] == 3'b010) | (dec_instr[15:12] == 4'b0110) ? 
+							{12'b0, dec_instr[3:0]} :		// Use 4-bit value for SLL, SRA, ROR
 			srcData2;								// Otherwise, use register file data unmodified
 
 assign id_ex_memRead_in = dec_instr[15:12] == 4'h8; //LW
@@ -102,14 +106,15 @@ assign id_ex_memWrite_in = dec_instr[15:12] == 4'h9; //SW
 //TODO SHOULD LHB/LLB be here?
 // If a reg value must be updated
 assign id_ex_regWrite_in =  ~dec_instr[15] | //ALU Op 
-				id_ex_memRead_in;//LW
+				id_ex_memRead_in|//LW
+				is_LLB_or_LHB; //LLB or LHB
 //Mux selector if value should come from memory or alu result		
 assign id_ex_memToReg_in = id_ex_memRead_in; // 0:Alu op , 1:SW(only instr to write to reg from memory)
 
 assign regWrite_or_halt = hlt ? 1'b0 : ex_mem_memWrite_out; // if hlt, do not write to regs
 					
 adder_16bit pc_add_imm_module(.A(if_id_pc_add_2_out), .B(address_to_add_to_pc_for_b_or_br), .Sub(1'b0), .Sum(pc_with_branch), .Zero(), .Ovfl(), .Sign());
-RegisterFile regFile(.clk(clk), .rst(~rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg2), .DstReg(mem_wb_dstReg_out), .WriteReg(regWrite), .DstData(writeback_write_data), .SrcData1(srcData1), .SrcData2(srcData2));
+RegisterFile regFile(.clk(clk), .rst(~rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg2), .DstReg(mem_wb_dstReg_out), .WriteReg(mem_wb_regWrite_out), .DstData(writeback_write_data), .SrcData1(srcData1), .SrcData2(srcData2));
 
 EX_Register ID_EX_Ex(.clk(clk), .rst(~rst_n), .ALUSrc_in(id_ex_aluSrc_in), .ALUOp_in(id_ex_aluOp_in), .ALUSrc_out(id_ex_aluSrc_out), .ALUOp_out(id_ex_aluOp_out));
 M_Register ID_EX_Mem(.clk(clk), .rst(~rst_n), .MemRead_in(id_ex_memRead_in), .MemWrite_in(id_ex_memWrite_in), .MemRead_out(id_ex_memRead_out), .MemWrite_out(id_ex_memWrite_out));
@@ -119,7 +124,7 @@ WB_Register ID_EX_WriteBack(.clk(clk), .rst(~rst_n), .RegWrite_in(id_ex_regWrite
 //       EX	   //
 /////////////////////
 assign aluSrc1 = id_ex_rd1_out; // first ALU input is always read_data1 from register file
-assign aluSrc2 = (id_ex_aluSrc_out) ? dec_ex_sign_ext_alu_offset_in : id_ex_rd1_out;
+assign aluSrc2 = (id_ex_aluSrc_out) ? dec_ex_sign_ext_alu_offset_in : id_ex_rd2_out;
 
 ALU alu_module(.Opcode(id_ex_aluOp_out), .Input1(aluSrc1), .Input2(aluSrc2), .Output(ex_mem_alu_result_in), .flagsOut(flags));
 

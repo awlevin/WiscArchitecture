@@ -11,7 +11,7 @@ output reg [15:0] Output;
 output reg [2:0] flagsOut;
 
 wire shifterZFlag, xorZFlag, adderZFlag, adderVFlag, adderNFlag;
-wire [15:0] shifterResult, xorResult, adderResult, paddsbResult, redResult;
+wire [15:0] shifterResult, xorResult, adderResult, paddsbResult, redResult, llb_lhb_Result;
 
 shift_rotate shiftOp(.Shift_Out(shifterResult), .Shift_In(Input1), .Shift_Val(Input2[3:0]), .Mode(Opcode[1:0]), .Zero(shifterZFlag));
 
@@ -22,6 +22,8 @@ adder_16bit addsubOp(.A(Input1), .B(Input2), .Sub(Opcode[0] & ~Opcode[3]), .Sum(
 paddsb_16bit paddsbOp(.Sum(paddsbResult), .A(Input1), .B(Input2));
 
 red_16bit redOp(.Sum(redResult), .A(Input1), .B(Input2));
+
+assign llb_lhb_Result = Input1 | Input2;
 
 always @(*)
 case(Opcode)
@@ -34,12 +36,11 @@ case(Opcode)
 	4'b0110 : begin Output = shifterResult; flagsOut = {shifterZFlag, 2'b00}; end
 	4'b0111 : begin Output = paddsbResult; flagsOut = 3'bxxx; end
 	4'b1000 : begin Output = adderResult; flagsOut = 3'bxxx; end
-	4'b1001 : begin Output = adderResult; flagsOut = 3'bxxx; end
-
+	4'b1001 : begin Output = adderResult; flagsOut = 3'bxxx; end	
+	4'b1010 : begin Output = llb_lhb_Result; flagsOut = 3'b111; end
+	4'b1011 : begin Output = llb_lhb_Result; flagsOut = 3'b111; end
 	//with pipeline, a signal must be outputted, even if it won't be used
 	//All 1's is a random choice as none of these results should be used
-	4'b1010 : begin Output = 16'hFFFF; flagsOut = 3'b111; end
-	4'b1011 : begin Output = 16'hFFFF; flagsOut = 3'b111; end
 	4'b1100 : begin Output = 16'hFFFF; flagsOut = 3'b111; end
 	4'b1101 : begin Output = 16'hFFFF; flagsOut = 3'b111; end
 	4'b1110 : begin Output = 16'hFFFF; flagsOut = 3'b111; end
