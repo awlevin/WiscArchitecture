@@ -27,6 +27,33 @@ SUB R3,R4,R6     //R3 < -256 - 22136 = 0xA888
 XOR R5,R5,R4     //R5 < 0x1234 ^ 0xFF00 = 0xED34
 RED R7,R6,R1     //R7 < (0x56 + 0x00) + (0x78 + 0x04) = 0x00D2
 SLL R4,R4,4      //R4 < 0xFF00 << 4 = 0xF000
-SRA R2,R2,E      //R2 < 0x8003 >>> 14 = 0xFFFE
+SRA R2,R2,14      //R2 < 0x8003 >>> 14 = 0xFFFE
 ROR R2,R5,8      //R2 < 0xED34 ROR 8 = 0x34ED
 PADDSB R1,R1,R5  //R1 < {(0 + E) , (0 + D) , (0 + 3), (4 + 4) } 0xED37
+
+#Memory test
+LLB R5, 0xfc
+LHB R5, 0xef	 //R5 = 0xeffc
+ADD R0,R0,R0	 //Used as NOPs, don't trust R0's value
+ADD R0,R0,R0
+ADD R0,R0,R0
+ADD R0,R0,R0
+SW R2, R4, -4	 //Memory[0xEFFC] = 0x34ED
+SW R7, R4, 0	 //Memory[0xF000] = 0x00D2
+SW R1, R5, 8	 //Memory[0xF004] = 0xED37
+SW R5, R5, 12	 //Memory[0xF008] = 0xEFFC
+ADD R0,R0,R0	 //Used as NOPs, don't trust R0's value
+ADD R0,R0,R0
+ADD R0,R0,R0
+ADD R0,R0,R0
+LW R3, R5, 12	 //R3 = Memory[0xF008] = 0xEFFC
+ADD R0,R0,R0	 //Used as NOPs, don't trust R0's value
+ADD R0,R0,R0
+ADD R0,R0,R0
+ADD R0,R0,R0
+LW R2, R3, 0	 //R2 = Memory[0xEFFC] = 0x34ED
+LW R1, R3, 4	 //R1 = Memory[0xF000] = 0x00D2
+LW R4, R3, 8	 //R4 = Memory[0xF004] = 0xED37
+HLT
+
+# R0 = ?, R1 = 0x00D2, R2 = 0x34ED, R3 = 0xEFFC, R4 = 0xED37, R5 = 0xEFFC, R6 = 0x5678, R7 = 0x00D2
