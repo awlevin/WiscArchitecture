@@ -75,7 +75,7 @@ assign id_ex_dstReg_in = dec_instr[11:8];
 assign srcReg1 = is_LLB_or_LHB ? dec_instr[11:8] : dec_instr[7:4];
 assign srcReg2 = id_ex_memWrite_in ? dec_instr[11:8] : dec_instr[3:0]; // if instr is SW, as per diagram, srcReg2's value will be stored
 
-assign id_ex_aluSrc_in = dec_instr[11]; //  0: ALU instr's [0,7] 1: Memory & Control instr [8,15]
+assign id_ex_aluSrc_in = dec_instr[15] & ~is_LLB_or_LHB; //  0: ALU instr's [0,7] 1: Memory & Control instr [8,15] except for LLB and LHB
 assign id_ex_aluOp_in = (id_ex_memRead_in | id_ex_memWrite_in) ? 4'h0 : dec_instr[15:12]; // If instr is SW or LW, tell ALU to do an Add, otherwise give the instr[15:12] aka the opcode
 
 //Control logic
@@ -124,7 +124,7 @@ WB_Register ID_EX_WriteBack(.clk(clk), .rst(~rst_n), .RegWrite_in(id_ex_regWrite
 //       EX	   //
 /////////////////////
 assign aluSrc1 = id_ex_rd1_out; // first ALU input is always read_data1 from register file
-assign aluSrc2 = (id_ex_aluSrc_out) ? dec_ex_sign_ext_alu_offset_in : id_ex_rd2_out;
+assign aluSrc2 = (id_ex_aluSrc_out) ? dec_ex_sign_ext_alu_offset_out : id_ex_rd2_out;
 
 ALU alu_module(.Opcode(id_ex_aluOp_out), .Input1(aluSrc1), .Input2(aluSrc2), .Output(ex_mem_alu_result_in), .flagsOut(flags));
 

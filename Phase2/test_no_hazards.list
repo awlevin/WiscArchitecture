@@ -31,29 +31,40 @@ SRA R2,R2,14      //R2 < 0x8003 >>> 14 = 0xFFFE
 ROR R2,R5,8      //R2 < 0xED34 ROR 8 = 0x34ED
 PADDSB R1,R1,R5  //R1 < {(0 + E) , (0 + D) , (0 + 3), (4 + 4) } 0xED37
 
-#Memory test
+#Memory test (Reminder: address offsets are sign extended and shifted left by 1)
 LLB R5, 0xfc
+ADD R0,R0,R0	 //Used as NOPs, don't trust R0's value
+ADD R0,R0,R0
+ADD R0,R0,R0
+ADD R0,R0,R0
 LHB R5, 0xef	 //R5 = 0xeffc
 ADD R0,R0,R0	 //Used as NOPs, don't trust R0's value
 ADD R0,R0,R0
 ADD R0,R0,R0
 ADD R0,R0,R0
-SW R2, R4, -4	 //Memory[0xEFFC] = 0x34ED
+SW R2, R4, -2	 //Memory[0xEFFC] = 0x34ED (offset = -2 << 1 = -4)
 SW R7, R4, 0	 //Memory[0xF000] = 0x00D2
-SW R1, R5, 8	 //Memory[0xF004] = 0xED37
-SW R5, R5, 12	 //Memory[0xF008] = 0xEFFC
+SW R1, R5, 4	 //Memory[0xF004] = 0xED37
+SW R5, R5, 6	 //Memory[0xF008] = 0xEFFC
 ADD R0,R0,R0	 //Used as NOPs, don't trust R0's value
 ADD R0,R0,R0
 ADD R0,R0,R0
 ADD R0,R0,R0
-LW R3, R5, 12	 //R3 = Memory[0xF008] = 0xEFFC
+LW R3, R5, 6	 //R3 = Memory[0xF008] = 0xEFFC
 ADD R0,R0,R0	 //Used as NOPs, don't trust R0's value
 ADD R0,R0,R0
 ADD R0,R0,R0
 ADD R0,R0,R0
 LW R2, R3, 0	 //R2 = Memory[0xEFFC] = 0x34ED
-LW R1, R3, 4	 //R1 = Memory[0xF000] = 0x00D2
-LW R4, R3, 8	 //R4 = Memory[0xF004] = 0xED37
-HLT
+LW R1, R3, 2	 //R1 = Memory[0xF000] = 0x00D2
+LW R4, R3, 4	 //R4 = Memory[0xF004] = 0xED37
+ADD R0,R0,R0	 //Used as NOPs, don't trust R0's value
+ADD R0,R0,R0
+ADD R0,R0,R0
+ADD R0,R0,R0
+ADD R0,R0,R0	 //Used as NOPs, don't trust R0's value
+ADD R0,R0,R0
+ADD R0,R0,R0
+ADD R0,R0,R0
 
 # R0 = ?, R1 = 0x00D2, R2 = 0x34ED, R3 = 0xEFFC, R4 = 0xED37, R5 = 0xEFFC, R6 = 0x5678, R7 = 0x00D2
