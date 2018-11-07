@@ -22,8 +22,8 @@ wire [15:0] dec_ex_sign_ext_alu_offset_in, dec_ex_sign_ext_alu_offset_out, id_ex
 wire [2:0] ccc;
 wire [2:0] flags; // FLAGS ==>> (Z, V, N)
 wire is_LLB_or_LHB;
-wire id_ex_regWrite_in,id_ex_memToReg_in,id_ex_memRead_in,id_ex_memWrite_in,id_ex_aluSrc_in;
-wire [3:0] id_ex_srcReg1_in,id_ex_srcReg1_out,id_ex_srcReg2_in,id_ex_srcReg2_out;
+wire id_ex_regWrite_in,id_ex_memToReg_in,id_ex_memRead_in,id_ex_memWrite_in,id_ex_aluSrc_in,id_ex_is_LLB_or_LHB_out;
+wire [3:0] id_ex_srcReg1_out, id_ex_srcReg2_out;
 
 // Execute Wires
 wire id_ex_aluSrc_out;
@@ -32,24 +32,34 @@ wire id_ex_memRead_out, id_ex_memWrite_out, id_ex_regWrite_out, id_ex_memToReg_o
 wire [15:0] id_ex_rd1_out, id_ex_rd2_out;
 wire [15:0] aluSrc1, aluSrc2;
 wire [3:0] ex_mem_srcReg1_out,ex_mem_srcReg2_out;
+wire [15:0] aluSrc1_ex_to_ex_fwd,aluSrc1_mem_to_ex_fwd;
+wire [15:0] aluSrc2_no_fwd,aluSrc2_ex_to_ex_fwd,aluSrc2_mem_to_ex_fwd;
 
 // Memory Wires
 wire ex_mem_memRead_out, ex_mem_memWrite_out, ex_mem_regWrite_out, ex_mem_memToReg_out;
 wire [15:0] ex_mem_alu_result_in, ex_mem_alu_result_out, ex_mem_dataIn_out, mem_wb_read_memData_in,ex_mem_dataIn_in;
 wire [15:0] writeback_write_data, mem_wb_read_data_out, mem_wb_alu_result_out;
 wire [3:0] mem_wb_dstReg_out;
-wire mem_wb_memToReg_out,memEnable;
+wire mem_wb_memToReg_out, memEnable;
+wire [15:0] data_mem_data_in;
 
 //If an instruction is a halt, we must stop writing to registers, stop incrementing the pc, stop reading and writing to memory
 //Halt wires
 wire [15:0] next_pc_or_halt;
 wire regWrite_or_halt;
 
+
 ////////////////////////
+//  FORWARDING LOGIC  //
+////////////////////////
+wire fwd_ex_to_ex_srcReg1, fwd_ex_to_ex_srcReg2, fwd_mem_to_ex_srcReg1, fwd_mem_to_ex_srcReg2, fwd_mem_to_mem;
+ForwardingUnit fwd_unit(.ex_mem_dstReg(ex_mem_dstReg_out), .id_ex_srcReg1(id_ex_srcReg1_out), .id_ex_srcReg2(id_ex_srcReg2_out), .ex_mem_regWrite(ex_mem_regWrite_out), .mem_wb_dstReg(mem_wb_dstReg_out), .mem_wb_regWrite(mem_wb_regWrite_out), .ex_mem_memWrite(ex_mem_memWrite_out), .fwd_ex_to_ex_srcReg1(fwd_ex_to_ex_srcReg1), .fwd_ex_to_ex_srcReg2(fwd_ex_to_ex_srcReg2), .fwd_mem_to_ex_srcReg1(fwd_mem_to_ex_srcReg1), .fwd_mem_to_ex_srcReg2(fwd_mem_to_ex_srcReg2), .fwd_mem_to_mem(fwd_mem_to_mem));
+
+////////////////////////aluSrc1_mem_to_ex_fwd
 // PIPELINE REGISTERS //
 ////////////////////////
 Fetch_Decode_Reg IF_ID_Reg(.clk(clk), .rst_n(rst_n), .pc_add_in(pc_plus_2), .pc_add_out(if_id_pc_add_2_out), .instr_in(instr), .instr_out(dec_instr));
-Decode_Execute_Reg ID_EX_Reg(.clk(clk), .rst_n(rst_n), .rd1_in(id_ex_data1_in), .rd2_in(id_ex_data2_in), .rd1_out(id_ex_rd1_out), .rd2_out(id_ex_rd2_out), .sign_ext_in(dec_ex_sign_ext_alu_offset_in), .sign_ext_out(dec_ex_sign_ext_alu_offset_out), .dstReg_in(id_ex_dstReg_in), .dstReg_out(id_ex_dstReg_out),.srcReg1_in(id_ex_srcReg1_in),.srcReg1_out(id_ex_srcReg1_out),.srcReg2_in(id_ex_srcReg2_in),.srcReg2_out(id_ex_srcReg2_out));
+Decode_Execute_Reg ID_EX_Reg(.clk(clk), .rst_n(rst_n), .rd1_in(id_ex_data1_in), .rd2_in(id_ex_data2_in), .rd1_out(id_ex_rd1_out), .rd2_out(id_ex_rd2_out), .sign_ext_in(dec_ex_sign_ext_alu_offset_in), .sign_ext_out(dec_ex_sign_ext_alu_offset_out), .dstReg_in(id_ex_dstReg_in), .dstReg_out(id_ex_dstReg_out), .srcReg1_in(srcReg1), .srcReg1_out(id_ex_srcReg1_out),.srcReg2_in(srcReg2), .srcReg2_out(id_ex_srcReg2_out),.is_LLB_or_LHB_in(is_LLB_or_LHB),.is_LLB_or_LHB_out(id_ex_is_LLB_or_LHB_out));
 Execute_Memory_Reg EX_MEM_Reg(.clk(clk), .rst_n(rst_n), .zero_in(), .zero_out(), .alu_result_in(ex_mem_alu_result_in), .alu_result_out(ex_mem_alu_result_out), .dataIn_in(ex_mem_dataIn_in), .dataIn_out(ex_mem_dataIn_out), .dstReg_in(id_ex_dstReg_out), .dstReg_out(ex_mem_dstReg_out),.srcReg1_in(id_ex_srcReg1_out),.srcReg1_out(ex_mem_srcReg1_out),.srcReg2_in(id_ex_srcReg2_out),.srcReg2_out(ex_mem_srcReg2_out));
 Memory_WriteBack_Reg MEM_WB_Reg(.clk(clk), .rst_n(rst_n), .read_data_in(mem_wb_read_memData_in), .read_data_out(mem_wb_read_data_out), .alu_result_in(ex_mem_alu_result_out), .alu_result_out(mem_wb_alu_result_out), .dstReg_in(ex_mem_dstReg_out), .dstReg_out(mem_wb_dstReg_out));
 
@@ -71,12 +81,12 @@ assign next_pc_or_halt = hlt ? pc_out : next_pc;
 //dff halt_signal(.q(hlt), .d(1'b1), .wen(isHaltInstr), .clk(clk), .rst(~rst_n));
 assign hlt = &dec_instr[15:12];
 
-//ALU
 assign is_LLB_or_LHB = (dec_instr[15:13]==3'b101);
 assign id_ex_dstReg_in = dec_instr[11:8];
 assign srcReg1 = is_LLB_or_LHB ? dec_instr[11:8] : dec_instr[7:4];
 assign srcReg2 = id_ex_memWrite_in ? dec_instr[11:8] : dec_instr[3:0]; // if instr is SW, as per diagram, srcReg2's value will be stored
 
+// ALU
 assign id_ex_aluSrc_in = dec_instr[15] & ~is_LLB_or_LHB; //  0: ALU instr's [0,7] 1: Memory & Control instr [8,15] except for LLB and LHB
 assign id_ex_aluOp_in = (id_ex_memRead_in | id_ex_memWrite_in) ? 4'h0 : dec_instr[15:12]; // If instr is SW or LW, tell ALU to do an Add, otherwise give the instr[15:12] aka the opcode
 
@@ -125,8 +135,16 @@ WB_Register ID_EX_WriteBack(.clk(clk), .rst(~rst_n), .RegWrite_in(id_ex_regWrite
 /////////////////////
 //       EX	   //
 /////////////////////
-assign aluSrc1 = id_ex_rd1_out; // first ALU input is always read_data1 from register file
-assign aluSrc2 = (id_ex_aluSrc_out) ? dec_ex_sign_ext_alu_offset_out : id_ex_rd2_out;
+
+assign aluSrc1_ex_to_ex_fwd = (fwd_ex_to_ex_srcReg1) ? ex_mem_alu_result_out : id_ex_rd1_out;
+assign aluSrc1_mem_to_ex_fwd = (fwd_mem_to_ex_srcReg1) ? writeback_write_data : aluSrc1_ex_to_ex_fwd;
+
+assign aluSrc2_no_fwd = (id_ex_aluSrc_out) ? dec_ex_sign_ext_alu_offset_out : id_ex_rd2_out;
+assign aluSrc2_ex_to_ex_fwd = (fwd_ex_to_ex_srcReg2 & ~id_ex_is_LLB_or_LHB_out & ~id_ex_memRead_out & ~id_ex_memWrite_out) ? ex_mem_alu_result_out : aluSrc2_no_fwd;
+assign aluSrc2_mem_to_ex_fwd = (fwd_mem_to_ex_srcReg2 & ~id_ex_is_LLB_or_LHB_out & ~id_ex_memRead_out & ~id_ex_memWrite_out) ? writeback_write_data : aluSrc2_ex_to_ex_fwd;
+
+assign aluSrc1 = aluSrc1_mem_to_ex_fwd;
+assign aluSrc2 = aluSrc2_mem_to_ex_fwd;
 
 ALU alu_module(.Opcode(id_ex_aluOp_out), .Input1(aluSrc1), .Input2(aluSrc2), .Output(ex_mem_alu_result_in), .flagsOut(flags));
 
@@ -142,8 +160,9 @@ assign ex_mem_dataIn_in = id_ex_rd2_out; //as per zybooks diagram, value of reg2
 //TODO is memRead ever used? Also, since enable is a thing, if we used original signal(ex_mem_memWrite_out), will mem unit still work correctly?
 
 assign memEnable = ~hlt & (ex_mem_memRead_out | ex_mem_memWrite_out); // instr must be a read or write (& not a halt)
+assign data_mem_data_in = (fwd_mem_to_mem) ? writeback_write_data : ex_mem_dataIn_out;
 
-memory1c data_mem(.clk(clk), .rst(~rst_n), .data_out(mem_wb_read_memData_in), .data_in(ex_mem_dataIn_out), .addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
+memory1c data_mem(.clk(clk), .rst(~rst_n), .data_out(mem_wb_read_memData_in), .data_in(data_mem_data_in), .addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
 
 WB_Register MEM_WB_WriteBack(.clk(clk), .rst(~rst_n), .RegWrite_in(ex_mem_regWrite_out), .MemToReg_in(ex_mem_memToReg_out), .RegWrite_out(mem_wb_regWrite_out), .MemToReg_out(mem_wb_memToReg_out));
 assign writeback_write_data = (mem_wb_memToReg_out) ? mem_wb_read_data_out : mem_wb_alu_result_out;

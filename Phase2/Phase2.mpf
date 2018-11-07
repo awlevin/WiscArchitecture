@@ -1,8 +1,4 @@
-; vsim modelsim.ini file, version 10.4
-[Version]
-INIVersion = "10.4a"
-
-; Copyright 1991-2015 Mentor Graphics Corporation
+; Copyright 1991-2014 Mentor Graphics Corporation
 ;
 ; All Rights Reserved.
 ;
@@ -52,7 +48,6 @@ synopsys = $MODEL_TECH/../synopsys
 modelsim_lib = $MODEL_TECH/../modelsim_lib
 sv_std = $MODEL_TECH/../sv_std
 mtiAvm = $MODEL_TECH/../avm
-mtiRnm = $MODEL_TECH/../rnm
 mtiOvm = $MODEL_TECH/../ovm-2.1.2
 mtiUvm = $MODEL_TECH/../uvm-1.1d
 mtiUPF = $MODEL_TECH/../upf_lib
@@ -60,18 +55,12 @@ mtiPA  = $MODEL_TECH/../pa_lib
 floatfixlib = $MODEL_TECH/../floatfixlib
 mc2_lib = $MODEL_TECH/../mc2_lib
 osvvm = $MODEL_TECH/../osvvm
-
-; added mapping for ADMS
-mgc_ams = $MODEL_TECH/../mgc_ams
-ieee_env = $MODEL_TECH/../ieee_env
-
 ;vhdl_psl_checkers = $MODEL_TECH/../vhdl_psl_checkers       // Source files only for this release
 ;verilog_psl_checkers = $MODEL_TECH/../verilog_psl_checkers // Source files only for this release
 ;mvc_lib = $MODEL_TECH/../mvc_lib
 infact = $MODEL_TECH/../infact
 
 
-vhdlopt_lib = $MODEL_TECH/../vhdlopt_lib
 work = work
 [DefineOptionset]
 ; Define optionset entries for the various compilers, vmake, and vsim.
@@ -96,8 +85,6 @@ VOPTDEBUG = +acc -debugdb
 ; Value of 1 or 1993 for VHDL-1993.
 ; Default or value of 2 or 2002 for VHDL-2002.
 ; Value of 3 or 2008 for VHDL-2008
-; Value of 4 or ams99 for VHDL-AMS-1999
-; Value of 5 or ams07 for VHDL-AMS-2007
 VHDL93 = 2002
 
 ; Ignore VHDL-2008 declaration of REAL_VECTOR in package STANDARD. Default is off.
@@ -366,10 +353,6 @@ Explicit = 1
 ; Default is to to generate debugging database for all design-units.
 ; SmartDbgSym = 1
 
-; Enable or disable automatic creation of missing libraries.
-; Default is 1 (enabled)  
-; CreateLib = 1
-
 [vlog]
 ; Turn off inclusion of debugging info within design units.
 ; Default is to include debugging info.
@@ -413,7 +396,7 @@ Explicit = 1
 ; EmbeddedPsl = 0
 
 ; Enable compiler statistics. Specify one or more arguments: 
-;                   [all,none,time,cmd,msg,perf,verbose,list,kb]
+;                   [all,none,time,cmd,msg,perf,verbose,list]
 ; Add '-' to disable specific statistics. Default is [time,cmd,msg].
 ; Stats = time,cmd,msg
 
@@ -580,7 +563,7 @@ Explicit = 1
 ; packages.  The behavior is identical to using the "-L" switch.
 ; 
 ; LibrarySearchPath = <path/lib> [<path/lib> ...]
-LibrarySearchPath = mtiAvm mtiRnm mtiOvm mtiUvm mtiUPF infact
+LibrarySearchPath = mtiAvm mtiOvm mtiUvm mtiUPF infact
 
 ; The behavior is identical to the "-mixedansiports" switch.  Default is off.
 ; MixedAnsiPorts = 1
@@ -609,6 +592,7 @@ LibrarySearchPath = mtiAvm mtiRnm mtiOvm mtiUvm mtiUPF infact
 ; List of file suffixes which will be read as SystemVerilog.  White space
 ; in extensions can be specified with a back-slash: "\ ".  Back-slashes
 ; can be specified with two consecutive back-slashes: "\\";
+; SVFileExtensions = sv svp svh
 ; SvFileSuffixes = sv svp svh
 
 ; This setting is the same as the vlog -sv command line switch.
@@ -642,9 +626,9 @@ LibrarySearchPath = mtiAvm mtiRnm mtiOvm mtiUvm mtiUPF infact
 
 ; Controls SystemVerilog Language Extensions.  These options enable
 ; some non-LRM compliant behavior.  Valid extensions are:
-; "acum", "atpi", "catx", "daoa", "feci", "fin0", "idcl",
+; "acum", "adtff", "atpi", "catx", "daoa", "feci", "fin0", "idcl",
 ; "iddp", "pae", "sccts", "spsl", "stop0", "udm0", and "uslt".
-; SvExtensions = uslt,spsl,sccts
+; SVExtensions = uslt,spsl,sccts
 
 ; Generate symbols debugging database in only some special cases to save on
 ; the number of files in the library. For other design-units, this database is
@@ -658,10 +642,6 @@ LibrarySearchPath = mtiAvm mtiRnm mtiOvm mtiUvm mtiUPF infact
 ; found in $unit scope)
 ; CUAutoName = file
 
-; Enable or disable automatic creation of missing libraries.
-; Default is 1 (enabled)  
-; CreateLib = 1
-
 [sccom]
 ; Enable use of SCV include files and library.  Default is off.
 ; UseScv = 1
@@ -673,10 +653,6 @@ LibrarySearchPath = mtiAvm mtiRnm mtiOvm mtiUvm mtiUPF infact
 ; The path should point directly at a compiler executable.
 ; CppPath = /usr/bin/g++
 
-; Specify the compiler version from the list of support GNU compilers.
-; examples 4.3.3, 4.5.0
-; CppInstall = 4.5.0
-
 ; Enable verbose messages from sccom.  Default is off.
 ; SccomVerbose = 1
 
@@ -686,17 +662,10 @@ LibrarySearchPath = mtiAvm mtiRnm mtiOvm mtiUvm mtiUPF infact
 ; Enable use of SC_MS include files and library.  Default is off.
 ; UseScMs = 1
 
-; Use SystemC-2.2 instead of the default SystemC-2.3. Default is off.
-; Sc22Mode = 1
-
 ; Enable compiler statistics. Specify one or more arguments: 
-;                   [all,none,time,cmd,msg,perf,verbose,list,kb]
+;                   [all,none,time,cmd,msg,perf,verbose,list]
 ; Add '-' to disable specific statistics. Default is [time,cmd,msg].
 ; Stats = time,cmd,msg
-
-; Enable or disable automatic creation of missing libraries.
-; Default is 1 (enabled)  
-; CreateLib = 1
 
 [vopt]
 ; Turn on code coverage in vopt.  Default is off. 
@@ -736,7 +705,7 @@ LibrarySearchPath = mtiAvm mtiRnm mtiOvm mtiUvm mtiUPF infact
 ; CoverDeglitchOn = 1
 
 ; Enable compiler statistics. Specify one or more arguments: 
-;                   [all,none,time,cmd,msg,perf,verbose,list,kb]
+;                   [all,none,time,cmd,msg,perf,verbose,list]
 ; Add '-' to disable specific statistics. Default is [time,cmd,msg].
 ; Stats = time,cmd,msg
 
@@ -769,7 +738,7 @@ LibrarySearchPath = mtiAvm mtiRnm mtiOvm mtiUvm mtiUPF infact
 ; Controls SystemVerilog Language Extensions.  These options enable
 ; some non-LRM compliant behavior.  Valid extensions are "feci",
 ; "pae", "uslt", "spsl", "fin0" and "sccts".
-; SvExtensions = uslt,spsl,sccts
+; SVExtensions = uslt,spsl,sccts
 
 ; Load the specified shared objects with the RTLD_GLOBAL flag.
 ; This gives global visibility to all symbols in the shared objects,
@@ -778,17 +747,6 @@ LibrarySearchPath = mtiAvm mtiRnm mtiOvm mtiUvm mtiUPF infact
 ; be whitespace delimited.  This option is not supported on the
 ; Windows or AIX platforms.
 ; GlobalSharedObjectList = example1.so example2.so example3.so
-
-; Disable SystemVerilog elaboration system task messages
-; IgnoreSVAInfo = 1 
-; IgnoreSVAWarning = 1
-; IgnoreSVAError = 1
-; IgnoreSVAFatal = 1
-
-; Enable or disable automatic creation of missing libraries.
-; Default is 1 (enabled)  
-; CreateLib = 1
-
 
 [vsim]
 ; vopt flow
@@ -816,13 +774,10 @@ Resolution = ns
 UserTimeUnit = default
 
 ; Default run length
-RunLength = 100 ns
+RunLength = 6 us
 
 ; Maximum iterations that can be run without advancing simulation time
-IterationLimit = 10000000
-
-; Specify libraries to be searched for precompiled modules
-; LibrarySearchPath = <path/lib> [<path/lib> ...]
+IterationLimit = 20000
 
 ; Set XPROP assertion fail limit. Default is 5.
 ; Any positive integer, -1 for infinity.
@@ -886,11 +841,6 @@ IterationLimit = 10000000
 ; This value is ignored during elaboration.
 ; 0 = Note  1 = Warning  2 = Error  3 = Failure  4 = Fatal
 BreakOnAssertion = 3
-
-; Severity level of a tool message which will cause a running simulation to 
-; stop. This value is ignored during elaboration. Default is to not break.
-; 0 = Note  1 = Warning  2 = Error  3 = Fatal
-;BreakOnMessage = 2
 
 ; The class debug feature enables more visibility and tracking of class instances
 ; during simulation.  By default this feature is disabled (0).  To enable this 
@@ -1040,7 +990,7 @@ DatasetSeparator = :
 ; ForceSigNextIter = 1
 
 ; Enable simulation statistics. Specify one or more arguments: 
-;                   [all,none,time,cmd,msg,perf,verbose,list,kb,eor]
+;                   [all,none,time,cmd,msg,perf,verbose,list]
 ; Add '-' to disable specific statistics. Default is [time,cmd,msg].
 ; Stats = time,cmd,msg
 
@@ -1057,13 +1007,6 @@ UnbufferedOutput = 0
 ; setting for max file descriptors.
 ;   0 = unlimited
 ConcurrentFileLimit = 40
-
-; If nonzero, close files as soon as there is either an explicit call to
-; file_close, or when the file variable's scope is closed. When zero, a
-; file opened in append mode is not closed in case it is immediately
-; reopened in append mode; otherwise, the file will be closed at the
-; point it is reopened.
-; AppendClose = 1
 
 ; Control the number of hierarchical regions displayed as
 ; part of a signal name shown in the Wave window.
@@ -1273,23 +1216,22 @@ WildcardSizeThresholdVerbose = 0
 ; The default is 1, lock the WLF file.
 ; WLFFileLock = 0
 
-; Specify the update interval for the WLF file in live simulation.
-; The interval is given in seconds.
-; The value is the smallest interval between WLF file updates.  The WLF file
-; will be flushed (updated) after (at least) the interval has elapsed, ensuring
-; that the data is correct when viewed from a separate viewer.
-; A value of 0 means that no updating will occur.
-; The default value is 10 seconds.
+; Specify the update interval for the WLF file.  
+; Value is the number of seconds between updated.  After at least the
+; interval number of seconds, the wlf file is flushed, ensuring that the data
+; is correct when viewed from a separate live viewer.  Setting to 0 means no
+; updating.  Default is 10 seconds, which has a tiny performance impact
 ; WLFUpdateInterval = 10
 
-; Specify the WLF cache size limit for WLF files.
-; The value is given in megabytes.  A value of 0 turns off the cache.
-; On non-Windows platforms the default WLFCacheSize setting is 2000 (megabytes).
-; On Windows, the default value is 1000 (megabytes) to help to avoid filling
-; process memory.
-; WLFSimCacheSize allows a different cache size to be set for a live simulation
-; WLF file, independent of post-simulation WLF file viewing.  If WLFSimCacheSize
-; is not set, it defaults to the WLFCacheSize value.
+; Specify the WLF reader cache size limit for each open WLF file.  
+; The size is giving in megabytes.  A value of 0 turns off the
+; WLF cache. 
+; WLFSimCacheSize allows a different cache size to be set for 
+; simulation WLF file independent of post-simulation WLF file 
+; viewing.  If WLFSimCacheSize is not set it defaults to the
+; WLFCacheSize setting.
+; The default WLFCacheSize setting is enabled to 2000M per open WLF file on most 
+; platforms; on Windows, the setting is 1000M to help avoid filling process memory.
 ; WLFCacheSize = 2000
 ; WLFSimCacheSize = 500
 
@@ -1302,9 +1244,9 @@ WildcardSizeThresholdVerbose = 0
 ; The default is 1.
 ; WLFCollapseMode = 0
 
-; Specify whether WLF file logging can use threads on multi-processor machines.
-; If 0, no threads will be used; if 1, threads will be used if the system has
-; more than one processor.
+; Specify whether WLF file logging can use threads on multi-processor machines
+; if 0, no threads will be used, if 1, threads will be used if the system has
+; more than one processor
 ; WLFUseThreads = 1
 
 ; Specify the size of objects that will trigger "large object" messages
@@ -1312,6 +1254,7 @@ WildcardSizeThresholdVerbose = 0
 ; used by the WildcardSizeThreshold. The default LargeObjectSize size is 500,000.
 ; Setting LargeObjectSize to 0 will disable these messages.
 ; LargeObjectSize = 500000
+
 
 ; Specify the depth of stack frames returned by $stacktrace([level]).
 ; This depth will be picked up when the optional 'level' argument
@@ -1393,10 +1336,12 @@ OnFinish = ask
 ; instead of the reactive region where they are normally printed.
 ; OnFinishPendingAssert = 1;
 
-; Print "simstats" result. Default is 0.
+; Print "simstats" result
 ; 0 == do not print simstats
 ; 1 == print at end of simulation
-; 2 == print at end of each run command and end of simulation
+; 2 == print at end of run
+; 3 == print at end of run and end of simulation
+; default == 0
 ; PrintSimStats = 1
 
 ; Assertion File - alternate file for storing VHDL/PSL/Verilog assertion messages
@@ -1695,15 +1640,15 @@ OnFinish = ask
 ; all Covergroups.
 ; MaxSVCoverpointBinsDesign = 2147483648 
 
-; Specify maximum number of Coverpoint bins in any instance of a Covergroup, default is 2^10 bins
-; MaxSVCoverpointBinsInst = 1048576
+; Specify maximum number of Coverpoint bins in any instance of a Covergroup
+; MaxSVCoverpointBinsInst = 2147483648
 
 ; Specify the maximum number of Cross bins in whole design for
 ; all Covergroups.
 ; MaxSVCrossBinsDesign = 2147483648 
 
-; Specify maximum number of Cross bins in any instance of a Covergroup, default is 2^16 bins
-; MaxSVCrossBinsInst = 67108864
+; Specify maximum number of Cross bins in any instance of a Covergroup
+; MaxSVCrossBinsInst = 2147483648
 
 ; Specify whether vsim will collect the coverage data of zero-weight coverage items or not.
 ; By default, this variable is set 0, in which case option.no_collect setting will take effect.
@@ -1782,8 +1727,8 @@ OnFinish = ask
 ; Specifies the maximum size that a dynamic array may be resized to by the
 ; solver. If the solver attempts to resize a dynamic array to a size greater
 ; than the specified limit, the solver will abort with an error.
-; The default value is 10000. A value of 0 indicates no limit.
-; SolveArrayResizeMax = 10000
+; The default value is 2000. A value of 0 indicates no limit.
+; SolveArrayResizeMax = 2000
 
 ; Error message severity when randomize() failure is detected (SystemVerilog).
 ; 0 = No error  1 = Warning  2 = Error  3 = Failure  4 = Fatal
@@ -1816,11 +1761,6 @@ OnFinish = ask
 ; generation, uncomment this variable. To redirect testcase generation to a
 ; file, specify the name of the output file.
 ; SolveFailTestcase = 
-
-; Specify solver timeout threshold (in seconds). randomize() will fail if the
-; CPU time required to evaluate any randset exceeds the specified timeout.
-; The default value is 500. A value of 0 will disable timeout failures. 
-; SolveTimeout = 500
 
 ; Specify the maximum size of the solution graph generated by the BDD solver.
 ; This value can be used to force the BDD solver to abort the evaluation of a
@@ -1901,8 +1841,9 @@ MvcHome = $MODEL_TECH/..
 ; SuppressFileTypeReg = 1
 
 ; Controls SystemVerilog Language Extensions.  These options enable
-; some non-LRM compliant behavior.  Valid extensions are "cfce",
-; SvExtensions = cfce
+; some non-LRM compliant behavior.  Valid extensions are "feci",
+; "pae", "uslt", "spsl" and "sccts".
+; SVExtensions = uslt,spsl,sccts
 
 ; Controls the formatting of '%p' and '%P' conversion specification, used in $display
 ; and similar system tasks.
@@ -1968,8 +1909,8 @@ suppress = 8780 ;an explanation can be had by running: verror 8780
 ;   warning = 3033
 ;   error = 3010,3016
 ;   fatal = 3016,3033
-;   suppress = 3009,3016,3601
-;   suppress = 3009,CNNODP,3601,TFMPC
+;   suppress = 3009,3016,3043
+;   suppress = 3009,CNNODP,3043,TFMPC
 ;   suppress = 8683,8684
 ; The command verror <msg number> can be used to get the complete
 ; description of a message.
@@ -2034,57 +1975,65 @@ suppress = 8780 ;an explanation can be had by running: verror 8780
 Project_Version = 6
 Project_DefaultLib = work
 Project_SortMethod = unused
-Project_Files_Count = 25
-Project_File_0 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/PC_control_tb.sv
-Project_File_P_0 = cover_toggle 0 vlog_protect 0 file_type systemverilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat SV vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540408998 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 10 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_1 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/Shifter.v
-Project_File_P_1 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540408998 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 17 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_2 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/RegisterFile_tb.sv
-Project_File_P_2 = cover_toggle 0 vlog_protect 0 file_type systemverilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat SV vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540408998 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 16 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_3 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/PipelineStages.v
-Project_File_P_3 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 cover_fsm 0 last_compile 1540421291 vlog_noload 0 cover_branch 0 folder {Top Level} vlog_enable0In 0 cover_excludedefault 0 vlog_disableopt 0 cover_covercells 0 vlog_hazard 0 vlog_showsource 0 cover_optlevel 3 voptflow 1 ood 0 vlog_0InOptions {} toggle - vlog_options {} compile_to work vlog_upper 0 cover_noshort 0 compile_order 12 dont_compile 0 cover_expr 0 cover_stmt 0
-Project_File_4 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/BitCell.v
-Project_File_P_4 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540408998 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 3 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_5 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/Execute_Memory_Reg.v
-Project_File_P_5 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540413798 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 22 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_6 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/cpu_tb.sv
-Project_File_P_6 = cover_toggle 0 vlog_protect 0 file_type systemverilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat SV vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540408998 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 5 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_7 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/memory.v
-Project_File_P_7 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540408998 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 8 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_8 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/FlagsRegister.v
-Project_File_P_8 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540408998 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 7 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_9 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/CLA_4bit.v
-Project_File_P_9 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540408998 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 4 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_10 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/ALU.v
-Project_File_P_10 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540408998 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 1 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_11 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/Decode_Execute_Reg.v
-Project_File_P_11 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 last_compile 1540413806 folder {Top Level} cover_branch 0 cover_fsm 0 vlog_enable0In 0 cover_excludedefault 0 vlog_disableopt 0 cover_covercells 0 vlog_hazard 0 vlog_showsource 0 cover_optlevel 3 voptflow 1 ood 0 vlog_0InOptions {} toggle - vlog_options {} compile_to work vlog_upper 0 cover_noshort 0 compile_order 21 dont_compile 0 cover_expr 0 cover_stmt 0
-Project_File_12 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/PC_control.v
-Project_File_P_12 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 last_compile 1540418824 folder {Top Level} cover_branch 0 cover_fsm 0 vlog_enable0In 0 cover_excludedefault 0 vlog_disableopt 0 cover_covercells 0 vlog_hazard 0 vlog_showsource 0 cover_optlevel 3 voptflow 1 ood 0 vlog_0InOptions {} toggle - vlog_options {} compile_to work vlog_upper 0 cover_noshort 0 compile_order 9 dont_compile 0 cover_expr 0 cover_stmt 0
-Project_File_13 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/dff_16bit.v
-Project_File_P_13 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 folder {Top Level} cover_branch 0 cover_fsm 0 last_compile 1540421641 vlog_noload 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 19 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_14 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/Shifter_tb.sv
-Project_File_P_14 = cover_toggle 0 vlog_protect 0 file_type systemverilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat SV vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540408998 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 18 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_15 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/RegisterFile.v
-Project_File_P_15 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540408998 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 15 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_16 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/Register.v
-Project_File_P_16 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540408998 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 14 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_17 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/ReadDecoder_4_16.sv
-Project_File_P_17 = cover_toggle 0 vlog_protect 0 file_type systemverilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat SV vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540408998 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 13 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_18 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/PC_Register.v
-Project_File_P_18 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540408998 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 11 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_19 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/cpu.v
-Project_File_P_19 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 folder {Top Level} cover_branch 0 cover_fsm 0 last_compile 1540419070 vlog_noload 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 24 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_20 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/Memory_WriteBack_Reg.v
-Project_File_P_20 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 last_compile 1540413773 folder {Top Level} cover_branch 0 cover_fsm 0 vlog_enable0In 0 cover_excludedefault 0 vlog_disableopt 0 cover_covercells 0 vlog_hazard 0 vlog_showsource 0 cover_optlevel 3 voptflow 1 ood 0 vlog_0InOptions {} toggle - vlog_options {} compile_to work vlog_upper 0 cover_noshort 0 compile_order 23 dont_compile 0 cover_expr 0 cover_stmt 0
-Project_File_21 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/Fetch_Decode_Reg.v
-Project_File_P_21 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 cover_fsm 0 cover_branch 0 vlog_noload 0 last_compile 1540412794 folder {Top Level} cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 20 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_22 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/D-Flip-Flop.v
-Project_File_P_22 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 last_compile 1540408998 folder {Top Level} cover_branch 0 cover_fsm 0 vlog_enable0In 0 cover_excludedefault 0 vlog_disableopt 0 cover_covercells 0 vlog_hazard 0 vlog_showsource 0 cover_optlevel 3 voptflow 1 ood 0 vlog_0InOptions {} toggle - vlog_options {} compile_to work vlog_upper 0 cover_noshort 0 compile_order 6 dont_compile 0 cover_expr 0 cover_stmt 0
-Project_File_23 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/ALU_tb.sv
-Project_File_P_23 = cover_toggle 0 vlog_protect 0 file_type systemverilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat SV vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540408998 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 2 cover_expr 0 dont_compile 0 cover_stmt 0
-Project_File_24 = C:/Users/CMPE_STUDENT/WiscArchitecture/Phase2/WriteDecoder_4_16.v
-Project_File_P_24 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540408998 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 0 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_Files_Count = 29
+Project_File_0 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/BitCell.v
+Project_File_P_0 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 3 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_1 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/cpu_tb.sv
+Project_File_P_1 = cover_toggle 0 vlog_protect 0 file_type systemverilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat SV vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 6 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_2 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/Memory_WriteBack_Reg.v
+Project_File_P_2 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1541538024 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 17 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_3 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/forwarding_unit.v
+Project_File_P_3 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1541546258 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 15 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_4 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/FlagsRegister.v
+Project_File_P_4 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 14 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_5 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/Fetch_Decode_Reg.v
+Project_File_P_5 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 12 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_6 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/ALU.v
+Project_File_P_6 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1541538024 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 1 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_7 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/PC_control_tb.sv
+Project_File_P_7 = cover_toggle 0 vlog_protect 0 file_type systemverilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat SV vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 19 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_8 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/project-phase2-testbench.v
+Project_File_P_8 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1541538025 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 22 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_9 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/Shifter_tb.sv
+Project_File_P_9 = cover_toggle 0 vlog_protect 0 file_type systemverilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat SV vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 28 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_10 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/RegisterFile_tb.sv
+Project_File_P_10 = cover_toggle 0 vlog_protect 0 file_type systemverilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat SV vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 26 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_11 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/dff_16bit.v
+Project_File_P_11 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 9 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_12 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/ReadDecoder_4_16.sv
+Project_File_P_12 = cover_toggle 0 vlog_protect 0 file_type systemverilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat SV vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 23 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_13 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/Fetch_Register.v
+Project_File_P_13 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 13 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_14 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/PC_Register.v
+Project_File_P_14 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 20 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_15 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/PipelineStages.sv
+Project_File_P_15 = cover_toggle 0 vlog_protect 0 file_type systemverilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat SV vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1541538024 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 21 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_16 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/cpu.v
+Project_File_P_16 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 cover_fsm 0 last_compile 1541550039 vlog_noload 0 cover_branch 0 folder {Top Level} vlog_enable0In 0 cover_excludedefault 0 vlog_disableopt 0 cover_covercells 0 vlog_hazard 0 vlog_showsource 0 cover_optlevel 3 voptflow 1 ood 0 vlog_0InOptions {} toggle - vlog_options {} compile_to work vlog_upper 0 cover_noshort 0 compile_order 5 dont_compile 0 cover_expr 0 cover_stmt 0
+Project_File_17 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/Execute_Memory_Reg.v
+Project_File_P_17 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1541541288 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 11 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_18 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/memory.v
+Project_File_P_18 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1541538025 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 16 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_19 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/WriteDecoder_4_16.v
+Project_File_P_19 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 0 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_20 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/ALU_tb.sv
+Project_File_P_20 = cover_toggle 0 vlog_protect 0 file_type systemverilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat SV vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 2 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_21 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/CLA_4bit.v
+Project_File_P_21 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 4 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_22 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/dff_4bit.v
+Project_File_P_22 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1541538024 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 8 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_23 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/D-Flip-Flop.v
+Project_File_P_23 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 10 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_24 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/PC_control.v
+Project_File_P_24 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 18 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_25 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/Decode_Execute_Reg.v
+Project_File_P_25 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 last_compile 1541548210 folder {Top Level} cover_branch 0 cover_fsm 0 vlog_enable0In 0 cover_excludedefault 0 vlog_disableopt 0 cover_covercells 0 vlog_hazard 0 vlog_showsource 0 cover_optlevel 3 voptflow 1 ood 0 vlog_0InOptions {} toggle - vlog_options {} compile_to work vlog_upper 0 cover_noshort 0 compile_order 7 dont_compile 0 cover_expr 0 cover_stmt 0
+Project_File_26 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/Shifter.v
+Project_File_P_26 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 27 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_27 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/RegisterFile.v
+Project_File_P_27 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 25 cover_expr 0 dont_compile 0 cover_stmt 0
+Project_File_28 = I:/WIN/Desktop/PortableGit/WiscArchitecture/Phase2/Register.v
+Project_File_P_28 = cover_toggle 0 vlog_protect 0 file_type verilog group_id 0 cover_exttoggle 0 cover_nofec 0 cover_cond 0 vlog_1995compat 0 vlog_nodebug 0 vlog_noload 0 cover_branch 0 folder {Top Level} last_compile 1540487007 cover_fsm 0 cover_excludedefault 0 vlog_enable0In 0 vlog_disableopt 0 cover_covercells 0 voptflow 1 cover_optlevel 3 vlog_showsource 0 vlog_hazard 0 toggle - vlog_0InOptions {} ood 0 cover_noshort 0 vlog_upper 0 compile_to work vlog_options {} compile_order 24 cover_expr 0 dont_compile 0 cover_stmt 0
 Project_Sim_Count = 0
 Project_Folder_Count = 0
 Echo_Compile_Output = 0
@@ -2133,4 +2082,4 @@ DEBUGDATABASE_CustomDoubleClick =
 DEBUGARCHIVE_DoubleClick = Edit
 DEBUGARCHIVE_CustomDoubleClick = 
 Project_Major_Version = 10
-Project_Minor_Version = 5
+Project_Minor_Version = 3
