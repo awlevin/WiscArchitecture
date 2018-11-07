@@ -100,9 +100,7 @@ assign address_to_add_to_pc_for_b_or_br = (dec_instr[15:12] == 4'b1100) ? dec_pc
 
 //Memory
 
-assign id_ex_data1_in = (dec_instr[15:12] == 4'b1010) ? (srcData1 & 16'hFF00) :			// Clear lower byte for LLB
-			(dec_instr[15:12] == 4'b1011) ? (srcData1 & 16'h00FF) :			// Clear upper byte for LHB
-			srcData1;								// Otherwise, use register file data unmodified
+assign id_ex_data1_in = srcData1;								// Otherwise, use register file data unmodified
 
 assign id_ex_data2_in = (dec_instr[15:12] == 4'b1010) ? {8'b0, dec_instr[7:0]} :		// Use byte from instruction for LLB
 			(dec_instr[15:12] == 4'b1011) ? {dec_instr[7:0], 8'b0} :		// Use byte from instruction for LHB

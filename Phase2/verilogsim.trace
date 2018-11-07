@@ -38,18 +38,18 @@ INUM:       36 PC: 0x0048 REG:  1 VALUE: 0x00d2 ADDR: 0xf004
 INUM:       37 PC: 0x004a REG:  4 VALUE: 0xed37
 INUM:       38 PC: 0x004c REG:  3 VALUE: 0xf0ce
 INUM:       39 PC: 0x004e REG:  3 VALUE: 0xface
-INUM:       40 PC: 0x0050 REG:  3 VALUE: 0xfade ADDR: 0xfae2
-INUM:       41 PC: 0x0052 REG:  5 VALUE: 0xxxxx
-INUM:       42 PC: 0x0054 REG:  0 VALUE: 0x0000
-INUM:       43 PC: 0x0056 REG:  0 VALUE: 0x0000
+INUM:       40 PC: 0x0050 REG:  3 VALUE: 0xfade
+INUM:       41 PC: 0x0052 REG:  3 VALUE: 0xf0de
+INUM:       42 PC: 0x0054 REG:  3 VALUE: 0xf000 ADDR: 0xf000
+INUM:       43 PC: 0x0056 REG:  5 VALUE: 0x00d2
 INUM:       44 PC: 0x0058 REG:  0 VALUE: 0x0000
 INUM:       45 PC: 0x005a REG:  0 VALUE: 0x0000
 INUM:       46 PC: 0x005c REG:  0 VALUE: 0x0000
 INUM:       47 PC: 0x005e REG:  0 VALUE: 0x0000
-INUM:       48 PC: 0xxxxx REG:  0 VALUE: 0x0000
-INUM:       49 PC: 0xxxxx REG:  0 VALUE: 0x0000
-INUM:       50 PC: 0xxxxx
-INUM:       51 PC: 0xxxxx
+INUM:       48 PC: 0x0060 REG:  0 VALUE: 0x0000
+INUM:       49 PC: 0x0062 REG:  0 VALUE: 0x0000
+INUM:       50 PC: 0xxxxx REG:  0 VALUE: 0x0000
+INUM:       51 PC: 0xxxxx REG:  0 VALUE: 0x0000
 INUM:       52 PC: 0xxxxx
 INUM:       53 PC: 0xxxxx
 INUM:       54 PC: 0xxxxx
