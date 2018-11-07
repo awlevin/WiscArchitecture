@@ -35,7 +35,7 @@ Register r0(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[0]), .ReadEna
 	 r14(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[14]), .ReadEnable1(read_sel_1[14]), .ReadEnable2(read_sel_2[14]), .Bitline1(SrcData1_reg_value), .Bitline2(SrcData2_reg_value)),
 	 r15(.clk(clk), .rst(rst), .D(DstData), .WriteReg(write_sel[15]), .ReadEnable1(read_sel_1[15]), .ReadEnable2(read_sel_2[15]), .Bitline1(SrcData1_reg_value), .Bitline2(SrcData2_reg_value));
 
-assign SrcData1 = (SrcReg1 == DstReg) ? DstData : SrcData1_reg_value;
-assign SrcData2 = (SrcReg2 == DstReg) ? DstData : SrcData2_reg_value;
+assign SrcData1 = ((SrcReg1 == DstReg) & WriteReg) ? DstData : SrcData1_reg_value;
+assign SrcData2 = ((SrcReg2 == DstReg) & WriteReg) ? DstData : SrcData2_reg_value;
 
 endmodule
