@@ -58,6 +58,9 @@ LLB R3, 0x00
 LHB R3, 0xF0
 LW R5,R3,0 	 //R5 = Memory[0xF000] = 0x00D2
 
+// Mem-to-Mem tests
+SW R5, R3, 4	 //Memory[0xF004] = 0x00D2
+LW R6, R3, 4	 //R6 = Memory[0xF004] = 0x00D2
 
 ADD R0,R0,R0	 //Used as NOPs, don't trust R0's value
 ADD R0,R0,R0

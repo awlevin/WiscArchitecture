@@ -53,7 +53,7 @@ wire regWrite_or_halt;
 //  FORWARDING LOGIC  //
 ////////////////////////
 wire fwd_ex_to_ex_srcReg1, fwd_ex_to_ex_srcReg2, fwd_mem_to_ex_srcReg1, fwd_mem_to_ex_srcReg2, fwd_mem_to_mem;
-ForwardingUnit fwd_unit(.ex_mem_dstReg(ex_mem_dstReg_out), .id_ex_srcReg1(id_ex_srcReg1_out), .id_ex_srcReg2(id_ex_srcReg2_out), .ex_mem_regWrite(ex_mem_regWrite_out), .mem_wb_dstReg(mem_wb_dstReg_out), .mem_wb_regWrite(mem_wb_regWrite_out), .ex_mem_memWrite(ex_mem_memWrite_out), .fwd_ex_to_ex_srcReg1(fwd_ex_to_ex_srcReg1), .fwd_ex_to_ex_srcReg2(fwd_ex_to_ex_srcReg2), .fwd_mem_to_ex_srcReg1(fwd_mem_to_ex_srcReg1), .fwd_mem_to_ex_srcReg2(fwd_mem_to_ex_srcReg2), .fwd_mem_to_mem(fwd_mem_to_mem));
+ForwardingUnit fwd_unit(.ex_mem_dstReg(ex_mem_dstReg_out), .id_ex_srcReg1(id_ex_srcReg1_out), .id_ex_srcReg2(id_ex_srcReg2_out), .ex_mem_srcReg2(ex_mem_srcReg2_out), .ex_mem_regWrite(ex_mem_regWrite_out), .mem_wb_dstReg(mem_wb_dstReg_out), .mem_wb_regWrite(mem_wb_regWrite_out), .ex_mem_memWrite(ex_mem_memWrite_out), .fwd_ex_to_ex_srcReg1(fwd_ex_to_ex_srcReg1), .fwd_ex_to_ex_srcReg2(fwd_ex_to_ex_srcReg2), .fwd_mem_to_ex_srcReg1(fwd_mem_to_ex_srcReg1), .fwd_mem_to_ex_srcReg2(fwd_mem_to_ex_srcReg2), .fwd_mem_to_mem(fwd_mem_to_mem));
 
 ////////////////////////aluSrc1_mem_to_ex_fwd
 // PIPELINE REGISTERS //
