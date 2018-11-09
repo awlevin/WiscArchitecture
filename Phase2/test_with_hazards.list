@@ -85,6 +85,14 @@ LW R1, R5, 2	 //Memory[0x00D6] = 0x19E0
 // Stall here
 XOR R1, R1, R2	 //R1 = 0x19E0 ^ 0x19E0 = 0x0000
 
+LLB R2, 0x10
+LHB R2, 0x00
+BR 000, R1 		// BRneq
+BR 001, R2 		// BReq
+ADD R2,R1,R3
+SUB R4,R1,R3
+
+
 ADD R0,R0,R0	 //Used as NOPs, don't trust R0's value
 ADD R0,R0,R0
 ADD R0,R0,R0
