@@ -22,6 +22,7 @@ wire is_LLB_or_LHB;
 wire id_ex_regWrite_in,id_ex_memToReg_in,id_ex_memRead_in,id_ex_memWrite_in,id_ex_aluSrc_in,id_ex_is_LLB_or_LHB_out;
 wire [3:0] id_ex_srcReg1_out, id_ex_srcReg2_out;
 wire take_branch;
+wire [3:0] if_id_opcode_out;
 
 // Execute Wires
 wire id_ex_aluSrc_out;
@@ -57,7 +58,8 @@ ForwardingUnit fwd_unit(.ex_mem_dstReg(ex_mem_dstReg_out), .id_ex_srcReg1(id_ex_
 ////////////////////////
 wire stall_en, rst_id_ex_reg;
 assign rst_id_ex_reg = (~rst_n | stall_en);
-Hazard_Detection_Unit hazard_unit(.stall_en(stall_en), .dec_opcode(dec_instr[15:12]), .id_ex_dstReg_out(id_ex_dstReg_out), .srcReg1(srcReg1), .srcReg2(srcReg2), .id_ex_memRead_in(id_ex_memRead_in), .id_ex_memRead_out(id_ex_memRead_out));
+assign if_id_opcode_out = dec_instr[15:12];
+Hazard_Detection_Unit hazard_unit(.stall_en(stall_en), .dec_opcode(if_id_opcode_out), .id_ex_dstReg_out(id_ex_dstReg_out), .srcReg1(srcReg1), .srcReg2(srcReg2), .id_ex_memRead_in(id_ex_memRead_in), .id_ex_memRead_out(id_ex_memRead_out));
 
 ////////////////////////
 // PIPELINE REGISTERS //
@@ -84,6 +86,7 @@ EX_Register ID_EX_Ex(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .ALUSr
 M_Register ID_EX_Mem(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .MemRead_in(id_ex_memRead_in), .MemWrite_in(id_ex_memWrite_in), .MemRead_out(id_ex_memRead_out), .MemWrite_out(id_ex_memWrite_out));
 WB_Register ID_EX_WriteBack(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .RegWrite_in(id_ex_regWrite_in), .MemToReg_in(id_ex_memToReg_in), .RegWrite_out(id_ex_regWrite_out), .MemToReg_out(id_ex_memToReg_out));
 
+//TODO flags cannot be used directly from the alu unit as this would increase pipeline latency. The value must be pipelined and used the next cycle (fwd'ing happens the cycle AFTER, not the same cycle, similar to a ex to ex fwd)
 Branch_Decision_Unit branch_unit(.take_branch(take_branch), .opcode(dec_instr[15:12]), .flags(flags), .C(ccc));
 
 //Halt logic
@@ -97,7 +100,7 @@ assign srcReg2 = id_ex_memWrite_in ? dec_instr[11:8] : dec_instr[3:0]; // if ins
 
 // ALU
 assign id_ex_aluSrc_in = dec_instr[15] & ~is_LLB_or_LHB; //  0: ALU instr's [0,7] 1: Memory & Control instr [8,15] except for LLB and LHB
-assign id_ex_aluOp_in = (id_ex_memRead_in | id_ex_memWrite_in) ? 4'h0 : dec_instr[15:12]; // If instr is SW or LW, tell ALU to do an Add, otherwise give the instr[15:12] aka the opcode
+assign id_ex_aluOp_in = dec_instr[15:12]; // If instr is SW or LW, tell ALU to do an Add, otherwise give the instr[15:12] aka the opcode
 
 //Control logic
 assign pc_control_immediate = instr[8:0];
