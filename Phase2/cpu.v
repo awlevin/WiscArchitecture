@@ -5,14 +5,11 @@ output hlt;
 output [15:0] pc;
 
 // PC Wires
-wire [15:0] next_pc, pc_out, pc_plus_2, address_to_add_to_pc_for_b_or_br, pc_with_branch;
+wire [15:0] next_pc, pc_out, pc_plus_2, address_to_add_to_pc_for_b_or_br, dec_pc_imm_shftd_sign_ext, pc_with_branch;
 assign pc = pc_out;
 
 // Instruction
 wire [15:0] instr;
-
-// Control Signals
-wire PCSrc;
 
 // Decode Wires
 wire [15:0] if_id_pc_add_2_out, dec_instr, srcData1, srcData2;
@@ -49,7 +46,6 @@ wire [15:0] data_mem_data_in;
 wire [15:0] next_pc_or_halt;
 wire regWrite_or_halt;
 
-
 ////////////////////////
 //  FORWARDING LOGIC  //
 ////////////////////////
@@ -78,8 +74,7 @@ PC_Register pc_register(.clk(clk), .rst(~rst_n), .stall_en(stall_en), .next_pc(n
 memory1c instruction_mem(.clk(clk), .rst(~rst_n), .data_out(instr), .data_in(16'h0000), .addr(pc_out), .enable(rst_n), .wr(1'b0));
 adder_16bit pc_add_2_module(.A(pc_out), .B(16'h0002), .Sub(1'b0), .Sum(pc_plus_2), .Zero(), .Ovfl(), .Sign());
 
-assign PCSrc = (dec_instr[15:12] == 4'hC | dec_instr[15:12] == 4'hD); // true if instr is a B or BR
-assign next_pc = (PCSrc & take_branch) ? pc_with_branch : pc_plus_2;
+assign next_pc = (take_branch) ? pc_with_branch : pc_plus_2;
 assign next_pc_or_halt = hlt ? pc_out : next_pc;
 
 /////////////////////
@@ -89,7 +84,7 @@ EX_Register ID_EX_Ex(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .ALUSr
 M_Register ID_EX_Mem(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .MemRead_in(id_ex_memRead_in), .MemWrite_in(id_ex_memWrite_in), .MemRead_out(id_ex_memRead_out), .MemWrite_out(id_ex_memWrite_out));
 WB_Register ID_EX_WriteBack(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .RegWrite_in(id_ex_regWrite_in), .MemToReg_in(id_ex_memToReg_in), .RegWrite_out(id_ex_regWrite_out), .MemToReg_out(id_ex_memToReg_out));
 
-Branch_Decision_Unit branch_unit(.take_branch(take_branch), .flags(flags), .C(ccc));
+Branch_Decision_Unit branch_unit(.take_branch(take_branch), .opcode(dec_instr[15:12]), .flags(flags), .C(ccc));
 
 //Halt logic
 //dff halt_signal(.q(hlt), .d(1'b1), .wen(isHaltInstr), .clk(clk), .rst(~rst_n));
@@ -115,7 +110,7 @@ assign address_to_add_to_pc_for_b_or_br = (dec_instr[15:12] == 4'b1100) ? dec_pc
 
 //Memory
 
-assign id_ex_data1_in = srcData1;								// Otherwise, use register file data unmodified
+assign id_ex_data1_in = (dec_instr[15:12] == 4'b1110) ? if_id_pc_add_2_out : srcData1;		// If PCS, pass the PC forward and the ALU will know how to handle it
 
 assign id_ex_data2_in = (dec_instr[15:12] == 4'b1010) ? {8'b0, dec_instr[7:0]} :		// Use byte from instruction for LLB
 			(dec_instr[15:12] == 4'b1011) ? {dec_instr[7:0], 8'b0} :		// Use byte from instruction for LHB
@@ -157,7 +152,7 @@ assign aluSrc2_mem_to_ex_fwd = (fwd_mem_to_ex_srcReg2 & ~id_ex_is_LLB_or_LHB_out
 assign aluSrc1 = aluSrc1_mem_to_ex_fwd;
 assign aluSrc2 = aluSrc2_mem_to_ex_fwd;
 
-ALU alu_module(.Opcode(id_ex_aluOp_out), .Input1(aluSrc1), .Input2(aluSrc2), .Output(ex_mem_alu_result_in), .flagsOut(flags));
+ALU alu_module(.clk(clk), .rst(~rst_n), .Opcode(id_ex_aluOp_out), .Input1(aluSrc1), .Input2(aluSrc2), .Output(ex_mem_alu_result_in), .flags_out(flags));
 
 assign ex_mem_dataIn_in = id_ex_rd2_out; //as per zybooks diagram, value of reg2 from dec/ex pipeline should be used as the data in
 
