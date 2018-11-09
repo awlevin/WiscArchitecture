@@ -1,4 +1,6 @@
-module Fetch_Decode_Reg(clk, rst_n, pc_add_in, pc_add_out, instr_in, instr_out);
+// Old design. See Fetch_Decode_Reg.v
+
+module Fetch_Decode_Reg_outdated(clk, rst_n, pc_add_in, pc_add_out, instr_in, instr_out);
 
 input clk, rst_n;
 input [15:0] pc_add_in, instr_in;

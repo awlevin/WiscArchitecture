@@ -170,7 +170,7 @@ module cpu_master_tb();
   assign MemRead = (DUT.ex_mem_memRead_out & ~DUT.ex_mem_memWrite_out);
   // Is memory being read, one bit signal (1 means yes, 0 means no)
    
-  assign MemWrite = (DUT.ex_mem_memRead_out & DUT.ex_mem_memWrite_out);
+  assign MemWrite = (~DUT.ex_mem_memRead_out & DUT.ex_mem_memWrite_out);
   // Is memory being written to (1 bit signal)
    
   assign MemAddress = DUT.ex_mem_alu_result_out;

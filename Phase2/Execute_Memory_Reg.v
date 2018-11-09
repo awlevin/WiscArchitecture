@@ -14,4 +14,5 @@ dff zero(.clk(clk), .rst(~rst_n), .q(zero_out), .d(zero_in), .wen(1'b1));
 dff_4bit dstReg(.clk(clk), .rst(~rst_n), .q(dstReg_out), .d(dstReg_in), .wen(1'b1));
 dff_4bit srcReg1(.clk(clk), .rst(~rst_n), .q(srcReg1_out), .d(srcReg1_in), .wen(1'b1));
 dff_4bit srcReg2(.clk(clk), .rst(~rst_n), .q(srcReg2_out), .d(srcReg2_in), .wen(1'b1));
+
 endmodule
