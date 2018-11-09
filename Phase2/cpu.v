@@ -24,6 +24,7 @@ wire [2:0] flags; // FLAGS ==>> (Z, V, N)
 wire is_LLB_or_LHB;
 wire id_ex_regWrite_in,id_ex_memToReg_in,id_ex_memRead_in,id_ex_memWrite_in,id_ex_aluSrc_in,id_ex_is_LLB_or_LHB_out;
 wire [3:0] id_ex_srcReg1_out, id_ex_srcReg2_out;
+wire take_branch;
 
 // Execute Wires
 wire id_ex_aluSrc_out;
@@ -65,7 +66,7 @@ Hazard_Detection_Unit hazard_unit(.stall_en(stall_en), .dec_opcode(dec_instr[15:
 ////////////////////////
 // PIPELINE REGISTERS //
 ////////////////////////
-Fetch_Decode_Reg IF_ID_Reg(.clk(clk), .rst_n(rst_n), .stall_en(stall_en), .pc_add_in(pc_plus_2), .pc_add_out(if_id_pc_add_2_out), .instr_in(instr), .instr_out(dec_instr));
+Fetch_Decode_Reg IF_ID_Reg(.clk(clk), .rst_n(rst_n), .flush_en(take_branch), .stall_en(stall_en), .pc_add_in(pc_plus_2), .pc_add_out(if_id_pc_add_2_out), .instr_in(instr), .instr_out(dec_instr));
 Decode_Execute_Reg ID_EX_Reg(.clk(clk), .rst_n(~rst_id_ex_reg), .stall_en(stall_en), .rd1_in(id_ex_data1_in), .rd2_in(id_ex_data2_in), .rd1_out(id_ex_rd1_out), .rd2_out(id_ex_rd2_out), .sign_ext_in(dec_ex_sign_ext_alu_offset_in), .sign_ext_out(dec_ex_sign_ext_alu_offset_out), .dstReg_in(id_ex_dstReg_in), .dstReg_out(id_ex_dstReg_out), .srcReg1_in(srcReg1), .srcReg1_out(id_ex_srcReg1_out),.srcReg2_in(srcReg2), .srcReg2_out(id_ex_srcReg2_out),.is_LLB_or_LHB_in(is_LLB_or_LHB),.is_LLB_or_LHB_out(id_ex_is_LLB_or_LHB_out));
 Execute_Memory_Reg EX_MEM_Reg(.clk(clk), .rst_n(rst_n), .zero_in(), .zero_out(), .alu_result_in(ex_mem_alu_result_in), .alu_result_out(ex_mem_alu_result_out), .dataIn_in(ex_mem_dataIn_in), .dataIn_out(ex_mem_dataIn_out), .dstReg_in(id_ex_dstReg_out), .dstReg_out(ex_mem_dstReg_out),.srcReg1_in(id_ex_srcReg1_out),.srcReg1_out(ex_mem_srcReg1_out),.srcReg2_in(id_ex_srcReg2_out),.srcReg2_out(ex_mem_srcReg2_out));
 Memory_WriteBack_Reg MEM_WB_Reg(.clk(clk), .rst_n(rst_n), .read_data_in(mem_wb_read_memData_in), .read_data_out(mem_wb_read_data_out), .alu_result_in(ex_mem_alu_result_out), .alu_result_out(mem_wb_alu_result_out), .dstReg_in(ex_mem_dstReg_out), .dstReg_out(mem_wb_dstReg_out));
@@ -78,7 +79,7 @@ memory1c instruction_mem(.clk(clk), .rst(~rst_n), .data_out(instr), .data_in(16'
 adder_16bit pc_add_2_module(.A(pc_out), .B(16'h0002), .Sub(1'b0), .Sum(pc_plus_2), .Zero(), .Ovfl(), .Sign());
 
 assign PCSrc = (dec_instr[15:12] == 4'hC | dec_instr[15:12] == 4'hD); // true if instr is a B or BR
-assign next_pc = (PCSrc) ? pc_with_branch : pc_plus_2;
+assign next_pc = (PCSrc & take_branch) ? pc_with_branch : pc_plus_2;
 assign next_pc_or_halt = hlt ? pc_out : next_pc;
 
 /////////////////////
@@ -87,6 +88,8 @@ assign next_pc_or_halt = hlt ? pc_out : next_pc;
 EX_Register ID_EX_Ex(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .ALUSrc_in(id_ex_aluSrc_in), .ALUOp_in(id_ex_aluOp_in), .ALUSrc_out(id_ex_aluSrc_out), .ALUOp_out(id_ex_aluOp_out));
 M_Register ID_EX_Mem(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .MemRead_in(id_ex_memRead_in), .MemWrite_in(id_ex_memWrite_in), .MemRead_out(id_ex_memRead_out), .MemWrite_out(id_ex_memWrite_out));
 WB_Register ID_EX_WriteBack(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .RegWrite_in(id_ex_regWrite_in), .MemToReg_in(id_ex_memToReg_in), .RegWrite_out(id_ex_regWrite_out), .MemToReg_out(id_ex_memToReg_out));
+
+Branch_Decision_Unit branch_unit(.take_branch(take_branch), .flags(flags), .C(ccc));
 
 //Halt logic
 //dff halt_signal(.q(hlt), .d(1'b1), .wen(isHaltInstr), .clk(clk), .rst(~rst_n));
@@ -125,7 +128,6 @@ assign id_ex_memWrite_in = dec_instr[15:12] == 4'h9; //SW
 											
 //WriteBack
 
-//TODO SHOULD LHB/LLB be here?
 // If a reg value must be updated
 assign id_ex_regWrite_in =  ~dec_instr[15] | //ALU Op 
 				id_ex_memRead_in|//LW
