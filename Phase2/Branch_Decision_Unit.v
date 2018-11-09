@@ -2,6 +2,7 @@ module Branch_Decision_Unit(take_branch, opcode, flags, C);
 
 input [2:0] flags, C;		// ccc - condition encodings
 input [3:0] opcode;
+
 output take_branch;
 
 wire b_or_br_opcode, condition_met;
