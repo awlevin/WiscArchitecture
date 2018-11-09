@@ -41,8 +41,7 @@ SW R1, R5, 4	 //Memory[0xF004] = 0xED37
 SW R5, R5, 6	 //Memory[0xF008] = 0xEFFC
 
 LW R3, R5, 6	 //R3 = Memory[0xF008] = 0xEFFC
-ADD R0,R0,R0	 //Used as NOPs, don't trust R0's value
-
+// Stall here
 LW R2, R3, 0	 //R2 = Memory[0xEFFC] = 0x34ED
 LW R1, R3, 2	 //R1 = Memory[0xF000] = 0x00D2
 LW R4, R3, 4	 //R4 = Memory[0xF004] = 0xED37
@@ -54,19 +53,43 @@ ADD R3,R3,R1 	 //R3 = 0xEFFC + 0x00D2 = 0xF0CE
 LHB R3, 0xFA 	 //R3 = 0xFACE
 LLB R3, 0xDE 	 //R3 = 0xFADE = -1314 and 0xF000 = -4096
 
+SW R6, R1, 0	 //Memory[0x00D2] = 0x5678
+
 LLB R3, 0x00
 LHB R3, 0xF0
 LW R5,R3,0 	 //R5 = Memory[0xF000] = 0x00D2
 
+// Should stall here
+
 // Mem-to-Mem tests
-SW R5, R3, 4	 //Memory[0xF004] = 0x00D2
-LW R6, R3, 4	 //R6 = Memory[0xF004] = 0x00D2
+SW R5, R3, 4	 //Memory[0xF008] = 0x00D2
+LW R6, R3, 4	 //R6 = Memory[0xF008] = 0x00D2
+
+// Stall tests
+// Stall here
+LW R4, R6, 0	 //R4 = Memory[0x00D2] = 0x5678
+// Stall here
+ADD R1, R4, R1	 //R1 = 0x5678 + 0x00D2 = 0x574A
+LW R7, R6, 0	 //R7 = Memory[0x00D2] = 0x5678
+// Stall here
+ADD R2, R1, R7	 //R2 = 0x574A + 0x5678 = 0x7FFF (saturates)
+LW R4, R6, 0	 //R4 = Memory[0x00D2] = 0x5678
+// Stall here
+SLL R1, R4, 5	 //R1 = 0x5678 << 5 = 0xCF00
+LW R7, R6, 0	 //R7 = Memory[0x00D2] = 0x5678   - Don't stall here
+ROR R2, R1, 3	 //R2 = 0xCF00 ROR 3 = 0x19E0
+LW R4, R3, 4	 //R4 = Memory[0xF008] = 0x00D2
+// Stall here
+SW R2, R4, 2	 //Memory[0x00D6] = 0x19E0
+LW R1, R5, 2	 //Memory[0x00D6] = 0x19E0
+// Stall here
+XOR R1, R1, R2	 //R1 = 0x19E0 ^ 0x19E0 = 0x0000
 
 ADD R0,R0,R0	 //Used as NOPs, don't trust R0's value
 ADD R0,R0,R0
 ADD R0,R0,R0
 ADD R0,R0,R0
-ADD R0,R0,R0	 //Used as NOPs, don't trust R0's value
+ADD R0,R0,R0
 ADD R0,R0,R0
 ADD R0,R0,R0
 ADD R0,R0,R0
