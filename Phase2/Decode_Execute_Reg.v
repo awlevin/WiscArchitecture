@@ -9,13 +9,16 @@ output is_LLB_or_LHB_out;
 output [3:0] dstReg_out,srcReg1_out,srcReg2_out;
 output [15:0] rd1_out, rd2_out, sign_ext_out;
 
-dff_16bit rd1(.clk(clk), .rst(~rst_n), .q(rd1_out), .d(rd1_in), .wen(~stall_en));
-dff_16bit rd2(.clk(clk), .rst(~rst_n), .q(rd2_out), .d(rd2_in), .wen(~stall_en));
-dff_16bit sign_ext(.clk(clk), .rst(~rst_n), .q(sign_ext_out), .d(sign_ext_in), .wen(~stall_en));
+wire rst;
+assign rst = ~rst_n | stall_en;
 
-dff_4bit dstReg(.clk(clk), .rst(~rst_n), .q(dstReg_out), .d(dstReg_in), .wen(~stall_en));
-dff_4bit srcReg1(.clk(clk), .rst(~rst_n), .q(srcReg1_out), .d(srcReg1_in), .wen(~stall_en));
-dff_4bit srcReg2(.clk(clk), .rst(~rst_n), .q(srcReg2_out), .d(srcReg2_in), .wen(~stall_en));
+dff_16bit rd1(.clk(clk), .rst(rst), .q(rd1_out), .d(rd1_in), .wen(1'b1));
+dff_16bit rd2(.clk(clk), .rst(rst), .q(rd2_out), .d(rd2_in), .wen(1'b1));
+dff_16bit sign_ext(.clk(clk), .rst(rst), .q(sign_ext_out), .d(sign_ext_in), .wen(1'b1));
 
-dff is_llb_or_lhb(.clk(clk), .rst(~rst_n), .q(is_LLB_or_LHB_out), .d(is_LLB_or_LHB_in), .wen(~stall_en));
+dff_4bit dstReg(.clk(clk), .rst(rst), .q(dstReg_out), .d(dstReg_in), .wen(1'b1));
+dff_4bit srcReg1(.clk(clk), .rst(rst), .q(srcReg1_out), .d(srcReg1_in), .wen(1'b1));
+dff_4bit srcReg2(.clk(clk), .rst(rst), .q(srcReg2_out), .d(srcReg2_in), .wen(1'b1));
+
+dff is_llb_or_lhb(.clk(clk), .rst(rst), .q(is_LLB_or_LHB_out), .d(is_LLB_or_LHB_in), .wen(~stall_en));
 endmodule

@@ -18,10 +18,11 @@ wire [8:0] pc_control_immediate;
 wire [15:0] dec_ex_sign_ext_alu_offset_in, dec_ex_sign_ext_alu_offset_out, id_ex_data1_in, id_ex_data2_in;
 wire [2:0] ccc;
 wire [2:0] flags; // FLAGS ==>> (Z, V, N)
-wire is_LLB_or_LHB;
+wire is_LLB_or_LHB, b_or_br_opcode;
 wire id_ex_regWrite_in,id_ex_memToReg_in,id_ex_memRead_in,id_ex_memWrite_in,id_ex_aluSrc_in,id_ex_is_LLB_or_LHB_out;
 wire [3:0] id_ex_srcReg1_out, id_ex_srcReg2_out;
 wire take_branch;
+wire hasStalled,shouldStall;
 wire [3:0] if_id_opcode_out;
 
 // Execute Wires
@@ -56,10 +57,11 @@ ForwardingUnit fwd_unit(.ex_mem_dstReg(ex_mem_dstReg_out), .id_ex_srcReg1(id_ex_
 ////////////////////////
 //  HAZARD DETECTION  //
 ////////////////////////
-wire stall_en, rst_id_ex_reg;
+wire hazard_stall_en,branch_stall_en,stall_en, rst_id_ex_reg;
+assign stall_en = hazard_stall_en | branch_stall_en;
 assign rst_id_ex_reg = (~rst_n | stall_en);
 assign if_id_opcode_out = dec_instr[15:12];
-Hazard_Detection_Unit hazard_unit(.stall_en(stall_en), .dec_opcode(if_id_opcode_out), .id_ex_dstReg_out(id_ex_dstReg_out), .srcReg1(srcReg1), .srcReg2(srcReg2), .id_ex_memRead_in(id_ex_memRead_in), .id_ex_memRead_out(id_ex_memRead_out));
+Hazard_Detection_Unit hazard_unit(.stall_en(hazard_stall_en), .dec_opcode(if_id_opcode_out), .id_ex_dstReg_out(id_ex_dstReg_out), .srcReg1(srcReg1), .srcReg2(srcReg2), .id_ex_memRead_in(id_ex_memRead_in), .id_ex_memRead_out(id_ex_memRead_out));
 
 ////////////////////////
 // PIPELINE REGISTERS //
@@ -89,7 +91,13 @@ WB_Register ID_EX_WriteBack(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en),
 
 assign decoded_instr_type = dec_instr[15:12];
 //TODO flags cannot be used directly from the alu unit as this would increase pipeline latency. The value must be pipelined and used the next cycle (fwd'ing happens the cycle AFTER, not the same cycle, similar to a ex to ex fwd)
-Branch_Decision_Unit branch_unit(.take_branch(take_branch), .opcode(decoded_instr_type), .flags(flags), .C(ccc));
+assign b_or_br_opcode = (decoded_instr_type == 4'hC | decoded_instr_type == 4'hD); // true if instr is a B or BR
+
+
+assign shouldStall = b_or_br_opcode & ~hasStalled; //if instr is a B or BR and the unit has not previously stalled
+dff stallStatus(.clk(clk), .rst(~rst_n), .q(hasStalled), .d(shouldStall), .wen(1'b1));
+
+Branch_Decision_Unit branch_unit(.take_branch(take_branch), .stall_en(branch_stall_en),.hasStalled(hasStalled), .opcode(decoded_instr_type), .flags(flags), .C(ccc));
 
 //Halt logic
 //dff halt_signal(.q(hlt), .d(1'b1), .wen(isHaltInstr), .clk(clk), .rst(~rst_n));
@@ -125,7 +133,7 @@ assign id_ex_data1_in = (decoded_instr_type == 4'b1110) ? if_id_pc_add_2_out : s
 
 assign id_ex_data2_in = (decoded_instr_type == 4'b1010) ? {8'b0, dec_instr[7:0]} :		// Use byte from instruction for LLB
 			(decoded_instr_type == 4'b1011) ? {dec_instr[7:0], 8'b0} :		// Use byte from instruction for LHB
-			(decoded_instr_type == 3'b010) | (decoded_instr_type == 4'b0110) ? 
+			(dec_instr[15:13]  == 3'b010) | (decoded_instr_type == 4'b0110) ? 
 							{12'b0, dec_instr[3:0]} :		// Use 4-bit value for SLL, SRA, ROR
 			srcData2;								// Otherwise, use register file data unmodified
 
@@ -173,7 +181,6 @@ assign ex_mem_dataIn_in = id_ex_rd2_out; //as per zybooks diagram, value of reg2
 /////////////////////
 
 //TODO is memRead ever used? Also, since enable is a thing, if we used original signal(ex_mem_memWrite_out), will mem unit still work correctly?
-
 assign memEnable = ~hlt & (ex_mem_memRead_out | ex_mem_memWrite_out); // instr must be a read or write (& not a halt)
 assign data_mem_data_in = (fwd_mem_to_mem) ? writeback_write_data : ex_mem_dataIn_out;
 
