@@ -30,7 +30,9 @@ assign llb_result = (Input1 & 16'hFF00) | Input2;
 assign lhb_result = (Input1 & 16'h00FF) | Input2; 
 
 FlagsRegister flags_dff(.clk(clk), .rst(rst), .set(set_flags), .flags_in(flags), .flags_out(flags_dff_out));
-assign flags_out = (set_flags) ? flags : flags_dff_out;
+
+//assign flags_out = (set_flags) ? flags : flags_dff_out;
+assign flags_out = flags_dff_out;
 
 assign set_flags = ((Opcode != 4'b0111) && (Opcode != 4'b0011) && (Opcode[3] != 1'b1)); // don't update flags on RED, PADDSB, LW/SW/LHB/LLB/B/BR/PCS
 
