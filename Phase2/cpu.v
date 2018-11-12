@@ -137,7 +137,7 @@ assign id_ex_data2_in = (decoded_instr_type == 4'b1010) ? {8'b0, dec_instr[7:0]}
 			(decoded_instr_type == 4'b1011) ? {dec_instr[7:0], 8'b0} :		// Use byte from instruction for LHB
 			(dec_instr[15:13]  == 3'b010) | (decoded_instr_type == 4'b0110) ? 
 							{12'b0, dec_instr[3:0]} :		// Use 4-bit value for SLL, SRA, ROR
-			is_PCS ? 16'h0002:							// If pcs, add two to address since pc + 2 is off by 2
+			is_PCS ? 16'h0000:							// If pcs, add two to address since pc + 2 is off by 2
 			srcData2;								// Otherwise, use register file data unmodified
 
 assign id_ex_memRead_in = decoded_instr_type == 4'h8; //LW
