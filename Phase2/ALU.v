@@ -54,7 +54,7 @@ case(Opcode)
 	//All 1's is a random choice as none of these results should be used
 	4'b1100 : begin Output = 16'hFFFF; flags = 3'b111; end
 	4'b1101 : begin Output = 16'hFFFF; flags = 3'b111; end
-	4'b1110 : begin Output = Input1; flags = 3'b111; end 	// PCS
+	4'b1110 : begin Output = adderResult; flags = 3'b111; end 	// PCS
 	4'b1111 : begin Output = 16'hFFFF; flags = 3'b111; end
 	default : begin Output = 16'hFFFF; flags = 3'b111; end
 endcase

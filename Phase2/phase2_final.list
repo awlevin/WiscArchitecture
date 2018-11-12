@@ -7,6 +7,7 @@ Everthing_Worked:
 Normal_Execution:
 	LLB R1, 0x02
 	LHB R1,	0x00
+	ADD R0,R0,R1
 	ADD R7, R7,R0 #We need to add 2 to R0,which holds the addr of the everything_worked halt
 
 # Initialize registers
