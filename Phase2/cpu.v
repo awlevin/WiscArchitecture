@@ -1,12 +1,11 @@
-module cpu(clk, rst_n, hlt, pc);
+module cpu(clk, rst_n, hlt, pc_out);
 
 input clk, rst_n;
 output hlt;
-output [15:0] pc;
+output [15:0] pc_out;
 
 // PC Wires
 wire [15:0] next_pc, pc_out, pc_plus_2, address_to_add_to_pc_for_b_or_br, dec_pc_imm_shftd_sign_ext, pc_with_branch;
-assign pc = pc_out;
 
 // Instruction
 wire [15:0] instr;
