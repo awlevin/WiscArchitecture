@@ -79,7 +79,7 @@ L9:	SW R8, R4, 2	# 24 -> mem[0xff04]
 	LLB R7, 0x1a	# R7 = 26(decimal)
 	PCS R10		# R10 = PC
 	ADD R10, R10, R7	# R10 = R10 + 26
-	BR 000, R10	# Non-zero so branch to value in R10, see comments below
+	B 111, ALU_TEST	# Branch to alu tests
 # If we're here we branched incorrectly
 LB0:	HLT
 LB1:	HLT
@@ -91,6 +91,9 @@ LB6:	HLT
 LB7:	HLT
 LB8:	HLT
 LB9:	HLT
+
+ALU_TEST:
+
 # Branch here from BR instruction
 # Test ALU
 	LLB R10, 0x0A	# R10 = 10
