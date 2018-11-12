@@ -154,10 +154,10 @@ LB9:	HLT
 
 #Check flushing works correctly
 Flushing_Check:
-	
+
 
 # If we're here everything worked
-	HLT
+	BR 111,R0 # BR to correct halt
 
 # If we're here our ALU was incorrect
 LALU0:	HLT
