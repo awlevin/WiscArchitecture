@@ -85,9 +85,9 @@ assign next_pc_or_halt = hlt ? pc_out : next_pc;
 /////////////////////
 //       ID	   //
 /////////////////////
-EX_Register ID_EX_Ex(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .ALUSrc_in(id_ex_aluSrc_in), .ALUOp_in(id_ex_aluOp_in), .ALUSrc_out(id_ex_aluSrc_out), .ALUOp_out(id_ex_aluOp_out));
-M_Register ID_EX_Mem(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .MemRead_in(id_ex_memRead_in), .MemWrite_in(id_ex_memWrite_in), .MemRead_out(id_ex_memRead_out), .MemWrite_out(id_ex_memWrite_out));
-WB_Register ID_EX_WriteBack(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .RegWrite_in(id_ex_regWrite_in), .MemToReg_in(id_ex_memToReg_in), .RegWrite_out(id_ex_regWrite_out), .MemToReg_out(id_ex_memToReg_out));
+EX_Register ID_EX_Ex(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .flush_en(take_branch), .ALUSrc_in(id_ex_aluSrc_in), .ALUOp_in(id_ex_aluOp_in), .ALUSrc_out(id_ex_aluSrc_out), .ALUOp_out(id_ex_aluOp_out));
+M_Register ID_EX_Mem(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .flush_en(take_branch), .MemRead_in(id_ex_memRead_in), .MemWrite_in(id_ex_memWrite_in), .MemRead_out(id_ex_memRead_out), .MemWrite_out(id_ex_memWrite_out));
+WB_Register ID_EX_WriteBack(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .flush_en(take_branch), .RegWrite_in(id_ex_regWrite_in), .MemToReg_in(id_ex_memToReg_in), .RegWrite_out(id_ex_regWrite_out), .MemToReg_out(id_ex_memToReg_out));
 
 assign decoded_instr_type = dec_instr[15:12];
 //TODO flags cannot be used directly from the alu unit as this would increase pipeline latency. The value must be pipelined and used the next cycle (fwd'ing happens the cycle AFTER, not the same cycle, similar to a ex to ex fwd)
@@ -159,8 +159,8 @@ RegisterFile regFile(.clk(clk), .rst(~rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg
 /////////////////////
 //       EX	   //
 /////////////////////
-M_Register EX_MEM_Mem(.clk(clk), .rst(~rst_n), .stall_en(1'b0), .MemRead_in(id_ex_memRead_out), .MemWrite_in(id_ex_memWrite_out), .MemRead_out(ex_mem_memRead_out), .MemWrite_out(ex_mem_memWrite_out));
-WB_Register EX_MEM_WriteBack(.clk(clk), .rst(~rst_n), .stall_en(1'b0), .RegWrite_in(id_ex_regWrite_out), .MemToReg_in(id_ex_memToReg_out), .RegWrite_out(ex_mem_regWrite_out), .MemToReg_out(ex_mem_memToReg_out));
+M_Register EX_MEM_Mem(.clk(clk), .rst(~rst_n), .stall_en(1'b0), .flush_en(1'b0), .MemRead_in(id_ex_memRead_out), .MemWrite_in(id_ex_memWrite_out), .MemRead_out(ex_mem_memRead_out), .MemWrite_out(ex_mem_memWrite_out));
+WB_Register EX_MEM_WriteBack(.clk(clk), .rst(~rst_n), .stall_en(1'b0), .flush_en(1'b0), .RegWrite_in(id_ex_regWrite_out), .MemToReg_in(id_ex_memToReg_out), .RegWrite_out(ex_mem_regWrite_out), .MemToReg_out(ex_mem_memToReg_out));
 
 assign aluSrc1_ex_to_ex_fwd = (fwd_ex_to_ex_srcReg1) ? ex_mem_alu_result_out : id_ex_rd1_out;
 assign aluSrc1_mem_to_ex_fwd = (fwd_mem_to_ex_srcReg1) ? writeback_write_data : aluSrc1_ex_to_ex_fwd;
@@ -186,7 +186,7 @@ assign data_mem_data_in = (fwd_mem_to_mem) ? writeback_write_data : ex_mem_dataI
 
 memory1c data_mem(.clk(clk), .rst(~rst_n), .data_out(mem_wb_read_memData_in), .data_in(data_mem_data_in), .addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
 
-WB_Register MEM_WB_WriteBack(.clk(clk), .rst(~rst_n), .stall_en(1'b0), .RegWrite_in(ex_mem_regWrite_out), .MemToReg_in(ex_mem_memToReg_out), .RegWrite_out(mem_wb_regWrite_out), .MemToReg_out(mem_wb_memToReg_out));
+WB_Register MEM_WB_WriteBack(.clk(clk), .rst(~rst_n), .stall_en(1'b0), .flush_en(1'b0), .RegWrite_in(ex_mem_regWrite_out), .MemToReg_in(ex_mem_memToReg_out), .RegWrite_out(mem_wb_regWrite_out), .MemToReg_out(mem_wb_memToReg_out));
 assign writeback_write_data = (mem_wb_memToReg_out) ? mem_wb_read_data_out : mem_wb_alu_result_out;
 
 endmodule
