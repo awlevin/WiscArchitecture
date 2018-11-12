@@ -30,7 +30,9 @@ assign llb_result = (Input1 & 16'hFF00) | Input2;
 assign lhb_result = (Input1 & 16'h00FF) | Input2; 
 
 FlagsRegister flags_dff(.clk(clk), .rst(rst), .set(set_flags), .flags_in(flags), .flags_out(flags_dff_out));
-assign flags_out = (set_flags) ? flags : flags_dff_out;
+
+//assign flags_out = (set_flags) ? flags : flags_dff_out;
+assign flags_out = flags_dff_out;
 
 assign set_flags = ((Opcode != 4'b0111) && (Opcode != 4'b0011) && (Opcode[3] != 1'b1)); // don't update flags on RED, PADDSB, LW/SW/LHB/LLB/B/BR/PCS
 
@@ -52,7 +54,7 @@ case(Opcode)
 	//All 1's is a random choice as none of these results should be used
 	4'b1100 : begin Output = 16'hFFFF; flags = 3'b111; end
 	4'b1101 : begin Output = 16'hFFFF; flags = 3'b111; end
-	4'b1110 : begin Output = Input1; flags = 3'b111; end 	// PCS
+	4'b1110 : begin Output = adderResult; flags = 3'b111; end 	// PCS
 	4'b1111 : begin Output = 16'hFFFF; flags = 3'b111; end
 	default : begin Output = 16'hFFFF; flags = 3'b111; end
 endcase
