@@ -144,7 +144,7 @@ LB9:	HLT
 	SUB R3, R3, R13	# R3 = 0x005E - 0x005E = 0 so don't branch
 	B 000, LALU6
 
-#BR, br w/ fwd b4 and after, Flush test,mem to ex, mem to
+#BR, br w/ fwd b4 and after, Flush test, mem to ex, mem to mem
 #More stuff
 	#R3 = 0
 	#B 111,2 after
@@ -154,10 +154,36 @@ LB9:	HLT
 
 #Check flushing works correctly
 Flushing_Check:
+	LLB R1, 0x00
+	LHB R1, 0x00 // R1 = 0x0000
+	LLB R2, 0x01
+	LHB R2, 0x00 // R2 = 0x0001
+	LLB R3, 0x02
+	LHB R3, 0x00 // R3 = 0x0002
+	LLB R4, 0x04
+	LHB R4, 0x00 // R4 = 0x0004
+	B 111, SKIP_ADD
+	ADD R3,R3,R2 //If this line executes, then flushing isn't working
+SKIP_ADD:
+	ADD R3, R3, R3 //R3 = 0x0004, if flushing workings correctly
+	SUB R1, R3, R4 //R1 = 0x0
+	B 000, FLUSH0 //Branch if R1 isn't zero aka flushing didn't work
 
+Mem_to_Mem_Check:
+	SW R3, R4, 0 # Mem[0x0004] < 0x0004
+	LW R5, R4, 0 # R5 = Mem[0x0004] = 0x0004
+#Mem to mem fwd
+	SW R5, R1, 0 # Mem[0x0000] = 0x0004
+	LW R6, R1, 0 # R6 = Mem[0x0000] = 0x0004
+#Mem to ex fwd (1 stalled cycle)
+	SUB R7, R6, R3 # R7 = 4 - 4 = 0
+	B 000, MEM_FWD_ERR # br if R7 != 0
 
+WOO_EVERYTHING_WORKED:
 # If we're here everything worked
 	BR 111,R0 # BR to correct halt
+
+
 
 # If we're here our ALU was incorrect
 LALU0:	HLT
@@ -167,3 +193,6 @@ LALU3:	HLT
 LALU4:	HLT
 LALU5:	HLT
 LALU6:	HLT
+
+FLUSH0 : HLT
+MEM_FWD_ERR : HLT
