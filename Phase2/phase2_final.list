@@ -183,6 +183,32 @@ Mem_to_Mem_Check:
 	SUB R7, R6, R3 # R7 = 4 - 4 = 0
 	B 000, MEM_FWD_ERR # br if R7 != 0
 
+Branch_Register_Check:
+	SUB R10,R10,R10 # R10 = R10-R10 = 0
+	PCS R9 # Points to branch instr in next line
+	B 000, Mem_to_Ex_Fwd2 #should not be taken 1st time, should be taken second time
+	LLB R1, 0x01
+	LHB R1, 0x00 #R1 = 1
+	ADD R10,R10,R1 #R10 = 0 + 1 = 1
+#Should stall here for updating flags
+	BR 010,R9 #Since 1>0, br should be taken
+	# should stall here when branching to another branch
+
+Mem_to_Ex_Fwd2:
+	LHB R1,0x00
+	LLB R1,0x01 # R1 = 1
+	SUB R9,R9,R9 # R9 = 0, but this instr is used as a nop
+#Should forward both R9 and R10
+	SUB R10, R9, R1 # R10 = 0 - 1 = -1
+#Fwds to reg1 & reg2
+	ADD R9, R10, R10 # R9 = -1 + -1 = -2
+
+
+Check_Unconditional_No_Stall:
+	B 111, WOO_EVERYTHING_WORKED
+NOP:
+	ADD R1,R1,R1 # Lined should be skipped
+
 WOO_EVERYTHING_WORKED:
 # If we're here everything worked
 	BR 111,R0 # BR to correct halt
