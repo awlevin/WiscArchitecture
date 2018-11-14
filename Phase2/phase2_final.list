@@ -193,6 +193,30 @@ Branch_Register_Check:
 #Should stall here for updating flags
 	BR 010,R9 #Since 1>0, br should be taken
 	# should stall here when branching to another branch
+	
+Fwd_to_Branch_Register:
+# BR EX to ID fwd
+	LLB R11, 0x16
+	LHB R11, 0x00
+	PCS R8 # Points to add instr in next line
+	ADD R8, R8, R11
+	BR 111, R8 # Branches to PCS instr two lines below
+	B 111, Mem_to_ex_Fwd2 # 
+# BR Mem to ID fwd	
+	LLB R11, 0x0A
+	LLB R12, 0xED
+	LHB R12, 0xFE
+	PCS R6
+	SUB R6, R6, R11
+	SW R6, R12, 0
+	LW R5, R12, 0
+	BR 111, R5
+# BR Ex to ID fwd	
+	LLB R11, 0x14
+	PCS R7
+	SUB R7, R7, R11
+	LLB R11, 0x00 # 
+	BR 000, R7 # R7 != 0 so BR to B instr 4 lines above
 
 Mem_to_Ex_Fwd2:
 	LHB R1,0x00
