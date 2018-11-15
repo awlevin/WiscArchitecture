@@ -5,7 +5,7 @@ output hlt;
 output [15:0] pc_out;
 
 // PC Wires
-wire [15:0] next_pc, pc_out, pc_plus_2, address_to_add_to_pc_for_b_or_br, dec_pc_imm_shftd_sign_ext, pc_with_branch;
+wire [15:0] next_pc, pc_out, curr_pc, pc_plus_2, address_to_add_to_pc_for_b_or_br, dec_pc_imm_shftd_sign_ext, pc_with_branch;
 
 // Instruction
 wire [15:0] instr;
@@ -48,7 +48,7 @@ wire [15:0] data_mem_data_in;
 ////////////////////////
 //If an instruction is a halt, we must stop writing to registers, stop incrementing the pc, stop reading and writing to memory
 //Halt wires
-wire [15:0] next_pc_or_halt;
+wire [15:0] pc_from_cycle_before_halt_decoded;
 wire hlt_found;
 hlt_register hlt_reg(.clk(clk), .rst_n(rst_n), .hlt_found(hlt_found), .hlt(hlt));
 
@@ -78,13 +78,13 @@ Memory_WriteBack_Reg MEM_WB_Reg(.clk(clk), .rst_n(rst_n), .read_data_in(mem_wb_r
 /////////////////////
 //     FETCH	   //
 /////////////////////
-PC_Register pc_register(.clk(clk), .rst(~rst_n), .stall_en(stall_en), .next_pc(next_pc_or_halt), .pc_out(pc_out));
+PC_Register pc_register(.clk(clk), .rst(~rst_n), .stall_en(stall_en), .next_pc(next_pc), .pc_out(curr_pc));
 memory1c instruction_mem(.clk(clk), .rst(~rst_n), .data_out(instr), .data_in(16'h0000), .addr(pc_out), .enable(rst_n), .wr(1'b0));
 adder_16bit pc_add_2_module(.A(pc_out), .B(16'h0002), .Sub(1'b0), .Sum(pc_plus_2), .Zero(), .Ovfl(), .Sign());
+dff_16bit pc_before_halt(.clk(clk), .rst(~rst_n), .d(pc_out), .q(pc_from_cycle_before_halt_decoded), .wen(1'b1));
 
 assign next_pc = (take_branch) ? pc_with_branch : pc_plus_2;
-//assign next_pc = pc_plus_2;
-assign next_pc_or_halt = hlt_found ? pc_out : next_pc;
+assign pc_out = hlt_found ? pc_from_cycle_before_halt_decoded : curr_pc;
 
 /////////////////////
 //       ID	   //
@@ -95,7 +95,6 @@ M_Register ID_EX_Mem(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .flush
 WB_Register ID_EX_WriteBack(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .flush_en(takeBranchOrFlush), .RegWrite_in(id_ex_regWrite_in), .MemToReg_in(id_ex_memToReg_in), .RegWrite_out(id_ex_regWrite_out), .MemToReg_out(id_ex_memToReg_out));
 
 assign decoded_instr_type = dec_instr[15:12];
-//TODO flags cannot be used directly from the alu unit as this would increase pipeline latency. The value must be pipelined and used the next cycle (fwd'ing happens the cycle AFTER, not the same cycle, similar to a ex to ex fwd)
 assign is_b_instr = (decoded_instr_type == 4'hC);
 assign is_br_instr = (decoded_instr_type == 4'hD);
 assign b_or_br_opcode = (is_b_instr | is_br_instr); // true if instr is a B or BR
@@ -130,9 +129,6 @@ assign address_to_add_to_pc_for_b_or_br =
 			(decoded_instr_type == 4'b1100) ? dec_pc_imm_shftd_sign_ext :  //Branch instr
 			((decoded_instr_type == 4'b1101) ? srcData1 : //Branch Reg instr
 				16'hFFFF); // Default case
-
-
-//  16'hFFFF is a default case and the value of the sum is not use
 
 //Memory
 
@@ -187,7 +183,6 @@ assign ex_mem_dataIn_in = id_ex_rd2_out; //as per zybooks diagram, value of reg2
 //       MEM	   //
 /////////////////////
 
-//TODO is memRead ever used? Also, since enable is a thing, if we used original signal(ex_mem_memWrite_out), will mem unit still work correctly?
 assign memEnable = (ex_mem_memRead_out | ex_mem_memWrite_out); // instr must be a read or write (& not a halt)
 assign data_mem_data_in = (fwd_mem_to_mem) ? writeback_write_data : ex_mem_dataIn_out;
 

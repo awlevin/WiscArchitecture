@@ -131,28 +131,22 @@ module cpu_ptb();
 
    // Edit the example below. You must change the signal
    // names on the right hand side
-    
-//   assign PC = DUT.fetch0.pcCurrent; //You won't need this because it's part of the main cpu interface
-   
-//   assign Halt = DUT.memory0.halt; //You won't need this because it's part of the main cpu interface
-   // Is processor halted (1 bit signal)
-   
 
-  assign Inst = DUT.instr;//DUT.fetch0.instr;
+  assign Inst = DUT.instr;
    
   assign RegWrite = DUT.mem_wb_regWrite_out;
   // Is memory being read, one bit signal (1 means yes, 0 means no)
    
-  assign WriteRegister = DUT.mem_wb_dstReg_out;//Dst reg??
+  assign WriteRegister = DUT.mem_wb_dstReg_out;
   // The name of the register being written to. (4 bit signal)
 
   assign WriteData = DUT.writeback_write_data;
   // Data being written to the register. (16 bits)
    
-  assign MemRead = (DUT.ex_mem_memRead_out & ~DUT.ex_mem_memWrite_out);
+  assign MemRead = DUT.ex_mem_memRead_out;
   // Is memory being read, one bit signal (1 means yes, 0 means no)
    
-  assign MemWrite = (~DUT.ex_mem_memRead_out & DUT.ex_mem_memWrite_out);
+  assign MemWrite = DUT.ex_mem_memWrite_out;
   // Is memory being written to (1 bit signal)
    
   assign MemAddress = DUT.ex_mem_alu_result_out;
@@ -160,9 +154,6 @@ module cpu_ptb();
    
   assign MemData = DUT.ex_mem_dataIn_in;
   // Data to be written to memory for memory writes (16 bits)
-   
-//  assign Halt = DUT.memory0.halt; //You won't need this because it's part of the main cpu interface
-  // Is processor halted (1 bit signal)
 
   assign MemDataIn = DUT.ex_mem_dataIn_out;
 
