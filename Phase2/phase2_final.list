@@ -186,7 +186,7 @@ Mem_to_Mem_Check:
 Branch_Register_Check:
 	SUB R10,R10,R10 # R10 = R10-R10 = 0
 	PCS R9 # Points to branch instr in next line
-	B 000, Mem_to_Ex_Fwd2 #should not be taken 1st time, should be taken second time
+	B 000, Fwd_to_Branch_Register #should not be taken 1st time, should be taken second time
 	LLB R1, 0x01
 	LHB R1, 0x00 #R1 = 1
 	ADD R10,R10,R1 #R10 = 0 + 1 = 1

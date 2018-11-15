@@ -53,7 +53,7 @@ module memory1c (data_out, data_in, addr, enable, wr, clk, rst);
          //load loadfile_all.img
          if (!loaded) begin
             //$readmemh("test_with_hazards.img", mem);
-	    $readmemh("phase2_final.img", mem);
+	    $readmemh("test1.img", mem);
             loaded = 1;
          end
           

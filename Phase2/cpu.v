@@ -17,7 +17,7 @@ wire [8:0] pc_control_immediate;
 wire [15:0] dec_ex_sign_ext_alu_offset_in, dec_ex_sign_ext_alu_offset_out, id_ex_data1_in, id_ex_data2_in;
 wire [2:0] ccc;
 wire [2:0] flags; // FLAGS ==>> (Z, V, N)
-wire is_LLB_or_LHB, b_or_br_opcode;
+wire is_LLB_or_LHB, is_b_instr, is_br_instr, b_or_br_opcode;
 wire id_ex_regWrite_in,id_ex_memToReg_in,id_ex_memRead_in,id_ex_memWrite_in,id_ex_aluSrc_in,id_ex_is_LLB_or_LHB_out,is_PCS;
 wire [3:0] id_ex_srcReg1_out, id_ex_srcReg2_out;
 wire take_branch,takeBranchOrFlush;
@@ -42,10 +42,15 @@ wire [3:0] mem_wb_dstReg_out;
 wire mem_wb_memToReg_out, memEnable;
 wire [15:0] data_mem_data_in;
 
+
+////////////////////////
+//     HALT LOGIC     //
+////////////////////////
 //If an instruction is a halt, we must stop writing to registers, stop incrementing the pc, stop reading and writing to memory
 //Halt wires
 wire [15:0] next_pc_or_halt;
-wire regWrite_or_halt;
+wire hlt_found;
+hlt_register hlt_reg(.clk(clk), .rst_n(rst_n), .hlt_found(hlt_found), .hlt(hlt));
 
 ////////////////////////
 //  FORWARDING LOGIC  //
@@ -60,7 +65,7 @@ wire hazard_stall_en,branch_stall_en,stall_en, rst_id_ex_reg;
 assign stall_en = hazard_stall_en | branch_stall_en;
 assign rst_id_ex_reg = (~rst_n | stall_en);
 assign if_id_opcode_out = dec_instr[15:12];
-Hazard_Detection_Unit hazard_unit(.stall_en(hazard_stall_en), .dec_opcode(if_id_opcode_out), .id_ex_dstReg_out(id_ex_dstReg_out), .srcReg1(srcReg1), .srcReg2(srcReg2), .id_ex_memRead_in(id_ex_memRead_in), .id_ex_memRead_out(id_ex_memRead_out));
+Hazard_Detection_Unit hazard_unit(.stall_en(hazard_stall_en), .dec_opcode(if_id_opcode_out), .id_ex_dstReg_out(id_ex_dstReg_out), .ex_mem_dstReg_out(ex_mem_dstReg_out), .srcReg1(srcReg1), .srcReg2(srcReg2), .id_ex_memRead_in(id_ex_memRead_in), .id_ex_memRead_out(id_ex_memRead_out));
 
 ////////////////////////
 // PIPELINE REGISTERS //
@@ -79,7 +84,7 @@ adder_16bit pc_add_2_module(.A(pc_out), .B(16'h0002), .Sub(1'b0), .Sum(pc_plus_2
 
 assign next_pc = (take_branch) ? pc_with_branch : pc_plus_2;
 //assign next_pc = pc_plus_2;
-assign next_pc_or_halt = hlt ? pc_out : next_pc;
+assign next_pc_or_halt = hlt_found ? pc_out : next_pc;
 
 /////////////////////
 //       ID	   //
@@ -91,17 +96,18 @@ WB_Register ID_EX_WriteBack(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en),
 
 assign decoded_instr_type = dec_instr[15:12];
 //TODO flags cannot be used directly from the alu unit as this would increase pipeline latency. The value must be pipelined and used the next cycle (fwd'ing happens the cycle AFTER, not the same cycle, similar to a ex to ex fwd)
-assign b_or_br_opcode = (decoded_instr_type == 4'hC | decoded_instr_type == 4'hD); // true if instr is a B or BR
+assign is_b_instr = (decoded_instr_type == 4'hC);
+assign is_br_instr = (decoded_instr_type == 4'hD);
+assign b_or_br_opcode = (is_b_instr | is_br_instr); // true if instr is a B or BR
 
 
-assign shouldStall = b_or_br_opcode & ~hasStalled; //if instr is a B or BR and the unit has not previously stalled
+assign shouldStall = (b_or_br_opcode & ~hasStalled) | (is_br_instr & hasStalled & hazard_stall_en); //if instr is a B or BR and the unit has not previously stalled
 dff stallStatus(.clk(clk), .rst(~rst_n), .q(hasStalled), .d(shouldStall), .wen(1'b1));
 
-Branch_Decision_Unit branch_unit(.take_branch(take_branch), .stall_en(branch_stall_en),.hasStalled(hasStalled), .opcode(decoded_instr_type), .flags(flags), .C(ccc));
+Branch_Decision_Unit branch_unit(.take_branch(take_branch), .stall_en(branch_stall_en),.hasStalled(hasStalled), .br_hazard(hazard_stall_en), .opcode(decoded_instr_type), .flags(flags), .C(ccc));
 
 //Halt logic
-//dff halt_signal(.q(hlt), .d(1'b1), .wen(isHaltInstr), .clk(clk), .rst(~rst_n));
-assign hlt = &decoded_instr_type;
+assign hlt_found = &decoded_instr_type;
 
 assign is_LLB_or_LHB = (dec_instr[15:13]==3'b101);
 assign is_PCS = decoded_instr_type == 4'hE;
@@ -152,8 +158,6 @@ assign id_ex_regWrite_in =  ~dec_instr[15] | //ALU Op
 //Mux selector if value should come from memory or alu result		
 assign id_ex_memToReg_in = id_ex_memRead_in; // 0:Alu op , 1:SW(only instr to write to reg from memory)
 
-assign regWrite_or_halt = hlt ? 1'b0 : ex_mem_memWrite_out; // if hlt, do not write to regs
-
 
 adder_16bit pc_add_imm_module(.A(pc_plus_2_or_zero), .B(address_to_add_to_pc_for_b_or_br), .Sub(1'b0), .Sum(pc_with_branch), .Zero(), .Ovfl(), .Sign());
 RegisterFile regFile(.clk(clk), .rst(~rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg2), .DstReg(mem_wb_dstReg_out), .WriteReg(mem_wb_regWrite_out), .DstData(writeback_write_data), .SrcData1(srcData1), .SrcData2(srcData2));
@@ -184,7 +188,7 @@ assign ex_mem_dataIn_in = id_ex_rd2_out; //as per zybooks diagram, value of reg2
 /////////////////////
 
 //TODO is memRead ever used? Also, since enable is a thing, if we used original signal(ex_mem_memWrite_out), will mem unit still work correctly?
-assign memEnable = ~hlt & (ex_mem_memRead_out | ex_mem_memWrite_out); // instr must be a read or write (& not a halt)
+assign memEnable = (ex_mem_memRead_out | ex_mem_memWrite_out); // instr must be a read or write (& not a halt)
 assign data_mem_data_in = (fwd_mem_to_mem) ? writeback_write_data : ex_mem_dataIn_out;
 
 memory1c data_mem(.clk(clk), .rst(~rst_n), .data_out(mem_wb_read_memData_in), .data_in(data_mem_data_in), .addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
