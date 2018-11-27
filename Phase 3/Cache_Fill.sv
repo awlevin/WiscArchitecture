@@ -19,8 +19,8 @@ wire [3:0] offset_value_in,offset_value_out; //note: this signal is added to its
 
 /**
 Cache is 2^11=2048 bytes & 2 way set associative with 16 byte cache blocks
--2^6 = 64 sets with 2^4 = 16 byte blocks/offset, so tag = 16 - 6 - 4 = 6 bits
-t = 6, s = 6, o = 4
+-2^6 = 64 sets with 8 entries in a block = 16 byte blocks/offset, so tag = 16 - 6 - 3 = 7 bits
+t = 7, s = 6, o = 3
 **/
 
 
