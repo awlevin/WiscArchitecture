@@ -43,7 +43,7 @@ assign write_tag_array = fsm_busy & (offset_byte == done); //only high when all 
 
 always @(posedge clk) begin
 
-	state = next_state; //pretty sure this is illegal :(
+	state = next_state;
 
 	case(state) 
 		IDLE: begin
