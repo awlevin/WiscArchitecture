@@ -42,6 +42,10 @@ wire [3:0] mem_wb_dstReg_out;
 wire mem_wb_memToReg_out, memEnable;
 wire [15:0] data_mem_data_in;
 
+wire cache_miss;
+
+//memory mem(.clk(clk), .rst(~rst_n), .data_out(mem_wb_read_memData_in), .stall_en(), .data_in(data_mem_data_in), .addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
+memory mem(.clk(clk), .rst(~rst_n), .instruction_out(instr), .data_out(mem_wb_read_memData_in), .stall_en(cache_miss), .mem_data_in(data_mem_data_in), .pc(pc_out), .mem_addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
 
 ////////////////////////
 //     HALT LOGIC     //
@@ -62,7 +66,7 @@ ForwardingUnit fwd_unit(.ex_mem_dstReg(ex_mem_dstReg_out), .id_ex_srcReg1(id_ex_
 //  HAZARD DETECTION  //
 ////////////////////////
 wire hazard_stall_en,branch_stall_en,stall_en, rst_id_ex_reg;
-assign stall_en = hazard_stall_en | branch_stall_en;
+assign stall_en = hazard_stall_en | branch_stall_en | cache_miss;
 assign rst_id_ex_reg = (~rst_n | stall_en);
 assign if_id_opcode_out = dec_instr[15:12];
 Hazard_Detection_Unit hazard_unit(.stall_en(hazard_stall_en), .dec_opcode(if_id_opcode_out), .id_ex_dstReg_out(id_ex_dstReg_out), .ex_mem_dstReg_out(ex_mem_dstReg_out), .srcReg1(srcReg1), .srcReg2(srcReg2), .id_ex_memRead_in(id_ex_memRead_in), .id_ex_memRead_out(id_ex_memRead_out));
@@ -79,7 +83,7 @@ Memory_WriteBack_Reg MEM_WB_Reg(.clk(clk), .rst_n(rst_n), .read_data_in(mem_wb_r
 //     FETCH	   //
 /////////////////////
 PC_Register pc_register(.clk(clk), .rst(~rst_n), .stall_en(stall_en), .next_pc(next_pc), .pc_out(curr_pc));
-memory1c instruction_mem(.clk(clk), .rst(~rst_n), .data_out(instr), .data_in(16'h0000), .addr(pc_out), .enable(rst_n), .wr(1'b0));
+//memory1c instruction_mem(.clk(clk), .rst(~rst_n), .data_out(instr), .data_in(16'h0000), .addr(pc_out), .enable(rst_n), .wr(1'b0));
 adder_16bit pc_add_2_module(.A(pc_out), .B(16'h0002), .Sub(1'b0), .Sum(pc_plus_2), .Zero(), .Ovfl(), .Sign());
 dff_16bit pc_before_halt(.clk(clk), .rst(~rst_n), .d(pc_out), .q(pc_from_cycle_before_halt_decoded), .wen(1'b1));
 
@@ -186,7 +190,7 @@ assign ex_mem_dataIn_in = id_ex_rd2_out; //as per zybooks diagram, value of reg2
 assign memEnable = (ex_mem_memRead_out | ex_mem_memWrite_out); // instr must be a read or write (& not a halt)
 assign data_mem_data_in = (fwd_mem_to_mem) ? writeback_write_data : ex_mem_dataIn_out;
 
-memory1c data_mem(.clk(clk), .rst(~rst_n), .data_out(mem_wb_read_memData_in), .data_in(data_mem_data_in), .addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
+//memory1c data_mem(.clk(clk), .rst(~rst_n), .data_out(mem_wb_read_memData_in), .data_in(data_mem_data_in), .addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
 
 WB_Register MEM_WB_WriteBack(.clk(clk), .rst(~rst_n), .stall_en(1'b0), .flush_en(1'b0), .RegWrite_in(ex_mem_regWrite_out), .MemToReg_in(ex_mem_memToReg_out), .RegWrite_out(mem_wb_regWrite_out), .MemToReg_out(mem_wb_memToReg_out));
 assign writeback_write_data = (mem_wb_memToReg_out) ? mem_wb_read_data_out : mem_wb_alu_result_out;

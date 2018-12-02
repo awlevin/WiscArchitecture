@@ -1,11 +1,11 @@
 //Tag Array of 128  blocks
 //Each block will have 1 byte
-//BlockEnable is one-hot
+//SetEnable is one-hot
 //WriteEnable is one on writes and zero on reads
 
-module MetaDataArray(input clk, input rst, input [7:0] DataIn, input [63:0] BlockEnable, input Write0, input Write1, output [7:0] DataOut0, output [7:0] DataOut1);
-	MBlock Mblk0[63:0]( .clk(clk), .rst(rst), .Din(DataIn), .WriteEnable(Write0), .Enable(BlockEnable), .Dout(DataOut0));
-	MBlock Mblk1[63:0]( .clk(clk), .rst(rst), .Din(DataIn), .WriteEnable(Write1), .Enable(BlockEnable), .Dout(DataOut1));
+module MetaDataArray(input clk, input rst, input [7:0] DataIn, input [63:0] SetEnable, input Write0, input Write1, output [7:0] DataOut0, output [7:0] DataOut1);
+	MBlock Mblk0[63:0]( .clk(clk), .rst(rst), .Din(DataIn), .WriteEnable(Write0), .Enable(SetEnable), .Dout(DataOut0));
+	MBlock Mblk1[63:0]( .clk(clk), .rst(rst), .Din(DataIn), .WriteEnable(Write1), .Enable(SetEnable), .Dout(DataOut1));
 endmodule
 
 module MBlock( input clk,  input rst, input [7:0] Din, input WriteEnable, input Enable, output [7:0] Dout);

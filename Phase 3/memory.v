@@ -1,69 +1,53 @@
-//////////////////////////////////////
-//
-// Memory -- single cycle version
-//
-// written for CS/ECE 552, Spring '07
-// Pratap Ramamurthy, 19 Mar 2006
-//
-// Modified for CS/ECE 552, Spring '18
-// Gokul Ravi, 08 Mar 2018
-//
-// This is a byte-addressable,
-// 16-bit wide memory
-// Note: The last bit of the address has to be 0.
-//
-// All reads happen combinationally with zero delay.
-// All writes occur on rising clock edge.
-// Concurrent read and write not allowed.
-//
-// On reset, memory loads from file "loadfile_all.img".
-// (You may change the name of the file in
-// the $readmemh statement below.)
-// File format:
-//     @0
-//     <hex data 0>
-//     <hex data 1>
-//     ...etc
-//
-//
-//////////////////////////////////////
+// Black box memory unit - holds caches and main memory
+module memory(clk, rst, instruction_out, data_out, stall_en, mem_data_in, pc, mem_addr, enable, wr);
 
-module memory1c (data_out, data_in, addr, enable, wr, clk, rst);
+input clk, rst, enable, wr;
+input [15:0] pc;			// Input to I Cache
+input [15:0] mem_data_in, mem_addr;	// Inputs to D Cache
 
-   parameter ADDR_WIDTH = 16;
-   output  [15:0] data_out;
-   input [15:0]   data_in;
-   input [ADDR_WIDTH-1 :0]   addr;
-   input          enable;
-   input          wr;
-   input          clk;
-   input          rst;
-   wire [15:0]    data_out;
-   
-   reg [15:0]      mem [0:2**ADDR_WIDTH-1];
-   reg            loaded;
-   
-   assign         data_out = (enable & (~wr))? {mem[addr[ADDR_WIDTH-1 :1]]}: 0; //Read
-   initial begin
-      loaded = 0;
-   end
+output stall_en;
+output [15:0] instruction_out, data_out;
 
-   always @(posedge clk) begin
-      if (rst) begin
-         //load loadfile_all.img
-         if (!loaded) begin
-            //$readmemh("test_with_hazards.img", mem);
-	    $readmemh("phase2_final.img", mem);
-            loaded = 1;
-         end
-          
-      end
-      else begin
-         if (enable & wr) begin
-	        mem[addr[ADDR_WIDTH-1 :1]] = data_in[15:0];       // The actual write
-         end
-      end
-   end
+// Main memory module signals
+wire [15:0] main_mem_data_in, main_mem_data_out, main_mem_addr;
+wire main_mem_enable, main_mem_wr;
+wire block_valid;
+
+// I Cache signals
+wire [15:0] I_Cache_miss_address;
+wire I_Cache_miss, I_Cache_hit; // <-- bad
+
+// D Cache signals
+wire [15:0] D_Cache_data_in, D_Cache_miss_address;
+wire D_Cache_writeEn, D_Cache_miss, D_Cache_hit; // <-- bad
+wire SW_hit;
 
 
-endmodule 
+assign SW_hit = (D_Cache_hit & wr);
+assign main_mem_addr = (I_Cache_miss) ? I_Cache_miss_address :
+		       (D_Cache_miss) ? D_Cache_miss_address :
+		       //(SW_hit) ? mem_addr : 
+		       mem_addr;
+
+assign main_mem_enable = 1'b1;
+
+assign D_Cache_miss_address_matched = (D_Cache_miss & wr & (D_Cache_miss_address == mem_addr));
+assign writeEnable = SW_hit | D_Cache_miss_address_matched;
+//assign main_mem_wr = SW_hit | D_Cache_miss_address_matched;
+
+//assign main_mem_data_in = mem_data_in;
+
+assign stall_en = I_Cache_miss | (D_Cache_miss & enable);
+
+assign D_Cache_data_in = (D_Cache_miss & ~D_Cache_miss_address_matched) ? main_mem_data_out : mem_data_in;
+
+
+memory4c main_mem(.data_out(main_mem_data_out), .data_in(mem_data_in), .addr(main_mem_addr), .enable(main_mem_enable), .wr(writeEnable), .clk(clk), .rst(rst), .data_valid(block_valid));
+
+Cache I_Cache(.clk(clk), .rst(rst), .address(pc), .dataIn(main_mem_data_out), .writeEn(1'b0), .readEn(1'b1), .memory_data_valid(block_valid), .stall(I_Cache_miss), .dataOut(instruction_out), .missedAddressToGet(I_Cache_miss_address), .cache_hit(I_Cache_hit));
+
+Cache D_Cache(.clk(clk), .rst(rst), .address(mem_addr), .dataIn(D_Cache_data_in), .writeEn(writeEnable), .readEn(enable), .memory_data_valid(block_valid), .stall(D_Cache_miss), .dataOut(data_out), .missedAddressToGet(D_Cache_miss_address), .cache_hit(D_Cache_hit));
+
+
+
+endmodule
