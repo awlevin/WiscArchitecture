@@ -25,7 +25,7 @@ t = 7, s = 6, o = 3
 
 
 typedef enum {IDLE,WAIT} state_t;
-typedef enum {BYTES_0_1,BYTES_2_3,BYTES_4_5,BYTES_6_7, done} offset_byte_t;//used inside wait state
+typedef enum {enter_miss_cycle,BYTES_0_1,BYTES_2_3,BYTES_4_5,BYTES_6_7, done} offset_byte_t;//used inside wait state
 state_t state,next_state; //state defaults to IDLE, I think?
 offset_byte_t offset_byte,next_offset_byte;
 
@@ -49,7 +49,7 @@ always @(posedge clk) begin
 		IDLE: begin
 			if(miss_detected) begin
 				next_state = WAIT;
-				next_offset_byte = BYTES_0_1;
+				next_offset_byte = enter_miss_cycle;
 			end
 		end
 
@@ -59,9 +59,9 @@ always @(posedge clk) begin
 			
 			//tag = memory_address[15:10]; //tag is first 6 bits
 				
-			if(memory_data_valid) begin
+			//if(memory_data_valid) begin
 				offset_byte = next_offset_byte;
-			end
+			//end
 		end
 
 		default: begin //should not be entered
@@ -70,6 +70,10 @@ always @(posedge clk) begin
 	endcase
 
 	case(offset_byte)
+			enter_miss_cycle: begin
+				offset_value = 4'h0;
+				next_offset_byte = BYTES_0_1;
+			end
 			BYTES_0_1: begin
 				offset_value = 4'h0;
 				next_offset_byte = BYTES_2_3;
