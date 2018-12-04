@@ -32,6 +32,7 @@ wire miss_detected;
 wire [7:0] oneHot_offset;
 wire [7:0] missedAddressToGet_offset_bits;
 
+
 assign missedAddressToGet_offset_bits = 1 << (missedAddressToGet[3:1]);
 
 OneHotCounter counter(.clk(clk),.rst(rst),.startCount(miss_detected),.offset_in(missedAddressToGet_offset_bits),.offset_out(oneHot_offset));
@@ -45,9 +46,11 @@ wire [15:0] dataArrayOut;
 
 //LRU logic
 wire block0_isLRU, block1_isLRU;
-wire LRU_writeEn,LRU_block_selected;
+wire LRU_writeEn,LRU_block_selected,block1_isLRU_saved;
+dff saved_block1_isLRU(.q(block1_isLRU_saved), .d(block1_isLRU), .wen(miss_detected), .clk(clk), .rst(rst));
 
-assign LRU_block_selected = block1_hit | (miss_detected & write_tag_array & block1_isLRU);
+//fixes metastability issue on last cycle of miss 
+assign LRU_block_selected = cache_hit ? block1_hit : (write_tag_array & block1_isLRU_saved);
 
 assign LRU_writeEn = cache_hit | write_tag_array;
 
@@ -68,14 +71,15 @@ cache_fill_FSM fill_fsm(.clk(clk), .rst(rst), .miss_detected(miss_detected), .mi
 
 LRUArray LRU(.clk(clk), .rst(rst), .writeEn(LRU_writeEn), .SetEnable(SetEnable), .Block(LRU_block_selected), .block0_isLRU(block0_isLRU), .block1_isLRU(block1_isLRU));
 
-assign block0_hit = valid0 & (tagBits == tagBlock0);
-assign block1_hit = valid1 & (tagBits == tagBlock1);
+assign block0_hit = miss_detected ? 1'b0 : valid0 & (tagBits == tagBlock0);
+assign block1_hit = miss_detected ? 1'b0 : valid1 & (tagBits == tagBlock1);
 
 assign dataWrite = write_data_array | (((tagBits == tagBlock0) | (tagBits == tagBlock1)) & writeEn); // Enables a write if cache is being filled or we have a hit and are writing (SW instruction)
 
 assign SetEnable = (1 << setBits); // Enables two blocks in the tag array tied to a set (0 through 63)
 
-assign miss_detected = 	~(block0_hit | block1_hit);	// Asserted if data is not in either block
+//mux fixes a metastability issue on the last cycle of the miss
+assign miss_detected = write_tag_array ? 1'b1 : ~(block0_hit | block1_hit);	// Asserted if data is not in either block
 assign cache_hit = ~miss_detected;
 
 //if miss,use output of oneHotCounter
@@ -95,6 +99,10 @@ assign dataBlockEnable = (block0_hit | (miss_detected & block0_isLRU)) ? dataBlo
 
 
 endmodule
+
+//module miss_reg(clk,rst,miss_detected,);
+
+//endmodule
 
 //counts to 8
 //NEEDS rst logic

@@ -15,7 +15,7 @@ output [15:0] dataOut; 	 //value in memory of requested address
 
 logic [3:0] offset_value; //i dont like this
 
-wire [3:0] offset_value_in,offset_value_out; //note: this signal is added to itself
+//wire [3:0] offset_value_in,offset_value_out; //note: this signal is added to itself
 //dff_4bit offset(.clk(clk), .rst(~rst_n), .q(offset_value_out), .d(offset_value_in), .wen(1'b1)); //used to incrememnt which address is request(is either 0,2,4, or 6)
 
 /**
