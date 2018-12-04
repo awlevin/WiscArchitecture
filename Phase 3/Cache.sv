@@ -71,10 +71,10 @@ cache_fill_FSM fill_fsm(.clk(clk), .rst(rst), .miss_detected(miss_detected), .mi
 
 LRUArray LRU(.clk(clk), .rst(rst), .writeEn(LRU_writeEn), .SetEnable(SetEnable), .Block(LRU_block_selected), .block0_isLRU(block0_isLRU), .block1_isLRU(block1_isLRU));
 
-assign block0_hit = miss_detected ? 1'b0 : valid0 & (tagBits == tagBlock0);
-assign block1_hit = miss_detected ? 1'b0 : valid1 & (tagBits == tagBlock1);
+assign block0_hit = write_tag_array ? 1'b0 : valid0 & (tagBits == tagBlock0);
+assign block1_hit = write_tag_array ? 1'b0 : valid1 & (tagBits == tagBlock1);
 
-assign dataWrite = write_data_array | (((tagBits == tagBlock0) | (tagBits == tagBlock1)) & writeEn); // Enables a write if cache is being filled or we have a hit and are writing (SW instruction)
+assign dataWrite = (write_data_array & miss_detected) | (((tagBits == tagBlock0) | (tagBits == tagBlock1)) & writeEn); // Enables a write if cache is being filled or we have a hit and are writing (SW instruction)
 
 assign SetEnable = (1 << setBits); // Enables two blocks in the tag array tied to a set (0 through 63)
 
