@@ -51,7 +51,7 @@ adder_16bit memory_address_adder(.A(miss_address), .B(offset_value_zero_extended
 assign fsm_busy = (state == WAIT && offset_byte != done); //fsm_busy should 1 when fsm is gathering data
 assign write_data_array = memory_data_valid; 
 
-assign write_tag_array = fsm_busy & (offset_byte == done); //only high when all 4 mem reads are done
+assign write_tag_array = fsm_busy & (offset_byte == sequential_delay4); //only high when all 4 mem reads are done
 
 
 always @(posedge clk) begin
