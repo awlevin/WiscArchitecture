@@ -10,7 +10,7 @@ output [15:0] instruction_out, data_out;
 
 // Main memory module signals
 wire [15:0] main_mem_data_in, main_mem_data_out, main_mem_addr;
-wire main_mem_enable, main_mem_wr;
+wire main_mem_enable;
 wire block_valid;
 
 // I Cache signals
@@ -35,7 +35,7 @@ assign D_Cache_miss_address_matched = (D_Cache_miss & wr & (D_Cache_miss_address
 assign writeEnable = SW_hit | D_Cache_miss_address_matched;
 //assign main_mem_wr = SW_hit | D_Cache_miss_address_matched;
 
-//assign main_mem_data_in = mem_data_in;
+assign main_mem_data_in = mem_data_in; // wrong for d_cache on miss
 
 assign stall_en = I_Cache_miss | (D_Cache_miss & enable);
 

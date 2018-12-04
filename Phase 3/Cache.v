@@ -21,14 +21,16 @@ wire [63:0] SetEnable;
 wire valid0, valid1;
 wire [6:0] tagBlock0, tagBlock1;
 
-// Cache Fill FSM signals
+// Cache Fill FSM/ miss signals
 wire write_tag_array, write_data_array;
+wire [15:0] cache_miss_dataOut;
 
 // Data Array signals
 wire dataWrite;
 wire [127:0] dataBlockEnable;
 wire [7:0] dataWordEnable;
 wire [63:0] dataBlock0Enable, dataBlock1Enable;
+wire [15:0] dataArrayOut;
 
 // TODO - LRU logic
 wire block0_isLRU, block1_isLRU;
@@ -37,11 +39,13 @@ assign tagBits = address[15:9];
 assign setBits = address[8:3];
 assign offsetBits = address[2:0];
 
-DataArray data(.clk(clk), .rst(rst), .DataIn(dataIn), .Write(dataWrite), .BlockEnable(dataBlockEnable), .WordEnable(dataWordEnable), .DataOut(dataOut));
+assign dataOut = cache_hit ? dataArrayOut : cache_miss_dataOut;
+
+DataArray data(.clk(clk), .rst(rst), .DataIn(dataIn), .Write(dataWrite), .BlockEnable(dataBlockEnable), .WordEnable(dataWordEnable), .DataOut(dataArrayOut));
 
 MetaDataArray tags(.clk(clk), .rst(rst), .DataIn({1'b1, tagBits}), .SetEnable(SetEnable), .Write0(block0_isLRU & write_tag_array), .Write1(block1_isLRU & write_tag_array), .DataOut0({valid0, tagBlock0}), .DataOut1({valid1, tagBlock1}));
 
-cache_fill_FSM fill_fsm(.clk(clk), .rst(rst), .miss_detected(miss_detected), .miss_address(address), .fsm_busy(stall), .write_data_array(write_data_array), .write_tag_array(write_tag_array), .memory_address(missedAddressToGet), .memory_data(), .memory_data_valid(memory_data_valid));
+cache_fill_FSM fill_fsm(.clk(clk), .rst(rst), .miss_detected(miss_detected), .miss_address(address), .fsm_busy(stall), .write_data_array(write_data_array), .write_tag_array(write_tag_array), .memory_address(missedAddressToGet), .memory_data(dataIn), .memory_data_valid(memory_data_valid), .dataOut(cache_miss_dataOut));
 
 LRUArray LRU(.clk(clk), .rst(rst), .writeEn(cache_hit | write_tag_array), .SetEnable(SetEnable), .Block(block1_hit | (miss_detected & write_tag_array & block1_isLRU)), .block0_isLRU(block0_isLRU), .block1_isLRU(block1_isLRU));
 
@@ -62,6 +66,7 @@ assign dataBlock1Enable = (2 << (setBits << 1));
 
 assign dataBlockEnable = (block0_hit | (miss_detected & block0_isLRU)) ? dataBlock0Enable :		// Enables one block in an even bit position or
 			 (block1_hit | (miss_detected & block1_isLRU)) ? dataBlock1Enable : 128'b0;	// enables one block in an odd bit position
-   
+
+
 
 endmodule
