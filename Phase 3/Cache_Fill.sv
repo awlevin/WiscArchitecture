@@ -53,27 +53,114 @@ assign write_data_array = memory_data_valid;
 
 assign write_tag_array = fsm_busy & (offset_byte == sequential_delay4); //only high when all 4 mem reads are done
 
+always @(posedge clk) begin
+	if(rst) begin
+		state <= IDLE;
+		offset_byte <= done;
+		current_delay <= HOLD;
+	end
+	else begin
+		state <= next_state;
+		current_delay <= next_delay;
+		offset_byte <= next_offset_byte;
+	end
+end
 
 always @(posedge clk) begin
-
-	state = next_state;
-	current_delay = next_delay;
 	case(state) 
 		IDLE: begin
 			if(miss_detected) begin
 				next_state = WAIT;
 				next_offset_byte = enter_miss_cycle;
 			end
-		end
+			else
+				next_state = IDLE;
+				//next_offset_byte = done;
+			end
 
 		WAIT: begin
 		
-
+			case(offset_byte)
+			enter_miss_cycle: begin
+				offset_value = 4'h0;
+				next_offset_byte = BYTES_0_1;
+				next_state = WAIT;
+			end
+			BYTES_0_1: begin
+				offset_value = 4'h0;
+				next_offset_byte = BYTES_2_3;
+				next_state = WAIT;
+			end
+				BYTES_2_3: begin
+				offset_value = 4'h2;
+				next_offset_byte = BYTES_4_5;
+				next_state = WAIT;
+			end
+				BYTES_4_5: begin
+				offset_value = 4'h4;
+				next_offset_byte = BYTES_6_7;
+				next_state = WAIT;
+			end
+				BYTES_6_7: begin
+				offset_value = 4'h6;
+				next_offset_byte = BYTES_8_9;
+				next_state = WAIT;
+			end
+				BYTES_8_9: begin
+				offset_value = 4'h8;
+				next_offset_byte = BYTES_10_11;
+				next_state = WAIT;
+			end
+				BYTES_10_11: begin
+				offset_value = 4'hA;
+				next_offset_byte = BYTES_12_13;
+				next_state = WAIT;
+			end
+				BYTES_12_13: begin
+				offset_value = 4'hC;
+				next_offset_byte = BYTES_14_15;
+				next_state = WAIT;
+			end
+				BYTES_14_15: begin
+				offset_value = 4'hE;
+				next_offset_byte = sequential_delay1;
+				next_state = WAIT;
+			end
+			sequential_delay1: begin
+				offset_value = 4'hE;
+				next_offset_byte = sequential_delay2;
+				next_state = WAIT;
+			end
+			sequential_delay2: begin
+				offset_value = 4'hE;
+				next_offset_byte = sequential_delay3;
+				next_state = WAIT;
+			end
+			sequential_delay3: begin
+				offset_value = 4'hE;
+				next_offset_byte = sequential_delay4;
+				next_state = WAIT;
+			end
+			sequential_delay4: begin
+				offset_value = 4'hE;
+				next_offset_byte = done;
+				next_state = WAIT;
+			end
+		
+			done: begin
+					offset_value = 4'hF; //default high
+					next_state = IDLE;
+			end
+			default: begin // should not be reached
+				offset_value = 4'hF; //default high
+			end
+			
+		endcase
 			
 			//tag = memory_address[15:10]; //tag is first 6 bits
 				
 			//if(memory_data_valid) begin
-				offset_byte = next_offset_byte;
+			
 			//end
 		end
 
@@ -108,68 +195,6 @@ always @(posedge clk) begin
 		end
 	endcase
 
-	case(offset_byte)
-			enter_miss_cycle: begin
-				offset_value = 4'h0;
-				next_offset_byte = BYTES_0_1;
-			end
-			BYTES_0_1: begin
-				offset_value = 4'h0;
-				next_offset_byte = BYTES_2_3;
-			end
-				BYTES_2_3: begin
-				offset_value = 4'h2;
-				next_offset_byte = BYTES_4_5;
-			end
-				BYTES_4_5: begin
-				offset_value = 4'h4;
-				next_offset_byte = BYTES_6_7;
-			end
-				BYTES_6_7: begin
-				offset_value = 4'h6;
-				next_offset_byte = BYTES_8_9;
-			end
-				BYTES_8_9: begin
-				offset_value = 4'h8;
-				next_offset_byte = BYTES_10_11;
-			end
-				BYTES_10_11: begin
-				offset_value = 4'hA;
-				next_offset_byte = BYTES_12_13;
-			end
-				BYTES_12_13: begin
-				offset_value = 4'hC;
-				next_offset_byte = BYTES_14_15;
-			end
-				BYTES_14_15: begin
-				offset_value = 4'hE;
-				next_offset_byte = sequential_delay1;
-			end
-			sequential_delay1: begin
-				offset_value = 4'hE;
-				next_offset_byte = sequential_delay2;
-			end
-			sequential_delay2: begin
-				offset_value = 4'hE;
-				next_offset_byte = sequential_delay3;
-			end
-			sequential_delay3: begin
-				offset_value = 4'hE;
-				next_offset_byte = sequential_delay4;
-			end
-			sequential_delay4: begin
-				offset_value = 4'hE;
-				next_offset_byte = done;
-			end
-		
-			done: begin
-					offset_value = 4'hF; //default high
-					next_state = IDLE;
-			end
-			default: begin // should not be reached
-				offset_value = 4'hF; //default high
-			end
-			
-		endcase
+	
 end
 endmodule
