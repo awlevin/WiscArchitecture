@@ -1,0 +1,6 @@
+Test that if branch works, especially if it's the first or last instruction of a cache block.
+Check that if that memory contention works when I Cache and D Cache miss simultaneously.
+Add LRU specific tests. Correct block filled on miss, and updated accordingly on hits
+
+Issue:	Branches before cache misses have their branch decision made while stalling for cache
+		fill, then don't branch afterword

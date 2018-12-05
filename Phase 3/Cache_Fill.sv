@@ -48,7 +48,7 @@ assign offset_value_zero_extended = {12'h000,offset_value};
 
 adder_16bit memory_address_adder(.A(miss_address), .B(offset_value_zero_extended), .Sub(1'b0), .Sum(memory_address), .Zero(), .Ovfl(), .Sign());
 
-assign fsm_busy = (state == WAIT && offset_byte != done); //fsm_busy should 1 when fsm is gathering data
+assign fsm_busy = miss_detected;//(state == WAIT & offset_byte != done) | (next_state == WAIT & next_offset_byte == enter_miss_cycle); //fsm_busy should 1 when fsm is gathering data. The second case occurs when the fill fsm is about to enter the cache miss loop
 assign write_data_array = memory_data_valid; 
 
 assign write_tag_array = fsm_busy & (offset_byte == sequential_delay4); //only high when all 4 mem reads are done
@@ -58,6 +58,7 @@ always @(posedge clk) begin
 		state <= IDLE;
 		offset_byte <= done;
 		current_delay <= HOLD;
+		offset_value <= 4'h0;
 	end
 	else begin
 		state <= next_state;
