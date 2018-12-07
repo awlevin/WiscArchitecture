@@ -13,6 +13,7 @@ Normal_Execution:
 # Initialize registers
 # R1 = 1, R2 = 0x8000, R3 = 3, R4 = 0xff00
 	LLB R1, 0x01
+	##########################################
 	LHB R1, 0x00
 	LLB R2, 0x00
 	LHB R2, 0x80
@@ -23,6 +24,7 @@ Normal_Execution:
 
 # Test all conditions for B
 	B 111, L8	# Start with unconditional branch to L8
+	##########################################
 	HLT
 L0:	SUB R8, R3, R3	# R8 = 3 - 3   : Zero so don't branch
 	B 000, LB0
@@ -31,6 +33,7 @@ L0:	SUB R8, R3, R3	# R8 = 3 - 3   : Zero so don't branch
 	HLT
 L1:	SUB R8, R3, R1	# R8 = 3 - 1   : Non-zero so don't branch
 	B 001, LB1
+	##########################################
 	SUB R8, R1, R1	# R8 = 1 - 1   : Zero so branch to L0
 	B 001, L0
 	HLT
@@ -39,6 +42,8 @@ L2:	SUB R8, R1, R3	# R8 = 1 - 3   : 1 isn't greater than 3 so don't branch
 	SUB R8, R3, R1	# R8 = 3 - 1   : 3 is greater than 1 so branch to L1
 	B 010, L1
 	HLT
+	##########################################
+
 L3:	SUB R8, R3, R1	# R8 = 3 - 1   : 3 isn't less than 1 so don't branch
 	B 011, LB3
 	SUB R8, R1, R3	# R8 = 1 - 3   : 1 is less than 3 so branch to L2
@@ -47,6 +52,7 @@ L3:	SUB R8, R3, R1	# R8 = 3 - 1   : 3 isn't less than 1 so don't branch
 L4:	SUB R8, R1, R3	# R8 = 1 - 3   : 1 isn't greater than or equal to 3 so don't branch
 	B 100, LB4
 	SUB R8, R3, R3	# R8 = 3 - 3   : 3 is greater than or equal to 3 so branch to L3
+	##########################################
 	B 100, L3
 	HLT
 L5:	SUB R8, R1, R3	# R8 = 1 - 3   : 1 isn't greater than or equal to 3 so don't branch
@@ -55,6 +61,7 @@ L5:	SUB R8, R1, R3	# R8 = 1 - 3   : 1 isn't greater than or equal to 3 so don't 
 	B 100, L4
 	HLT
 L6:	SUB R8, R3, R1	# R8 = 3 - 1   : 3 isn't less than or equal to 1 so don't branch
+	##########################################
 	B 101, LB6
 	SUB R8, R1, R1	# R8 = 1 - 1   : 1 is less than or equal to 1 so branch to L5
 	B 101, L5
@@ -63,6 +70,7 @@ L7:	SUB R8, R3, R1	# R8 = 3 - 1   : 3 isn't less than or equal to 1 so don't bra
 	B 101, LB7
 	SUB R8, R1, R3	# R8 = 1 - 3   : 1 is less than or equal to 3 so branch to L6
 	B 101, L6
+	##########################################
 	HLT
 L8:	ADD R8, R2, R1	# R8 = -32768 + 1   : Doesn't overflow so don't branch
 	B 110, LB8
@@ -72,6 +80,7 @@ L8:	ADD R8, R2, R1	# R8 = -32768 + 1   : Doesn't overflow so don't branch
 # Make sure SW and LW work
 L9:	SW R8, R4, 2	# 24 -> mem[0xff04]
 	ADD R5, R1, R3	# R5 = 1 + 3
+	##########################################
 	ADD R6, R4, R5	# R6 = 0xff00 + 4
 #EX to EX fwd(no stall)
 	LW R9, R6, 0	# R9 <- mem[0xff04] = 24
@@ -82,6 +91,7 @@ L9:	SW R8, R4, 2	# 24 -> mem[0xff04]
 	ADD R10, R10, R7	# R10 = R10 + 26
 	B 111, ALU_TEST	# Branch to alu tests
 # If we're here we branched incorrectly
+	##########################################
 LB0:	HLT
 LB1:	HLT
 LB2:	HLT
@@ -90,6 +100,7 @@ LB4:	HLT
 LB5:	HLT
 LB6:	HLT
 LB7:	HLT
+	##########################################
 LB8:	HLT
 LB9:	HLT
 
@@ -105,6 +116,7 @@ ALU_TEST:
 	SUB R3, R3, R5	# R3 = 5 - 5 = 0 so don't branch
 	B 000, LALU0
 	XOR R6, R10, R5 # R6 = 10 ^ 5 = 0x000F
+	##########################################
 	LLB R3, 0x0f	# R3 = 0x000F
 #Ex to ex fwd
 	SUB R3, R3, R6	# R3 = 15 - 15 = 0 so don't branch
@@ -115,6 +127,7 @@ ALU_TEST:
 	SUB R3, R3, R6	# R3 = 0xF000 - 0xF000 = 0 so don't branch
 	B 000, LALU2
 	SRA R6, R6, 14	# R6 = 0xF000 >>> 14 = 0xFFFF
+	##########################################
 #Ex to ex fwd
 	ADD R3, R6, R1	# R3 = -1 + 1 = 0 so don't branch
 	B 000, LALU3
@@ -126,6 +139,7 @@ ALU_TEST:
 	LLB R11, 0xa2
 #Ex to ex fwd
 	LHB R11, 0x50	# R11 = 0x50a2
+	##########################################
 	LLB R12, 0x93
 #Ex to ex fwd
 	LHB R12, 0x41	# R12 = 0x4193
@@ -138,6 +152,7 @@ ALU_TEST:
 	SUB R3, R3, R13	# R3 = 0x7185 - 0x7185 = 0 so don't branch
 	B 000, LALU5
 	LLB R11, 0x49
+	##########################################
 	LHB R11, 0x05	# R11 = 0x0549
 	LLB R12, 0x00
 	LHB R12, 0x10	# R12 = 0x1000
@@ -147,7 +162,7 @@ ALU_TEST:
 #Ex to ex fwd
 	SUB R3, R3, R13	# R3 = 0x005E - 0x005E = 0 so don't branch
 	B 000, LALU6
-
+	##########################################
 #BR, br w/ fwd b4 and after, Flush test, mem to ex, mem to mem
 #More stuff
 	#R3 = 0
@@ -166,6 +181,7 @@ Flushing_Check:
 	LHB R3, 0x00 // R3 = 0x0002
 	LLB R4, 0x04
 	LHB R4, 0x00 // R4 = 0x0004
+	##########################################
 	B 111, SKIP_ADD
 	ADD R3,R3,R2 //If this line executes, then flushing isn't working
 SKIP_ADD:
@@ -178,6 +194,7 @@ SKIP_ADD:
 Mem_to_Mem_Check:
 	SW R3, R4, 0 # Mem[0xA004] < 0x0004
 	LW R5, R4, 0 # R5 = Mem[0xA004] = 0x0004
+	##########################################
 #Mem to mem fwd
 	SW R5, R4, 0 # Mem[0xA004] = 0x0004
 	LW R6, R4, 0 # R6 = Mem[0xA004] = 0x0004
@@ -190,6 +207,7 @@ Branch_Register_Check:
 	PCS R9 # Points to branch instr in next line
 	B 000, Fwd_to_Branch_Register #should not be taken 1st time, should be taken second time
 	LLB R1, 0x01
+	##########################################
 	LHB R1, 0x00 #R1 = 1
 	ADD R10,R10,R1 #R10 = 0 + 1 = 1
 #Should stall here for updating flags
@@ -203,6 +221,7 @@ Fwd_to_Branch_Register:
 	PCS R8 # Points to add instr in next line
 	ADD R8, R8, R11
 	BR 111, R8 # Branches to PCS instr two lines below
+	##########################################
 	B 111, Mem_to_ex_Fwd2 # 
 # BR Mem to ID fwd	
 	LLB R11, 0x0A
@@ -212,6 +231,7 @@ Fwd_to_Branch_Register:
 	SUB R6, R6, R11
 	SW R6, R12, 0
 	LW R5, R12, 0
+	##########################################
 	BR 111, R5
 # BR Ex to ID fwd	
 	LLB R11, 0x14
@@ -223,6 +243,7 @@ Fwd_to_Branch_Register:
 Mem_to_Ex_Fwd2:
 	LHB R1,0x00
 	LLB R1,0x01 # R1 = 1
+	##########################################
 	SUB R9,R9,R9 # R9 = 0, but this instr is used as a nop
 #Should forward both R9 and R10
 	SUB R10, R9, R1 # R10 = 0 - 1 = -1
@@ -244,6 +265,7 @@ WOO_EVERYTHING_WORKED:
 # If we're here our ALU was incorrect
 LALU0:	HLT
 LALU1:	HLT
+	##########################################
 LALU2:	HLT
 LALU3:	HLT
 LALU4:	HLT
