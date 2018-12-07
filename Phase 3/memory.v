@@ -29,7 +29,7 @@ assign main_mem_addr = (I_Cache_miss) ? I_Cache_miss_address :
 		       //(SW_hit) ? mem_addr : 
 		       mem_addr;
 
-assign main_mem_enable = 1'b1;
+assign main_mem_enable = ~I_Cache_hit;
 
 assign D_Cache_miss_address_matched = (D_Cache_miss & wr & (D_Cache_miss_address == mem_addr));
 assign writeEnable = SW_hit | D_Cache_miss_address_matched;

@@ -8,7 +8,7 @@ output [15:0] pc_out;
 wire [15:0] next_pc, pc_out, curr_pc, pc_plus_2, address_to_add_to_pc_for_b_or_br, dec_pc_imm_shftd_sign_ext, pc_with_branch;
 
 // Instruction
-wire [15:0] instr;
+wire [15:0] instr,saved_instr,instr_out;
 
 // Decode Wires
 wire [15:0] if_id_pc_add_2_out,pc_plus_2_or_zero, dec_instr, srcData1, srcData2;
@@ -44,8 +44,12 @@ wire [15:0] data_mem_data_in;
 
 wire cache_miss;
 
+dff_16bit saved_instr_reg(.clk(clk),.rst(~rst_n),.d(instr),.q(saved_instr),.wen(~cache_miss));
+
+assign instr = cache_miss ? saved_instr : instr_out;
+
 //memory mem(.clk(clk), .rst(~rst_n), .data_out(mem_wb_read_memData_in), .stall_en(), .data_in(data_mem_data_in), .addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
-memory mem(.clk(clk), .rst(~rst_n), .instruction_out(instr), .data_out(mem_wb_read_memData_in), .stall_en(cache_miss), .mem_data_in(data_mem_data_in), .pc(pc_out), .mem_addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
+memory mem(.clk(clk), .rst(~rst_n), .instruction_out(instr_out), .data_out(mem_wb_read_memData_in), .stall_en(cache_miss), .mem_data_in(data_mem_data_in), .pc(pc_out), .mem_addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
 
 ////////////////////////
 //     HALT LOGIC     //
@@ -98,14 +102,14 @@ EX_Register ID_EX_Ex(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .flush
 M_Register ID_EX_Mem(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .flush_en(takeBranchOrFlush), .MemRead_in(id_ex_memRead_in), .MemWrite_in(id_ex_memWrite_in), .MemRead_out(id_ex_memRead_out), .MemWrite_out(id_ex_memWrite_out));
 WB_Register ID_EX_WriteBack(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .flush_en(takeBranchOrFlush), .RegWrite_in(id_ex_regWrite_in), .MemToReg_in(id_ex_memToReg_in), .RegWrite_out(id_ex_regWrite_out), .MemToReg_out(id_ex_memToReg_out));
 
-assign decoded_instr_type = dec_instr[15:12];
+assign decoded_instr_type = cache_miss ? saved_instr : dec_instr[15:12];
 assign is_b_instr = (decoded_instr_type == 4'hC);
 assign is_br_instr = (decoded_instr_type == 4'hD);
 assign b_or_br_opcode = (is_b_instr | is_br_instr); // true if instr is a B or BR
 
 
 assign shouldStall = (b_or_br_opcode & ~hasStalled) | (is_br_instr & hasStalled & hazard_stall_en); //if instr is a B or BR and the unit has not previously stalled
-dff stallStatus(.clk(clk), .rst(~rst_n), .q(hasStalled), .d(shouldStall), .wen(1'b1));
+dff stallStatus(.clk(clk), .rst(~rst_n), .q(hasStalled), .d(shouldStall), .wen(~cache_miss));
 
 Branch_Decision_Unit branch_unit(.take_branch(take_branch), .stall_en(branch_stall_en),.hasStalled(hasStalled), .br_hazard(hazard_stall_en), .opcode(decoded_instr_type), .flags(flags), .C(ccc));
 
@@ -124,7 +128,7 @@ assign id_ex_aluOp_in = decoded_instr_type; // If instr is SW or LW, tell ALU to
 
 //Control logic
 assign pc_control_immediate = instr[8:0];
-assign ccc = dec_instr[11:9];
+assign ccc = cache_miss ? saved_instr[11:9] : dec_instr[11:9];
 assign dec_ex_sign_ext_alu_offset_in =  { {11{dec_instr[3]}}, dec_instr[3:0], 1'b0};
 assign dec_pc_imm_shftd_sign_ext = {{6{dec_instr[8]}}, dec_instr[8:0], 1'b0};
 

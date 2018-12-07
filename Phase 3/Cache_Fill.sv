@@ -46,7 +46,7 @@ wire [15:0] offset_value_zero_extended;
 
 assign offset_value_zero_extended = {12'h000,offset_value};
 
-adder_16bit memory_address_adder(.A(miss_address), .B(offset_value_zero_extended), .Sub(1'b0), .Sum(memory_address), .Zero(), .Ovfl(), .Sign());
+adder_16bit memory_address_adder(.A({miss_address[15:4],4'h0}), .B(offset_value_zero_extended), .Sub(1'b0), .Sum(memory_address), .Zero(), .Ovfl(), .Sign());
 
 assign fsm_busy = miss_detected;//(state == WAIT & offset_byte != done) | (next_state == WAIT & next_offset_byte == enter_miss_cycle); //fsm_busy should 1 when fsm is gathering data. The second case occurs when the fill fsm is about to enter the cache miss loop
 assign write_data_array = memory_data_valid; 
