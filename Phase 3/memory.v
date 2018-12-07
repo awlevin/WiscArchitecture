@@ -37,7 +37,7 @@ assign writeEnable = SW_hit | D_Cache_miss_address_matched;
 
 assign main_mem_data_in = mem_data_in; // wrong for d_cache on miss
 
-assign stall_en = I_Cache_miss | (D_Cache_miss & enable);
+assign stall_en = I_Cache_miss | (D_Cache_miss);
 
 assign D_Cache_data_in = (D_Cache_miss & ~D_Cache_miss_address_matched) ? main_mem_data_out : mem_data_in;
 

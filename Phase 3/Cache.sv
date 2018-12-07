@@ -32,6 +32,8 @@ wire miss_detected;
 wire [7:0] oneHot_offset;
 wire [7:0] missedAddressToGet_offset_bits;
 
+wire miss_beta;
+
 
 assign missedAddressToGet_offset_bits = 1 << (missedAddressToGet[3:1]);
 
@@ -79,7 +81,12 @@ assign dataWrite = (write_data_array & miss_detected) | (((tagBits == tagBlock0)
 assign SetEnable = (1 << setBits); // Enables two blocks in the tag array tied to a set (0 through 63)
 
 //mux fixes a metastability issue on the last cycle of the miss
-assign miss_detected = write_tag_array ? 1'b1 : ~(block0_hit | block1_hit);	// Asserted if data is not in either block
+//assign miss_detected =  write_tag_array ? 1'b1 : ~(block0_hit | block1_hit);	// Asserted if data is not in either block
+//assign miss_beta = miss_detected & (writeEn | readEn);
+
+assign  miss_detected  =  write_tag_array ? 1'b1 : ~(block0_hit | block1_hit);	// Asserted if data is not in either block
+assign miss_beta = miss_detected & (writeEn | readEn);
+
 assign cache_hit = ~miss_detected;
 
 //if miss,use output of oneHotCounter

@@ -120,7 +120,7 @@ module cpu_ptb();
             $fclose(trace_file);
             $fclose(sim_log_file);
 	    #5;
-            $finish;
+            $stop;
          end 
       end
       
