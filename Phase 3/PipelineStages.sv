@@ -7,7 +7,7 @@ output ALUSrc_out;
 output [3:0] ALUOp_out; 
 
 wire rst_or_stall;
-assign rst_or_stall = rst | stall_en | flush_en;
+assign rst_or_stall = rst | ((stall_en | flush_en) & ~d_cache_miss);
 
 dff 		ALUSrc(.q(ALUSrc_out), .d(ALUSrc_in), .wen(~stall_en & ~d_cache_miss), .clk(clk), .rst(rst_or_stall));
 dff_4bit	ALUOp(.q(ALUOp_out),  .d(ALUOp_in), .wen(~stall_en & ~d_cache_miss), .clk(clk), .rst(rst_or_stall));
@@ -22,7 +22,7 @@ input MemRead_in, MemWrite_in;
 output MemRead_out, MemWrite_out;
 
 wire rst_or_stall;
-assign rst_or_stall = rst | stall_en | flush_en;
+assign rst_or_stall = rst | ((stall_en | flush_en) & ~d_cache_miss);
 
 
 dff 	MemRead(.q(MemRead_out), .d(MemRead_in), .wen(~stall_en & ~d_cache_miss), .clk(clk), .rst(rst_or_stall)),
@@ -37,7 +37,7 @@ input RegWrite_in, MemToReg_in;
 output RegWrite_out, MemToReg_out;
 
 wire rst_or_stall;
-assign rst_or_stall = rst | stall_en | flush_en;
+assign rst_or_stall = rst | ((stall_en | flush_en) & ~d_cache_miss);
 
 
 dff 	RegWrite(.q(RegWrite_out), .d(RegWrite_in), .wen(~stall_en & ~d_cache_miss), .clk(clk), .rst(rst_or_stall)),
