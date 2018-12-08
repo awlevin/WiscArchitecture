@@ -78,10 +78,10 @@ assign setBits = address[9:4];
 assign offsetBits = address[3:1]; // if miss detected, must use address coming out of fill_fsm, which has the incremented offset
 
 assign valid0 = storedBlock0[7];
-assign tag0 = storedBlock0[5:0];
+assign tagBlock0 = storedBlock0[5:0];
 
 assign valid1 = storedBlock1[7];
-assign tag1 = storedBlock1[5:0];
+assign tagBlock1 = storedBlock1[5:0];
 
 assign dataOut = cache_hit ? dataArrayOut : cache_miss_dataOut;
 //assign writeDataLine0 = miss_detected & ((~isLRU1 & isLRU0) | (~isLRU1 & ~isLRU0));
@@ -151,8 +151,8 @@ assign dataBlock1Enable = ((2 << setBits) << setBits);
 **/
 
 
-assign dataBlockEnable = (block0_hit | (miss_detected & ~isLRU0)) ? dataBlock0Enable :		// Enables one block in an even bit position or
-			 (block1_hit | (miss_detected & ~isLRU1)) ? dataBlock1Enable : 128'b0;	// enables one block in an odd bit position
+assign dataBlockEnable = (block0_hit | (miss_detected & ~isLRU1)) ? dataBlock0Enable :		// Enables one block in an even bit position or
+			 (block1_hit | (miss_detected & ~isLRU0)) ? dataBlock1Enable : 128'b0;	// enables one block in an odd bit position
 
 
 
