@@ -1,0 +1,59 @@
+
+# Initialize values for mem instructions
+	LHB R1,0xBE;
+	LLB R1,0xEF;
+	LHB R2,0xB0;
+	LLB R2,0x0B;
+	LHB R3,0x12;
+	LLB R3,0x34;
+	LHB R4,0xF0;
+	LLB R4,0x0D;
+	LHB R5,0xFE;
+	LLB R5,0xED;
+	
+	# R1 = 0xBEEF R2 = 0xB00B R3 = 0x1234 R4 = 0xF00D R5 = 0xFEED
+
+# Initialize addresses for mem instructions
+	LHB R10, 0xA0;
+	LLB R10, 0x00;
+	LHB R11, 0xA0;
+	LLB R11, 0x10;
+
+	LHB R12, 0xB0;
+	LLB R12, 0x00;
+	LHB R13, 0xB0;
+	LLB R13, 0x10;
+	
+	LHB R14, 0xC0;
+	LLB R14, 0x00;
+	LHB R15, 0xC0;
+	LLB R15, 0x10;
+	
+	# R10 = 0xA000 R11 = 0xA010 R12 = 0xB000 R13 = 0xB010 R14 = 0xC000 R15 = 0xC010
+
+	#First write to cache set 0, so line 0 should be written to
+	SW R2,R10,0 # SW: R2 -> Mem[R10] : 0xB00B -> Mem[0xA000]
+	#Check LRU was updated accordingly: Block0 = MRU , Block1 = LRU 
+	#Check tags/metadata array entries : line0 = 0xA8 (tag = 0x28) line1 = 0x40 (tag = 0x00, not valid)
+	
+	#Block is in cache, so cache hit in set 0
+	SW R1,R10,1 #SW: R1 -> Mem[R10 + 2] : 0xBEEF -> Mem[0xA002]
+	#Check LRU was updated accordingly: Block0 = MRU , Block1 = LRU (NO CHANGE)
+	#Check tags/metadata array entries : line0 = 0xA8 (tag = 0x28) line1 = 0x40 (tag = 0x00, not valid)
+	
+	#Block in not in cache(cache miss) in set 0
+	SW R3,R12,0 #SW: R3 -> Mem[R12] : 0x1234 -> Mem[0xB000]
+	#Check LRU was updated accordingly: Block0 = LRU , Block1 = MRU
+	#Check tags/metadata array entries : line0 = 0xE8 (tag = 0x28) line1 = 0xAC (tag = 0x2C)
+	
+	#Block is in cache, so cache hit in set 0
+	SW R4,R10,2 #SW: R1 -> Mem[R10 + 4] : 0xF00D -> Mem[0xA004]
+	#Check LRU was updated accordingly: Block0 = MRU , Block1 = LRU
+	#Check tags/metadata array entries : line0 = 0xA8 (tag = 0x28) line1 = 0xEC (tag = 0x2C)
+	
+	#Block is NOT in cache, so cache MISS in set 0 (evict line 1)
+	SW R5,R14 #SW: R5 -> Mem[R14] : 0xFEED -> Mem[0xC000]
+	#Check LRU was updated according Block0 = LRU , Block1 = MRU
+	#Check tags/metadata array entries : line0 = 0xE8 (tag = 0x28) line1 = 0xB0 (tag = 0x30)
+	
+# 

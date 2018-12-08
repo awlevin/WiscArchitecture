@@ -1,7 +1,7 @@
 /** TODO 
 We use a lot of shifts ... are shifts ok or should we use our module?
 **/
-module Cache(clk, rst, address, dataIn, writeEn, readEn, memory_data_valid, stall, dataOut, missedAddressToGet, cache_hit);
+module Cache(clk, rst, address, dataIn, writeEn, readEn, memory_data_valid, memory_busy, stall, dataOut, missedAddressToGet, cache_hit, write_tag_array);
 
 input clk,rst;
 input [15:0] address;
@@ -9,11 +9,13 @@ input [15:0] dataIn;
 input writeEn;
 input readEn;
 input memory_data_valid;
+input memory_busy;
 
 output stall;
 output [15:0] dataOut;
 output [15:0] missedAddressToGet;
 output cache_hit;
+output write_tag_array;
 
 wire [6:0] tagBits;
 wire [5:0] setBits;
@@ -26,7 +28,7 @@ wire [6:0] tagBlock0, tagBlock1;
 wire block0_hit,block1_hit;
 
 // Cache Fill FSM/ miss signals
-wire write_tag_array, write_data_array;
+wire write_data_array;
 wire [15:0] cache_miss_dataOut;
 wire miss_detected;
 wire [7:0] oneHot_offset;
@@ -56,12 +58,12 @@ assign LRU_block_selected = cache_hit ? block1_hit : (write_tag_array & block1_i
 
 assign LRU_writeEn = cache_hit | write_tag_array;
 
-wire [15:0] address_shifted_right1;
-assign address_shifted_right1 = address >> 1; // because address is byte aligned by 1, it must be divided by 2
+//wire [15:0] address_shifted_right1;
+//assign address_shifted_right1 = address >> 1; // because address is byte aligned by 1, it must be divided by 2
 
-assign tagBits = address_shifted_right1[15:9];
-assign setBits = address_shifted_right1[8:3];
-assign offsetBits = address_shifted_right1[2:0]; // if miss detected, must use address coming out of fill_fsm, which has the incremented offset
+assign tagBits = address[15:10];
+assign setBits = address[9:4];
+assign offsetBits = address[3:1]; // if miss detected, must use address coming out of fill_fsm, which has the incremented offset
 
 assign dataOut = cache_hit ? dataArrayOut : cache_miss_dataOut;
 
@@ -69,7 +71,7 @@ DataArray data(.clk(clk), .rst(rst), .DataIn(dataIn), .Write(dataWrite), .BlockE
 
 MetaDataArray tags(.clk(clk), .rst(rst), .DataIn({1'b1, tagBits}), .SetEnable(SetEnable), .Write0(block0_isLRU & write_tag_array), .Write1(block1_isLRU & write_tag_array), .DataOut0({valid0, tagBlock0}), .DataOut1({valid1, tagBlock1}));
 
-cache_fill_FSM fill_fsm(.clk(clk), .rst(rst), .miss_detected(miss_detected), .miss_address(address), .fsm_busy(stall), .write_data_array(write_data_array), .write_tag_array(write_tag_array), .memory_address(missedAddressToGet), .memory_data(dataIn), .memory_data_valid(memory_data_valid), .dataOut(cache_miss_dataOut));
+cache_fill_FSM fill_fsm(.clk(clk), .rst(rst), .miss_detected(miss_detected), .miss_address(address), .memory_busy(memory_busy), .fsm_busy(stall), .write_data_array(write_data_array), .write_tag_array(write_tag_array), .memory_address(missedAddressToGet), .memory_data(dataIn), .memory_data_valid(memory_data_valid), .dataOut(cache_miss_dataOut));
 
 LRUArray LRU(.clk(clk), .rst(rst), .writeEn(LRU_writeEn), .SetEnable(SetEnable), .Block(LRU_block_selected), .block0_isLRU(block0_isLRU), .block1_isLRU(block1_isLRU));
 

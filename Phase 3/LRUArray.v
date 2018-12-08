@@ -25,8 +25,7 @@ module Set(input clk, input rst, input writeEn, input Enable, input Block, outpu
 endmodule
 
 module LRUCell( input clk,  input rst, input Din, input WriteEnable, input Enable, output Dout);
-	wire q;
-	assign Dout = (Enable) ? q:'bz;
-	dff dffm(.q(q), .d(Din), .wen(Enable & WriteEnable), .clk(clk), .rst(rst));
+	
+	dff dffm(.q(Dout), .d(Din), .wen(Enable & WriteEnable), .clk(clk), .rst(rst));
 
 endmodule

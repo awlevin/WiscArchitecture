@@ -4,3 +4,12 @@ Add LRU specific tests. Correct block filled on miss, and updated accordingly on
 
 Issue:	Branches before cache misses have their branch decision made while stalling for cache
 		fill, then don't branch afterword
+		
+		
+Write through
+
+Eviction
+
+D Cache and I Cache miss overlap
+
+Ensure upstream instructions stalled on D Cache misses, NOPs inserted on I Cache misses

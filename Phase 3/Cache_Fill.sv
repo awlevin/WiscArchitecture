@@ -1,8 +1,9 @@
-module cache_fill_FSM(clk, rst, miss_detected, miss_address, fsm_busy, write_data_array, write_tag_array,memory_address, memory_data, memory_data_valid,dataOut); 
+module cache_fill_FSM(clk, rst, miss_detected, miss_address, memory_busy, fsm_busy, write_data_array, write_tag_array,memory_address, memory_data, memory_data_valid,dataOut); 
 
 input clk, rst; 
 input miss_detected; // active high when tag match logic detects a miss 
 input [15:0] miss_address; // address that missed the cache 
+input memory_busy;
 
 input [15:0] memory_data; // data returned by memory (after  delay) 
 input memory_data_valid; // active high indicates valid data returning on memory bus 
@@ -75,7 +76,7 @@ always_comb begin
 
 	case(state) 
 		IDLE: begin
-			if(miss_detected) begin
+			if(miss_detected & ~memory_busy) begin
 				next_state = WAIT;
 				next_offset_byte = enter_miss_cycle;
 			end
