@@ -17,15 +17,30 @@ output [15:0] missedAddressToGet;
 output cache_hit;
 output write_tag_array;
 
-wire [6:0] tagBits;
+wire [5:0] tagBits;
 wire [5:0] setBits;
 wire [2:0] offsetBits;
 
+wire cacheEn;
+wire LRU_invalid;
+
 // Metadata Array signals
 wire [63:0] SetEnable;
-wire valid0, valid1;
-wire [6:0] tagBlock0, tagBlock1;
 wire block0_hit,block1_hit;
+wire writeMetaData;
+wire [7:0] metaData_entry0, metaData_entry1;
+wire [7:0] flopped_metaData_entry0, flopped_metaData_entry1;
+
+//Metadata stored entries
+wire [7:0] storedBlock0,storedBlock1;
+wire valid0, valid1;
+wire isLRU0,isLRU1;
+wire [5:0] tagBlock0,tagBlock1;
+
+//Metadata entries to be written 
+wire metaData_entry0_valid, metaData_entry1_valid;
+wire metaData_entry0_LRU, metaData_entry1_LRU;
+wire [5:0] metaData_entry0_tag, metaData_entry1_tag;
 
 // Cache Fill FSM/ miss signals
 wire write_data_array;
@@ -33,9 +48,6 @@ wire [15:0] cache_miss_dataOut;
 wire miss_detected;
 wire [7:0] oneHot_offset;
 wire [7:0] missedAddressToGet_offset_bits;
-
-wire miss_beta;
-
 
 assign missedAddressToGet_offset_bits = 1 << (missedAddressToGet[3:1]);
 
@@ -47,16 +59,16 @@ wire [127:0] dataBlockEnable;
 wire [7:0] dataWordEnable;
 wire [127:0] dataBlock0Enable, dataBlock1Enable;
 wire [15:0] dataArrayOut;
-
+wire writeDataLine0,writeDataLine1;
 //LRU logic
-wire block0_isLRU, block1_isLRU;
+//wire block0_isLRU, block1_isLRU;
 wire LRU_writeEn,LRU_block_selected,block1_isLRU_saved;
-dff saved_block1_isLRU(.q(block1_isLRU_saved), .d(block1_isLRU), .wen(miss_detected), .clk(clk), .rst(rst));
+//dff saved_block1_isLRU(.q(block1_isLRU_saved), .d(block1_isLRU), .wen(miss_detected), .clk(clk), .rst(rst));
 
 //fixes metastability issue on last cycle of miss 
-assign LRU_block_selected = cache_hit ? block1_hit : (write_tag_array & block1_isLRU_saved);
+assign LRU_block_selected = cache_hit ? block1_hit : (write_tag_array & isLRU0);
 
-assign LRU_writeEn = cache_hit | write_tag_array;
+assign cacheEn = (writeEn | readEn);
 
 //wire [15:0] address_shifted_right1;
 //assign address_shifted_right1 = address >> 1; // because address is byte aligned by 1, it must be divided by 2
@@ -65,15 +77,51 @@ assign tagBits = address[15:10];
 assign setBits = address[9:4];
 assign offsetBits = address[3:1]; // if miss detected, must use address coming out of fill_fsm, which has the incremented offset
 
+assign valid0 = storedBlock0[7];
+assign tag0 = storedBlock0[5:0];
+
+assign valid1 = storedBlock1[7];
+assign tag1 = storedBlock1[5:0];
+
 assign dataOut = cache_hit ? dataArrayOut : cache_miss_dataOut;
+//assign writeDataLine0 = miss_detected & ((~isLRU1 & isLRU0) | (~isLRU1 & ~isLRU0));
+//assign writeDataLine1 = miss_detected & (~(isLRU1 & ~isLRU0) | (~isLRU1 & ~isLRU0);
+
+assign LRU_invalid = ~(isLRU0 | isLRU1) | (isLRU0 & isLRU1);
+
+assign metaData_entry0_valid = valid0 | isLRU0;
+assign metaData_entry1_valid = valid1 | isLRU1;
+
+assign metaData_entry0_LRU = (miss_detected & ((~isLRU0 & ~LRU_invalid) | ~LRU_invalid)) | 	//if a miss occured, toggle LRU of this block, except for cold misses
+				(cache_hit & block1_hit);			//if a cache hit occurred, update LRU based on if the hit was in this block
+
+assign metaData_entry1_LRU = (miss_detected & ((~isLRU1 & ~LRU_invalid) | LRU_invalid)) |  	//if a miss occured, toggle LRU of this block, except for cold misses
+				(cache_hit & block0_hit);			//if a cache hit occurred, update LRU based on if the hit was in this block
+
+assign metaData_entry0_tag = cache_hit ? tagBlock0 :  //if a cache hit occurs, do not change update stored tag bits
+				metaData_entry0_LRU ?
+					tagBlock0 : tagBits;//if not writing to this block, keep tags bits, otherwise update tag bits to requested address
+
+assign metaData_entry1_tag = cache_hit ? tagBlock1 : //if a cache hit occurs, do not change update stored tag bits
+				metaData_entry1_LRU ?
+					tagBlock1 : tagBits;//if not writing to this block, keep tags bits, otherwise update tag bits to requested address
+
+dff floppedEntry0[7:0]( .clk(clk), .rst(rst), .d(metaData_entry0), .q(flopped_metaData_entry0),.wen(miss_detected & ~write_tag_array));
+dff floppedEntry1[7:0]( .clk(clk), .rst(rst), .d(metaData_entry1), .q(flopped_metaData_entry1),.wen(miss_detected & ~write_tag_array));
+
+assign metaData_entry0 = {metaData_entry0_valid, metaData_entry0_LRU, metaData_entry0_tag};
+assign metaData_entry1 = {metaData_entry1_valid, metaData_entry1_LRU, metaData_entry1_tag};
+
+assign LRU_writeEn = write_tag_array | cache_hit;
+assign writeMetaData = (write_tag_array);
 
 DataArray data(.clk(clk), .rst(rst), .DataIn(dataIn), .Write(dataWrite), .BlockEnable(dataBlockEnable), .WordEnable(dataWordEnable), .DataOut(dataArrayOut));
 
-MetaDataArray tags(.clk(clk), .rst(rst), .DataIn({1'b1, tagBits}), .SetEnable(SetEnable), .Write0(block0_isLRU & write_tag_array), .Write1(block1_isLRU & write_tag_array), .DataOut0({valid0, tagBlock0}), .DataOut1({valid1, tagBlock1}));
+MetaDataArray tags(.clk(clk), .rst(rst), .entry0(flopped_metaData_entry0), .entry1(flopped_metaData_entry1), .SetEnable(SetEnable), .Write0(writeMetaData), .Write1(writeMetaData), .DataOut0(storedBlock0), .DataOut1(storedBlock1));
 
 cache_fill_FSM fill_fsm(.clk(clk), .rst(rst), .miss_detected(miss_detected), .miss_address(address), .memory_busy(memory_busy), .fsm_busy(stall), .write_data_array(write_data_array), .write_tag_array(write_tag_array), .memory_address(missedAddressToGet), .memory_data(dataIn), .memory_data_valid(memory_data_valid), .dataOut(cache_miss_dataOut));
 
-LRUArray LRU(.clk(clk), .rst(rst), .writeEn(LRU_writeEn), .SetEnable(SetEnable), .Block(LRU_block_selected), .block0_isLRU(block0_isLRU), .block1_isLRU(block1_isLRU));
+LRUArray LRU(.clk(clk), .rst(rst), .writeEn(LRU_writeEn), .SetEnable(SetEnable), .Block(LRU_block_selected), .block0_isLRU(isLRU0), .block1_isLRU(isLRU1));
 
 assign block0_hit = write_tag_array ? 1'b0 : valid0 & (tagBits == tagBlock0);
 assign block1_hit = write_tag_array ? 1'b0 : valid1 & (tagBits == tagBlock1);
@@ -86,10 +134,10 @@ assign SetEnable = (1 << setBits); // Enables two blocks in the tag array tied t
 //assign miss_detected =  write_tag_array ? 1'b1 : ~(block0_hit | block1_hit);	// Asserted if data is not in either block
 //assign miss_beta = miss_detected & (writeEn | readEn);
 
-assign  miss_detected  =  write_tag_array ? 1'b1 : ~(block0_hit | block1_hit) & (writeEn | readEn);	// Asserted if data is not in either block
-assign miss_beta = miss_detected & (writeEn | readEn);
+assign miss_detected =  cacheEn & ~rst ? write_tag_array ? 1'b1 : ~(block0_hit | block1_hit) : 1'b0 ;	// Asserted if data is not in either block
+//assign miss_beta = miss_detected & (writeEn | readEn);
 
-assign cache_hit = ~miss_detected;
+assign cache_hit = cacheEn & ~rst ? ~miss_detected : 1'b0;
 
 //if miss,use output of oneHotCounter
 assign dataWordEnable = miss_detected ? oneHot_offset :(1 << offsetBits); // Enables one word (0 through 7) to be enabled in a block
@@ -102,8 +150,9 @@ assign dataBlock0Enable = ((1 << setBits) << setBits);
 assign dataBlock1Enable = ((2 << setBits) << setBits);
 **/
 
-assign dataBlockEnable = (block0_hit | (miss_detected & block0_isLRU)) ? dataBlock0Enable :		// Enables one block in an even bit position or
-			 (block1_hit | (miss_detected & block1_isLRU)) ? dataBlock1Enable : 128'b0;	// enables one block in an odd bit position
+
+assign dataBlockEnable = (block0_hit | (miss_detected & ~isLRU0)) ? dataBlock0Enable :		// Enables one block in an even bit position or
+			 (block1_hit | (miss_detected & ~isLRU1)) ? dataBlock1Enable : 128'b0;	// enables one block in an odd bit position
 
 
 
@@ -112,7 +161,6 @@ endmodule
 //module miss_reg(clk,rst,miss_detected,);
 
 //endmodule
-
 //counts to 8
 //NEEDS rst logic
 module OneHotCounter(clk,rst,startCount,offset_in,offset_out);

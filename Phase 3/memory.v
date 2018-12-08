@@ -60,6 +60,4 @@ Cache I_Cache(.clk(clk), .rst(rst), .address(pc), .dataIn(main_mem_data_out), .m
 
 Cache D_Cache(.clk(clk), .rst(rst), .address(mem_addr), .dataIn(D_Cache_data_in), .memory_busy(I_Cache_busy), .writeEn(writeEnable), .readEn(enable), .memory_data_valid(block_valid), .stall(D_Cache_miss), .dataOut(data_out), .missedAddressToGet(D_Cache_miss_address), .cache_hit(D_Cache_hit), .write_tag_array(D_Cache_fill_done));
 
-
-
 endmodule
