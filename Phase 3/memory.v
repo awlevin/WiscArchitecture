@@ -1,11 +1,11 @@
 // Black box memory unit - holds caches and main memory
-module memory(clk, rst, instruction_out, data_out, stall_en, mem_data_in, pc, mem_addr, enable, wr);
+module memory(clk, rst, instruction_out, data_out, I_Cache_miss, D_Cache_miss, mem_data_in, pc, mem_addr, enable, wr);
 
 input clk, rst, enable, wr;
 input [15:0] pc;			// Input to I Cache
 input [15:0] mem_data_in, mem_addr;	// Inputs to D Cache
 
-output stall_en;
+output I_Cache_miss, D_Cache_miss;
 output [15:0] instruction_out, data_out;
 
 // Main memory module signals
@@ -15,11 +15,11 @@ wire block_valid;
 
 // I Cache signals
 wire [15:0] I_Cache_miss_address;
-wire I_Cache_miss, I_Cache_hit; // <-- bad
+wire I_Cache_hit; // <-- bad
 
 // D Cache signals
 wire [15:0] D_Cache_data_in, D_Cache_miss_address;
-wire D_Cache_writeEn, D_Cache_miss, D_Cache_hit; // <-- bad
+wire D_Cache_writeEn, D_Cache_hit; // <-- bad
 wire SW_hit;
 
 
@@ -36,8 +36,6 @@ assign writeEnable = SW_hit | D_Cache_miss_address_matched;
 //assign main_mem_wr = SW_hit | D_Cache_miss_address_matched;
 
 assign main_mem_data_in = mem_data_in; // wrong for d_cache on miss
-
-assign stall_en = I_Cache_miss | (D_Cache_miss);
 
 assign D_Cache_data_in = (D_Cache_miss & ~D_Cache_miss_address_matched) ? main_mem_data_out : mem_data_in;
 

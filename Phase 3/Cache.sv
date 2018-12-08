@@ -84,7 +84,7 @@ assign SetEnable = (1 << setBits); // Enables two blocks in the tag array tied t
 //assign miss_detected =  write_tag_array ? 1'b1 : ~(block0_hit | block1_hit);	// Asserted if data is not in either block
 //assign miss_beta = miss_detected & (writeEn | readEn);
 
-assign  miss_detected  =  write_tag_array ? 1'b1 : ~(block0_hit | block1_hit);	// Asserted if data is not in either block
+assign  miss_detected  =  write_tag_array ? 1'b1 : ~(block0_hit | block1_hit) & (writeEn | readEn);	// Asserted if data is not in either block
 assign miss_beta = miss_detected & (writeEn | readEn);
 
 assign cache_hit = ~miss_detected;

@@ -10,6 +10,8 @@ wire [15:0] next_pc, pc_out, curr_pc, pc_plus_2, address_to_add_to_pc_for_b_or_b
 // Instruction
 wire [15:0] instr,saved_instr,instr_out;
 
+wire [15:0] ex_instr, mem_instr, wb_instr;
+
 // Decode Wires
 wire [15:0] if_id_pc_add_2_out,pc_plus_2_or_zero, dec_instr, srcData1, srcData2;
 wire [3:0] srcReg1, srcReg2, id_ex_dstReg_in, id_ex_dstReg_out,id_ex_aluOp_in, decoded_instr_type;
@@ -42,14 +44,15 @@ wire [3:0] mem_wb_dstReg_out;
 wire mem_wb_memToReg_out, memEnable;
 wire [15:0] data_mem_data_in;
 
-wire cache_miss;
+wire cache_miss, i_cache_miss, d_cache_miss;
+assign cache_miss = i_cache_miss | d_cache_miss;
 
 dff_16bit saved_instr_reg(.clk(clk),.rst(~rst_n),.d(instr),.q(saved_instr),.wen(~cache_miss));
 
 assign instr = cache_miss ? saved_instr : instr_out;
 
 //memory mem(.clk(clk), .rst(~rst_n), .data_out(mem_wb_read_memData_in), .stall_en(), .data_in(data_mem_data_in), .addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
-memory mem(.clk(clk), .rst(~rst_n), .instruction_out(instr_out), .data_out(mem_wb_read_memData_in), .stall_en(cache_miss), .mem_data_in(data_mem_data_in), .pc(pc_out), .mem_addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
+memory mem(.clk(clk), .rst(~rst_n), .instruction_out(instr_out), .data_out(mem_wb_read_memData_in), .I_Cache_miss(i_cache_miss), .D_Cache_miss(d_cache_miss), .mem_data_in(data_mem_data_in), .pc(pc_out), .mem_addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
 
 ////////////////////////
 //     HALT LOGIC     //
@@ -79,9 +82,9 @@ Hazard_Detection_Unit hazard_unit(.stall_en(hazard_stall_en), .dec_opcode(if_id_
 // PIPELINE REGISTERS //
 ////////////////////////
 Fetch_Decode_Reg IF_ID_Reg(.clk(clk), .rst_n(rst_n), .flush_en(take_branch), .stall_en(stall_en), .pc_add_in(pc_plus_2), .pc_add_out(if_id_pc_add_2_out), .instr_in(instr), .instr_out(dec_instr), .flush_next_instr(flush_next_instr));
-Decode_Execute_Reg ID_EX_Reg(.clk(clk), .rst_n(~rst_id_ex_reg), .stall_en(stall_en), .rd1_in(id_ex_data1_in), .rd2_in(id_ex_data2_in), .rd1_out(id_ex_rd1_out), .rd2_out(id_ex_rd2_out), .sign_ext_in(dec_ex_sign_ext_alu_offset_in), .sign_ext_out(dec_ex_sign_ext_alu_offset_out), .dstReg_in(id_ex_dstReg_in), .dstReg_out(id_ex_dstReg_out), .srcReg1_in(srcReg1), .srcReg1_out(id_ex_srcReg1_out),.srcReg2_in(srcReg2), .srcReg2_out(id_ex_srcReg2_out),.is_LLB_or_LHB_in(is_LLB_or_LHB),.is_LLB_or_LHB_out(id_ex_is_LLB_or_LHB_out),.is_PCS_in(is_PCS),.is_PCS_out(id_ex_is_PCS_out) );
-Execute_Memory_Reg EX_MEM_Reg(.clk(clk), .rst_n(rst_n), .zero_in(), .zero_out(), .alu_result_in(ex_mem_alu_result_in), .alu_result_out(ex_mem_alu_result_out), .dataIn_in(ex_mem_dataIn_in), .dataIn_out(ex_mem_dataIn_out), .dstReg_in(id_ex_dstReg_out), .dstReg_out(ex_mem_dstReg_out),.srcReg1_in(id_ex_srcReg1_out),.srcReg1_out(ex_mem_srcReg1_out),.srcReg2_in(id_ex_srcReg2_out),.srcReg2_out(ex_mem_srcReg2_out));
-Memory_WriteBack_Reg MEM_WB_Reg(.clk(clk), .rst_n(rst_n), .read_data_in(mem_wb_read_memData_in), .read_data_out(mem_wb_read_data_out), .alu_result_in(ex_mem_alu_result_out), .alu_result_out(mem_wb_alu_result_out), .dstReg_in(ex_mem_dstReg_out), .dstReg_out(mem_wb_dstReg_out));
+Decode_Execute_Reg ID_EX_Reg(.instr_in(dec_instr), .instr_out(ex_instr), .clk(clk), .rst_n(~rst_id_ex_reg), .stall_en(stall_en), .rd1_in(id_ex_data1_in), .rd2_in(id_ex_data2_in), .rd1_out(id_ex_rd1_out), .rd2_out(id_ex_rd2_out), .sign_ext_in(dec_ex_sign_ext_alu_offset_in), .sign_ext_out(dec_ex_sign_ext_alu_offset_out), .dstReg_in(id_ex_dstReg_in), .dstReg_out(id_ex_dstReg_out), .srcReg1_in(srcReg1), .srcReg1_out(id_ex_srcReg1_out),.srcReg2_in(srcReg2), .srcReg2_out(id_ex_srcReg2_out),.is_LLB_or_LHB_in(is_LLB_or_LHB),.is_LLB_or_LHB_out(id_ex_is_LLB_or_LHB_out),.is_PCS_in(is_PCS),.is_PCS_out(id_ex_is_PCS_out) );
+Execute_Memory_Reg EX_MEM_Reg(.instr_in(ex_instr), .instr_out(mem_instr), .clk(clk), .rst_n(rst_n), .stall_en(d_cache_miss), .zero_in(), .zero_out(), .alu_result_in(ex_mem_alu_result_in), .alu_result_out(ex_mem_alu_result_out), .dataIn_in(ex_mem_dataIn_in), .dataIn_out(ex_mem_dataIn_out), .dstReg_in(id_ex_dstReg_out), .dstReg_out(ex_mem_dstReg_out),.srcReg1_in(id_ex_srcReg1_out),.srcReg1_out(ex_mem_srcReg1_out),.srcReg2_in(id_ex_srcReg2_out),.srcReg2_out(ex_mem_srcReg2_out));
+Memory_WriteBack_Reg MEM_WB_Reg(.instr_in(mem_instr), .instr_out(wb_instr), .clk(clk), .rst_n(rst_n), .stall_en(d_cache_miss), .read_data_in(mem_wb_read_memData_in), .read_data_out(mem_wb_read_data_out), .alu_result_in(ex_mem_alu_result_out), .alu_result_out(mem_wb_alu_result_out), .dstReg_in(ex_mem_dstReg_out), .dstReg_out(mem_wb_dstReg_out));
 
 /////////////////////
 //     FETCH	   //
@@ -98,9 +101,9 @@ assign pc_out = hlt_found ? pc_from_cycle_before_halt_decoded : curr_pc;
 //       ID	   //
 /////////////////////
 assign takeBranchOrFlush = take_branch | flush_next_instr;
-EX_Register ID_EX_Ex(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .flush_en(takeBranchOrFlush), .ALUSrc_in(id_ex_aluSrc_in), .ALUOp_in(id_ex_aluOp_in), .ALUSrc_out(id_ex_aluSrc_out), .ALUOp_out(id_ex_aluOp_out));
-M_Register ID_EX_Mem(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .flush_en(takeBranchOrFlush), .MemRead_in(id_ex_memRead_in), .MemWrite_in(id_ex_memWrite_in), .MemRead_out(id_ex_memRead_out), .MemWrite_out(id_ex_memWrite_out));
-WB_Register ID_EX_WriteBack(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .flush_en(takeBranchOrFlush), .RegWrite_in(id_ex_regWrite_in), .MemToReg_in(id_ex_memToReg_in), .RegWrite_out(id_ex_regWrite_out), .MemToReg_out(id_ex_memToReg_out));
+EX_Register ID_EX_Ex(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .d_cache_miss(d_cache_miss), .flush_en(takeBranchOrFlush), .ALUSrc_in(id_ex_aluSrc_in), .ALUOp_in(id_ex_aluOp_in), .ALUSrc_out(id_ex_aluSrc_out), .ALUOp_out(id_ex_aluOp_out));
+M_Register ID_EX_Mem(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .d_cache_miss(d_cache_miss), .flush_en(takeBranchOrFlush), .MemRead_in(id_ex_memRead_in), .MemWrite_in(id_ex_memWrite_in), .MemRead_out(id_ex_memRead_out), .MemWrite_out(id_ex_memWrite_out));
+WB_Register ID_EX_WriteBack(.clk(clk), .rst(rst_id_ex_reg), .stall_en(stall_en), .d_cache_miss(d_cache_miss), .flush_en(takeBranchOrFlush), .RegWrite_in(id_ex_regWrite_in), .MemToReg_in(id_ex_memToReg_in), .RegWrite_out(id_ex_regWrite_out), .MemToReg_out(id_ex_memToReg_out));
 
 assign decoded_instr_type = cache_miss ? saved_instr : dec_instr[15:12];
 assign is_b_instr = (decoded_instr_type == 4'hC);
@@ -170,8 +173,8 @@ RegisterFile regFile(.clk(clk), .rst(~rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg
 /////////////////////
 //       EX	   //
 /////////////////////
-M_Register EX_MEM_Mem(.clk(clk), .rst(~rst_n), .stall_en(1'b0), .flush_en(1'b0), .MemRead_in(id_ex_memRead_out), .MemWrite_in(id_ex_memWrite_out), .MemRead_out(ex_mem_memRead_out), .MemWrite_out(ex_mem_memWrite_out));
-WB_Register EX_MEM_WriteBack(.clk(clk), .rst(~rst_n), .stall_en(1'b0), .flush_en(1'b0), .RegWrite_in(id_ex_regWrite_out), .MemToReg_in(id_ex_memToReg_out), .RegWrite_out(ex_mem_regWrite_out), .MemToReg_out(ex_mem_memToReg_out));
+M_Register EX_MEM_Mem(.clk(clk), .rst(~rst_n), .stall_en(1'b0), .d_cache_miss(d_cache_miss), .flush_en(1'b0), .MemRead_in(id_ex_memRead_out), .MemWrite_in(id_ex_memWrite_out), .MemRead_out(ex_mem_memRead_out), .MemWrite_out(ex_mem_memWrite_out));
+WB_Register EX_MEM_WriteBack(.clk(clk), .rst(~rst_n), .stall_en(1'b0), .d_cache_miss(d_cache_miss), .flush_en(1'b0), .RegWrite_in(id_ex_regWrite_out), .MemToReg_in(id_ex_memToReg_out), .RegWrite_out(ex_mem_regWrite_out), .MemToReg_out(ex_mem_memToReg_out));
 
 assign aluSrc1_ex_to_ex_fwd = (fwd_ex_to_ex_srcReg1 & ~id_ex_is_PCS_out) ? ex_mem_alu_result_out : id_ex_rd1_out;
 assign aluSrc1_mem_to_ex_fwd = (fwd_mem_to_ex_srcReg1 & ~id_ex_is_PCS_out) ? writeback_write_data : aluSrc1_ex_to_ex_fwd;
@@ -196,7 +199,7 @@ assign data_mem_data_in = (fwd_mem_to_mem) ? writeback_write_data : ex_mem_dataI
 
 //memory1c data_mem(.clk(clk), .rst(~rst_n), .data_out(mem_wb_read_memData_in), .data_in(data_mem_data_in), .addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
 
-WB_Register MEM_WB_WriteBack(.clk(clk), .rst(~rst_n), .stall_en(1'b0), .flush_en(1'b0), .RegWrite_in(ex_mem_regWrite_out), .MemToReg_in(ex_mem_memToReg_out), .RegWrite_out(mem_wb_regWrite_out), .MemToReg_out(mem_wb_memToReg_out));
+WB_Register MEM_WB_WriteBack(.clk(clk), .rst(~rst_n), .stall_en(1'b0), .d_cache_miss(d_cache_miss), .flush_en(1'b0), .RegWrite_in(ex_mem_regWrite_out), .MemToReg_in(ex_mem_memToReg_out), .RegWrite_out(mem_wb_regWrite_out), .MemToReg_out(mem_wb_memToReg_out));
 assign writeback_write_data = (mem_wb_memToReg_out) ? mem_wb_read_data_out : mem_wb_alu_result_out;
 
 endmodule

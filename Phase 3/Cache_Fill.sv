@@ -58,7 +58,6 @@ always @(posedge clk) begin
 		state <= IDLE;
 		offset_byte <= done;
 		current_delay <= HOLD;
-		offset_value <= 4'h0;
 	end
 	else begin
 		state <= next_state;
@@ -67,7 +66,13 @@ always @(posedge clk) begin
 	end
 end
 
-always @(posedge clk) begin
+always_comb begin
+	next_state = IDLE;
+	next_offset_byte = enter_miss_cycle;
+	offset_value = 4'h0;
+	next_delay = HOLD;
+
+
 	case(state) 
 		IDLE: begin
 			if(miss_detected) begin
