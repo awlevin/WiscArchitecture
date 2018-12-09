@@ -109,8 +109,8 @@ assign metaData_entry1_tag = cache_hit ? tagBlock1 : //if a cache hit occurs, do
 dff floppedEntry0[7:0]( .clk(clk), .rst(rst), .d(metaData_entry0), .q(flopped_metaData_entry0),.wen(miss_detected & ~write_tag_array));
 dff floppedEntry1[7:0]( .clk(clk), .rst(rst), .d(metaData_entry1), .q(flopped_metaData_entry1),.wen(miss_detected & ~write_tag_array));
 
-assign metaData_entry0 = {metaData_entry0_valid, metaData_entry0_LRU, metaData_entry0_tag};
-assign metaData_entry1 = {metaData_entry1_valid, metaData_entry1_LRU, metaData_entry1_tag};
+assign metaData_entry0 = {metaData_entry0_valid, 1'b0, metaData_entry0_tag};
+assign metaData_entry1 = {metaData_entry1_valid, 1'b0, metaData_entry1_tag};
 
 assign LRU_writeEn = write_tag_array | cache_hit;
 assign writeMetaData = (write_tag_array);

@@ -8,11 +8,11 @@ module Set(input clk, input rst, input writeEn, input Enable, input Block, outpu
 	
 	wire block0_LRUbit, block1_LRUbit, set_inital_LRU_values,block0_in,block1_in;
 
-	LRUCell block0(.clk(clk), .rst(rst), .Din(block0_in), .WriteEnable(writeEn | ~LRU_valid), .Enable(Enable), .Dout(block0_LRUbit));
-	LRUCell block1(.clk(clk), .rst(rst), .Din(block1_in), .WriteEnable(writeEn | ~LRU_valid), .Enable(Enable), .Dout(block1_LRUbit));
+	LRUCell block0(.clk(clk), .rst(rst), .Din(~Block), .WriteEnable(writeEn | ~LRU_valid), .Enable(Enable), .Dout(block0_LRUbit));
+	LRUCell block1(.clk(clk), .rst(rst), .Din(Block), .WriteEnable(writeEn | ~LRU_valid), .Enable(Enable), .Dout(block1_LRUbit));
 
-	assign block0_in = LRU_valid ? ~Block : 1'b0;
-	assign block1_in = LRU_valid ?  Block : 1'b1;
+	//assign block0_in = LRU_valid ? ~Block : 1'b0;
+	//assign block1_in = LRU_valid ?  Block : 1'b1;
 
 	assign LRU_valid = block0_LRUbit ^ block1_LRUbit;
 	assign block0_isLRU = (Enable) ?
