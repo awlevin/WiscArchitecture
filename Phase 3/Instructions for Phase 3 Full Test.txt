@@ -6,10 +6,14 @@ Issue:	Branches before cache misses have their branch decision made while stalli
 		fill, then don't branch afterword
 		
 		
-Write through
+Write through (parallel writing) 
 
 Eviction
 
 D Cache and I Cache miss overlap
 
 Ensure upstream instructions stalled on D Cache misses, NOPs inserted on I Cache misses
+
+LRU fix
+
+BOO R0, (Can't be used)
