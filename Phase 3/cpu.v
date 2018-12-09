@@ -196,7 +196,7 @@ ALU alu_module(.clk(clk), .rst(~rst_n), .Opcode(id_ex_aluOp_out), .Input1(aluSrc
 FlagsRegister flags_dff(.clk(clk), .rst(~rst_n), .set(set_flags), .flags_in(flags_alu_out), .flags_out(flags));
 assign set_flags = ((id_ex_aluOp_out != 4'b0111) && (id_ex_aluOp_out != 4'b0011) && (id_ex_aluOp_out[3] != 1'b1)) & (|ex_instr); // don't update flags on RED, PADDSB, LW/SW/LHB/LLB/B/BR/PCS -- also, |ex_instr represents a NOP
 
-assign ex_mem_dataIn_in = id_ex_rd2_out; //as per zybooks diagram, value of reg2 from dec/ex pipeline should be used as the data in
+assign ex_mem_dataIn_in = (fwd_mem_to_ex_srcReg2 & id_ex_memWrite_out) ? writeback_write_data : id_ex_rd2_out; //as per zybooks diagram, value of reg2 from dec/ex pipeline should be used as the data in
 
 /////////////////////
 //       MEM	   //
