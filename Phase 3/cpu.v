@@ -26,7 +26,7 @@ wire regWriteUnlessR0;
 wire hasStalled,shouldStall,flush_next_instr;
 wire [3:0] if_id_opcode_out;
 wire [15:0] pc_from_cycle_before_halt_decoded;
-wire hlt_found;
+wire hlt_found,lastInstrWasHalt;
 
 // Execute Wires
 wire id_ex_aluSrc_out;
@@ -62,7 +62,7 @@ memory mem(.clk(clk), .rst(~rst_n), .instruction_out(instr_out), .data_out(mem_w
 ////////////////////////
 //If an instruction is a halt, we must stop writing to registers, stop incrementing the pc, stop reading and writing to memory
 //Halt wires
-hlt_register hlt_reg(.clk(clk), .rst_n(rst_n), .hlt_found(hlt_found), .hlt(hlt));
+hlt_register hlt_reg(.clk(clk), .rst_n(rst_n), .hlt_found(hlt_found), .hlt(hlt), .lastInstrWasHalt(lastInstrWasHalt));
 
 ////////////////////////
 //  FORWARDING LOGIC  //
@@ -95,7 +95,7 @@ adder_16bit pc_add_2_module(.A(pc_out), .B(16'h0002), .Sub(1'b0), .Sum(pc_plus_2
 dff_16bit pc_before_halt(.clk(clk), .rst(~rst_n), .d(pc_out), .q(pc_from_cycle_before_halt_decoded), .wen(1'b1));
 
 assign next_pc = (take_branch) ? pc_with_branch : pc_plus_2;
-assign pc_out = hlt_found ? pc_from_cycle_before_halt_decoded : curr_pc;
+assign pc_out = hlt_found | lastInstrWasHalt ? pc_from_cycle_before_halt_decoded : curr_pc;
 
 /////////////////////
 //       ID	   //
@@ -109,7 +109,6 @@ assign decoded_instr_type = cache_miss ? saved_instr : dec_instr[15:12];
 assign is_b_instr = (decoded_instr_type == 4'hC);
 assign is_br_instr = (decoded_instr_type == 4'hD);
 assign b_or_br_opcode = (is_b_instr | is_br_instr); // true if instr is a B or BR
-
 
 assign shouldStall = (b_or_br_opcode & ~hasStalled) | (is_br_instr & hasStalled & hazard_stall_en); //if instr is a B or BR and the unit has not previously stalled
 dff stallStatus(.clk(clk), .rst(~rst_n), .q(hasStalled), .d(shouldStall), .wen(~cache_miss));
