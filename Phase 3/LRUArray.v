@@ -1,10 +1,10 @@
 
 
-module LRUArray(input clk, input rst, input writeEn, input [63:0] SetEnable, input Block, output block0_isLRU, output block1_isLRU);
-	Set set[63:0]( .clk(clk), .rst(rst), .writeEn(writeEn), .Block(Block), .Enable(SetEnable), .block0_isLRU(block0_isLRU), .block1_isLRU(block1_isLRU));
+module LRUArray(input clk, input rst, input writeEn, input [63:0] SetEnable, input Block0, input Block1, output block0_isLRU, output block1_isLRU);
+	Set set[63:0]( .clk(clk), .rst(rst), .writeEn(writeEn), .Block0(Block0), .Block1(Block1), .Enable(SetEnable), .block0_isLRU(block0_isLRU), .block1_isLRU(block1_isLRU));
 endmodule
 
-module Set(input clk, input rst, input writeEn, input Enable, input Block, output block0_isLRU, output block1_isLRU);
+module Set(input clk, input rst, input writeEn, input Enable, input Block0, input Block1, output block0_isLRU, output block1_isLRU);
 	
 	wire block0_LRUbit, block1_LRUbit, set_inital_LRU_values,block0_in,block1_in;
 
