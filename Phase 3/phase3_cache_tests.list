@@ -55,3 +55,5 @@
 	SW R5,R14 #SW: R5 -> Mem[R14] : 0xFEED -> Mem[0xC000]
 	#Check LRU was updated according Block0 = LRU , Block1 = MRU
 	#Check tags/metadata array entries : line0 = 0xE8 (tag = 0x28) line1 = 0xB0 (tag = 0x30)
+	
+	HLT

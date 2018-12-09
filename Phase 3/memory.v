@@ -46,7 +46,7 @@ assign D_Cache_busy = (handling_D_Cache_miss) | (enter_D_Cache_miss_handling);
 assign main_mem_enable = ~I_Cache_hit;
 
 assign D_Cache_miss_address_matched = (D_Cache_miss & wr & (D_Cache_miss_address == mem_addr));
-assign writeEnable = SW_hit | D_Cache_miss_address_matched;
+assign writeEnable = (SW_hit | D_Cache_miss_address_matched) & ~(handling_I_Cache_miss | enter_I_Cache_miss_handling);
 //assign main_mem_wr = SW_hit | D_Cache_miss_address_matched;
 
 assign main_mem_data_in = mem_data_in; // wrong for d_cache on miss
