@@ -26,6 +26,8 @@ wire take_branch,takeBranchOrFlush;
 wire regWriteUnlessR0;
 wire hasStalled,shouldStall,flush_next_instr;
 wire [3:0] if_id_opcode_out;
+wire [15:0] pc_from_cycle_before_halt_decoded;
+wire hlt_found;
 
 // Execute Wires
 wire id_ex_aluSrc_out;
@@ -55,15 +57,13 @@ dff_16bit saved_instr_reg(.clk(clk),.rst(~rst_n),.d(instr),.q(saved_instr),.wen(
 assign instr = cache_miss ? saved_instr : instr_out;
 
 //memory mem(.clk(clk), .rst(~rst_n), .data_out(mem_wb_read_memData_in), .stall_en(), .data_in(data_mem_data_in), .addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
-memory mem(.clk(clk), .rst(~rst_n), .instruction_out(instr_out), .data_out(mem_wb_read_memData_in), .I_Cache_miss(i_cache_miss), .D_Cache_miss(d_cache_miss), .mem_data_in(data_mem_data_in), .pc(pc_out), .mem_addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
+memory mem(.clk(clk), .rst(~rst_n), .instruction_out(instr_out), .data_out(mem_wb_read_memData_in), .I_Cache_miss(i_cache_miss), .D_Cache_miss(d_cache_miss), .mem_data_in(data_mem_data_in), .pc(pc_out), .mem_addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out),.decoded_instr_is_hlt(hlt_found));
 
 ////////////////////////
 //     HALT LOGIC     //
 ////////////////////////
 //If an instruction is a halt, we must stop writing to registers, stop incrementing the pc, stop reading and writing to memory
 //Halt wires
-wire [15:0] pc_from_cycle_before_halt_decoded;
-wire hlt_found;
 hlt_register hlt_reg(.clk(clk), .rst_n(rst_n), .hlt_found(hlt_found), .hlt(hlt));
 
 ////////////////////////

@@ -1,9 +1,10 @@
 // Black box memory unit - holds caches and main memory
-module memory(clk, rst, instruction_out, data_out, I_Cache_miss, D_Cache_miss, mem_data_in, pc, mem_addr, enable, wr);
+module memory(clk, rst, instruction_out, data_out, I_Cache_miss, D_Cache_miss, mem_data_in, pc, mem_addr, enable, wr, decoded_instr_is_hlt);
 
 input clk, rst, enable, wr;
 input [15:0] pc;			// Input to I Cache
 input [15:0] mem_data_in, mem_addr;	// Inputs to D Cache
+input decoded_instr_is_hlt;		// In this case, the I-Cache shouldn't be enabled
 
 output I_Cache_miss, D_Cache_miss;
 output [15:0] instruction_out, data_out;
@@ -56,7 +57,7 @@ assign D_Cache_data_in = (D_Cache_miss & ~D_Cache_miss_address_matched) ? main_m
 
 memory4c main_mem(.data_out(main_mem_data_out), .data_in(mem_data_in), .addr(main_mem_addr), .enable(main_mem_enable), .wr(writeEnable), .clk(clk), .rst(rst), .data_valid(block_valid));
 
-Cache I_Cache(.clk(clk), .rst(rst), .address(pc), .dataIn(main_mem_data_out), .memory_busy(D_Cache_busy), .writeEn(1'b0), .readEn(1'b1), .memory_data_valid(block_valid), .stall(I_Cache_miss), .dataOut(instruction_out), .missedAddressToGet(I_Cache_miss_address), .cache_hit(I_Cache_hit), .write_tag_array(I_Cache_fill_done));
+Cache I_Cache(.clk(clk), .rst(rst), .address(pc), .dataIn(main_mem_data_out), .memory_busy(D_Cache_busy), .writeEn(1'b0), .readEn(~decoded_instr_is_hlt), .memory_data_valid(block_valid), .stall(I_Cache_miss), .dataOut(instruction_out), .missedAddressToGet(I_Cache_miss_address), .cache_hit(I_Cache_hit), .write_tag_array(I_Cache_fill_done));
 
 Cache D_Cache(.clk(clk), .rst(rst), .address(mem_addr), .dataIn(D_Cache_data_in), .memory_busy(I_Cache_busy), .writeEn(writeEnable), .readEn(enable), .memory_data_valid(block_valid), .stall(D_Cache_miss), .dataOut(data_out), .missedAddressToGet(D_Cache_miss_address), .cache_hit(D_Cache_hit), .write_tag_array(D_Cache_fill_done));
 
