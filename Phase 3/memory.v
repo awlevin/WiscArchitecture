@@ -21,7 +21,7 @@ wire I_Cache_busy, handling_I_Cache_miss, enter_I_Cache_miss_handling, I_Cache_f
 
 // D Cache signals
 wire [15:0] D_Cache_data_in, D_Cache_miss_address;
-wire D_Cache_writeEn, D_Cache_hit; // <-- bad
+wire D_Cache_hit; // <-- bad
 wire SW_hit;
 wire D_Cache_busy, handling_D_Cache_miss, enter_D_Cache_miss_handling, D_Cache_fill_done;
 

@@ -9,9 +9,7 @@ input [3:0] Opcode;
 input [15:0] Input1, Input2;
 
 output reg [15:0] Output;
-output [2:0] flags_out;
-reg [2:0] flags;
-wire [2:0] flags_dff_out;
+output reg [2:0] flags_out;
 
 wire shifterZFlag, xorZFlag, adderZFlag, adderVFlag, adderNFlag;
 wire [15:0] shifterResult, xorResult, adderResult, paddsbResult, redResult, llb_result, lhb_result;
@@ -29,34 +27,27 @@ red_16bit redOp(.Sum(redResult), .A(Input1), .B(Input2));
 assign llb_result = (Input1 & 16'hFF00) | Input2;
 assign lhb_result = (Input1 & 16'h00FF) | Input2; 
 
-FlagsRegister flags_dff(.clk(clk), .rst(rst), .set(set_flags), .flags_in(flags), .flags_out(flags_dff_out));
-
-//assign flags_out = (set_flags) ? flags : flags_dff_out;
-assign flags_out = flags_dff_out;
-
-assign set_flags = ((Opcode != 4'b0111) && (Opcode != 4'b0011) && (Opcode[3] != 1'b1)); // don't update flags on RED, PADDSB, LW/SW/LHB/LLB/B/BR/PCS
-
 always @(*)
 case(Opcode)
-	4'b0000 : begin Output = adderResult; flags = {adderZFlag, adderVFlag, adderNFlag}; end
-	4'b0001 : begin Output = adderResult; flags = {adderZFlag, adderVFlag, adderNFlag}; end
-	4'b0010 : begin Output = xorResult; flags = {xorZFlag, 2'b00}; end
-	4'b0011 : begin Output = redResult; flags = 3'bxxx; end
-	4'b0100 : begin Output = shifterResult; flags = {shifterZFlag, 2'b00}; end
-	4'b0101 : begin Output = shifterResult; flags = {shifterZFlag, 2'b00}; end
-	4'b0110 : begin Output = shifterResult; flags = {shifterZFlag, 2'b00}; end
-	4'b0111 : begin Output = paddsbResult; flags = 3'bxxx; end
-	4'b1000 : begin Output = adderResult; flags = 3'bxxx; end
-	4'b1001 : begin Output = adderResult; flags = 3'bxxx; end	
-	4'b1010 : begin Output = llb_result; flags = 3'b111; end
-	4'b1011 : begin Output = lhb_result; flags = 3'b111; end
+	4'b0000 : begin Output = adderResult; flags_out = {adderZFlag, adderVFlag, adderNFlag}; end
+	4'b0001 : begin Output = adderResult; flags_out = {adderZFlag, adderVFlag, adderNFlag}; end
+	4'b0010 : begin Output = xorResult; flags_out = {xorZFlag, 2'b00}; end
+	4'b0011 : begin Output = redResult; flags_out = 3'bxxx; end
+	4'b0100 : begin Output = shifterResult; flags_out = {shifterZFlag, 2'b00}; end
+	4'b0101 : begin Output = shifterResult; flags_out = {shifterZFlag, 2'b00}; end
+	4'b0110 : begin Output = shifterResult; flags_out = {shifterZFlag, 2'b00}; end
+	4'b0111 : begin Output = paddsbResult; flags_out = 3'bxxx; end
+	4'b1000 : begin Output = adderResult; flags_out = 3'bxxx; end
+	4'b1001 : begin Output = adderResult; flags_out = 3'bxxx; end	
+	4'b1010 : begin Output = llb_result; flags_out = 3'b111; end
+	4'b1011 : begin Output = lhb_result; flags_out = 3'b111; end
 	//with pipeline, a signal must be outputted, even if it won't be used
 	//All 1's is a random choice as none of these results should be used
-	4'b1100 : begin Output = 16'hFFFF; flags = 3'b111; end
-	4'b1101 : begin Output = 16'hFFFF; flags = 3'b111; end
-	4'b1110 : begin Output = adderResult; flags = 3'b111; end 	// PCS
-	4'b1111 : begin Output = 16'hFFFF; flags = 3'b111; end
-	default : begin Output = 16'hFFFF; flags = 3'b111; end
+	4'b1100 : begin Output = 16'hFFFF; flags_out = 3'b111; end
+	4'b1101 : begin Output = 16'hFFFF; flags_out = 3'b111; end
+	4'b1110 : begin Output = adderResult; flags_out = 3'b111; end 	// PCS
+	4'b1111 : begin Output = 16'hFFFF; flags_out = 3'b111; end
+	default : begin Output = 16'hFFFF; flags_out = 3'b111; end
 endcase
 
 endmodule

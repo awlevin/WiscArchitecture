@@ -23,6 +23,7 @@ wire is_LLB_or_LHB, is_b_instr, is_br_instr, b_or_br_opcode;
 wire id_ex_regWrite_in,id_ex_memToReg_in,id_ex_memRead_in,id_ex_memWrite_in,id_ex_aluSrc_in,id_ex_is_LLB_or_LHB_out,is_PCS;
 wire [3:0] id_ex_srcReg1_out, id_ex_srcReg2_out;
 wire take_branch,takeBranchOrFlush;
+wire regWriteUnlessR0;
 wire hasStalled,shouldStall,flush_next_instr;
 wire [3:0] if_id_opcode_out;
 
@@ -35,6 +36,8 @@ wire [15:0] aluSrc1, aluSrc2;
 wire [3:0] ex_mem_srcReg1_out,ex_mem_srcReg2_out;
 wire [15:0] aluSrc1_ex_to_ex_fwd,aluSrc1_mem_to_ex_fwd;
 wire [15:0] aluSrc2_no_fwd,aluSrc2_ex_to_ex_fwd,aluSrc2_mem_to_ex_fwd;
+wire [2:0] flags_alu_out;
+wire set_flags;
 
 // Memory Wires
 wire ex_mem_memRead_out, ex_mem_memWrite_out, ex_mem_regWrite_out, ex_mem_memToReg_out;
@@ -167,6 +170,8 @@ assign id_ex_memToReg_in = id_ex_memRead_in; // 0:Alu op , 1:SW(only instr to wr
 
 
 adder_16bit pc_add_imm_module(.A(pc_plus_2_or_zero), .B(address_to_add_to_pc_for_b_or_br), .Sub(1'b0), .Sum(pc_with_branch), .Zero(), .Ovfl(), .Sign());
+
+assign regWriteUnlessR0 = |mem_wb_dstReg_out ? mem_wb_regWrite_out : 1'b0; //Do not write to R0
 RegisterFile regFile(.clk(clk), .rst(~rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg2), .DstReg(mem_wb_dstReg_out), .WriteReg(mem_wb_regWrite_out), .DstData(writeback_write_data), .SrcData1(srcData1), .SrcData2(srcData2));
 
 
@@ -186,7 +191,10 @@ assign aluSrc2_mem_to_ex_fwd = (fwd_mem_to_ex_srcReg2 & ~id_ex_is_LLB_or_LHB_out
 assign aluSrc1 = aluSrc1_mem_to_ex_fwd;
 assign aluSrc2 = aluSrc2_mem_to_ex_fwd;
 
-ALU alu_module(.clk(clk), .rst(~rst_n), .Opcode(id_ex_aluOp_out), .Input1(aluSrc1), .Input2(aluSrc2), .Output(ex_mem_alu_result_in), .flags_out(flags));
+ALU alu_module(.clk(clk), .rst(~rst_n), .Opcode(id_ex_aluOp_out), .Input1(aluSrc1), .Input2(aluSrc2), .Output(ex_mem_alu_result_in), .flags_out(flags_alu_out));
+
+FlagsRegister flags_dff(.clk(clk), .rst(~rst_n), .set(set_flags), .flags_in(flags_alu_out), .flags_out(flags));
+assign set_flags = ((id_ex_aluOp_out != 4'b0111) && (id_ex_aluOp_out != 4'b0011) && (id_ex_aluOp_out[3] != 1'b1)) & (|ex_instr); // don't update flags on RED, PADDSB, LW/SW/LHB/LLB/B/BR/PCS -- also, |ex_instr represents a NOP
 
 assign ex_mem_dataIn_in = id_ex_rd2_out; //as per zybooks diagram, value of reg2 from dec/ex pipeline should be used as the data in
 
