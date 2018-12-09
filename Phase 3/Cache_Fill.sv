@@ -16,9 +16,6 @@ output [15:0] dataOut; 	 //value in memory of requested address
 
 logic [3:0] offset_value; //i dont like this
 
-//wire [3:0] offset_value_in,offset_value_out; //note: this signal is added to itself
-//dff_4bit offset(.clk(clk), .rst(~rst_n), .q(offset_value_out), .d(offset_value_in), .wen(1'b1)); //used to incrememnt which address is request(is either 0,2,4, or 6)
-
 /**
 Cache is 2^11=2048 bytes & 2 way set associative with 16 byte cache blocks
 -2^6 = 64 sets with 8 entries in a block = 16 byte blocks/offset, so tag = 16 - 6 - 3 = 7 bits
@@ -28,10 +25,12 @@ t = 7, s = 6, o = 3
 
 
 
-typedef enum {IDLE,WAIT} state_t;
-typedef enum {enter_miss_cycle,BYTES_0_1,BYTES_2_3,BYTES_4_5,BYTES_6_7,BYTES_8_9,BYTES_10_11,BYTES_12_13,BYTES_14_15,sequential_delay1,sequential_delay2,sequential_delay3,sequential_delay4, done} offset_byte_t;//used inside wait state
-typedef enum {HOLD,WAIT0,WAIT1,WAIT2,WAIT3,SAVE_VALUE} delay_t;
-state_t state,next_state; //state defaults to IDLE, I think?
+typedef enum {IDLE,WAIT} state_t; //Tracks if FSM has entered miss or not
+typedef enum {enter_miss_cycle,BYTES_0_1,BYTES_2_3,BYTES_4_5,BYTES_6_7,BYTES_8_9,
+		BYTES_10_11,BYTES_12_13,BYTES_14_15,sequential_delay1,
+		sequential_delay2,sequential_delay3,sequential_delay4, done} offset_byte_t;//used inside wait state
+typedef enum {HOLD,WAIT0,WAIT1,WAIT2,WAIT3,SAVE_VALUE} delay_t; //used to capture value request in a Mem Read
+state_t state,next_state; // 
 offset_byte_t offset_byte,next_offset_byte;
 delay_t current_delay,next_delay;
 
@@ -164,11 +163,6 @@ always_comb begin
 			
 		endcase
 			
-			//tag = memory_address[15:10]; //tag is first 6 bits
-				
-			//if(memory_data_valid) begin
-			
-			//end
 		end
 
 		default: begin //should not be entered

@@ -4,6 +4,7 @@ input clk, rst, set;
 input [2:0] flags_in;
 output [2:0] flags_out;
 
+//Dff's for Z, V, & N Flags
 dff 	zflag(.q(flags_out[0]), .d(flags_in[0]), .wen(set), .clk(clk), .rst(rst)),
 	vflag(.q(flags_out[1]), .d(flags_in[1]), .wen(set), .clk(clk), .rst(rst)),
 	nflag(.q(flags_out[2]), .d(flags_in[2]), .wen(set), .clk(clk), .rst(rst));

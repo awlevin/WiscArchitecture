@@ -11,14 +11,16 @@ output [15:0] instr_out;
 output [3:0] dstReg_out,srcReg1_out,srcReg2_out;
 output [15:0] alu_result_out, dataIn_out;
 
-dff_16bit dataIn(.clk(clk), .rst(~rst_n), .q(dataIn_out), .d(dataIn_in), .wen(~stall_en));
-dff_16bit alu_result(.clk(clk), .rst(~rst_n), .q(alu_result_out), .d(alu_result_in), .wen(~stall_en));
-dff zero(.clk(clk), .rst(~rst_n), .q(zero_out), .d(zero_in), .wen(~stall_en));
-dff_4bit dstReg(.clk(clk), .rst(~rst_n), .q(dstReg_out), .d(dstReg_in), .wen(~stall_en));
-dff_4bit srcReg1(.clk(clk), .rst(~rst_n), .q(srcReg1_out), .d(srcReg1_in), .wen(~stall_en));
-dff_4bit srcReg2(.clk(clk), .rst(~rst_n), .q(srcReg2_out), .d(srcReg2_in), .wen(~stall_en));
+dff_16bit dataIn(.clk(clk), .rst(~rst_n), .q(dataIn_out), .d(dataIn_in), .wen(~stall_en)); //Value to be used in LW or SW instr's
+dff_16bit alu_result(.clk(clk), .rst(~rst_n), .q(alu_result_out), .d(alu_result_in), .wen(~stall_en)); //Stored result of the alu operation
+
+dff zero(.clk(clk), .rst(~rst_n), .q(zero_out), .d(zero_in), .wen(~stall_en)); //asserted when result of ALU was zero
+
+dff_4bit dstReg(.clk(clk), .rst(~rst_n), .q(dstReg_out), .d(dstReg_in), .wen(~stall_en)); //Destination Reg
+dff_4bit srcReg1(.clk(clk), .rst(~rst_n), .q(srcReg1_out), .d(srcReg1_in), .wen(~stall_en)); //Src Reg 1
+dff_4bit srcReg2(.clk(clk), .rst(~rst_n), .q(srcReg2_out), .d(srcReg2_in), .wen(~stall_en)); // Src Reg 2
 
 
-dff_16bit instr(.clk(clk), .rst(~rst_n), .q(instr_out), .d(instr_in), .wen(~stall_en));
+dff_16bit instr(.clk(clk), .rst(~rst_n), .q(instr_out), .d(instr_in), .wen(~stall_en));	//Stored instruction
 
 endmodule

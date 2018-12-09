@@ -15,7 +15,6 @@ wire [15:0] ex_instr, mem_instr, wb_instr;
 // Decode Wires
 wire [15:0] if_id_pc_add_2_out,pc_plus_2_or_zero, dec_instr, srcData1, srcData2;
 wire [3:0] srcReg1, srcReg2, id_ex_dstReg_in, id_ex_dstReg_out,id_ex_aluOp_in, decoded_instr_type;
-wire [8:0] pc_control_immediate;
 wire [15:0] dec_ex_sign_ext_alu_offset_in, dec_ex_sign_ext_alu_offset_out, id_ex_data1_in, id_ex_data2_in;
 wire [2:0] ccc;
 wire [2:0] flags; // FLAGS ==>> (Z, V, N)
@@ -56,7 +55,6 @@ dff_16bit saved_instr_reg(.clk(clk),.rst(~rst_n),.d(instr),.q(saved_instr),.wen(
 
 assign instr = cache_miss ? saved_instr : instr_out;
 
-//memory mem(.clk(clk), .rst(~rst_n), .data_out(mem_wb_read_memData_in), .stall_en(), .data_in(data_mem_data_in), .addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
 memory mem(.clk(clk), .rst(~rst_n), .instruction_out(instr_out), .data_out(mem_wb_read_memData_in), .I_Cache_miss(i_cache_miss), .D_Cache_miss(d_cache_miss), .mem_data_in(data_mem_data_in), .pc(pc_out), .mem_addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out),.decoded_instr_is_hlt(hlt_found));
 
 ////////////////////////
@@ -93,7 +91,6 @@ Memory_WriteBack_Reg MEM_WB_Reg(.instr_in(mem_instr), .instr_out(wb_instr), .clk
 //     FETCH	   //
 /////////////////////
 PC_Register pc_register(.clk(clk), .rst(~rst_n), .stall_en(stall_en), .next_pc(next_pc), .pc_out(curr_pc));
-//memory1c instruction_mem(.clk(clk), .rst(~rst_n), .data_out(instr), .data_in(16'h0000), .addr(pc_out), .enable(rst_n), .wr(1'b0));
 adder_16bit pc_add_2_module(.A(pc_out), .B(16'h0002), .Sub(1'b0), .Sum(pc_plus_2), .Zero(), .Ovfl(), .Sign());
 dff_16bit pc_before_halt(.clk(clk), .rst(~rst_n), .d(pc_out), .q(pc_from_cycle_before_halt_decoded), .wen(1'b1));
 
@@ -124,8 +121,8 @@ assign hlt_found = &decoded_instr_type;
 
 assign is_LLB_or_LHB = (dec_instr[15:13]==3'b101);
 assign is_PCS = decoded_instr_type == 4'hE;
-assign id_ex_dstReg_in = dec_instr[11:8];
-assign srcReg1 = is_LLB_or_LHB ? dec_instr[11:8] : dec_instr[7:4];
+assign id_ex_dstReg_in = dec_instr[11:8];	//Dst register location
+assign srcReg1 = is_LLB_or_LHB ? dec_instr[11:8] : dec_instr[7:4]; //If instruction is an LLB or LHB, then the Dst reg = Src Reg1
 assign srcReg2 = id_ex_memWrite_in ? dec_instr[11:8] : dec_instr[3:0]; // if instr is SW, as per diagram, srcReg2's value will be stored
 
 // ALU
@@ -133,10 +130,9 @@ assign id_ex_aluSrc_in = dec_instr[15] & ~is_LLB_or_LHB & ~is_PCS; //  0: ALU in
 assign id_ex_aluOp_in = decoded_instr_type; // If instr is SW or LW, tell ALU to do an Add, otherwise give the instr[15:12] aka the opcode
 
 //Control logic
-assign pc_control_immediate = instr[8:0];
-assign ccc = cache_miss ? saved_instr[11:9] : dec_instr[11:9];
-assign dec_ex_sign_ext_alu_offset_in =  { {11{dec_instr[3]}}, dec_instr[3:0], 1'b0};
-assign dec_pc_imm_shftd_sign_ext = {{6{dec_instr[8]}}, dec_instr[8:0], 1'b0};
+assign ccc = cache_miss ? saved_instr[11:9] : dec_instr[11:9]; //condition codes
+assign dec_ex_sign_ext_alu_offset_in =  { {11{dec_instr[3]}}, dec_instr[3:0], 1'b0}; //sign extended offset used in LW's & SW's
+assign dec_pc_imm_shftd_sign_ext = {{6{dec_instr[8]}}, dec_instr[8:0], 1'b0}; //immediate for branch instruction's, which is shifted left and SE
 
 assign pc_plus_2_or_zero =  (decoded_instr_type == 4'b1101) ? 16'h0000 : if_id_pc_add_2_out; // if instr is a BR, then the 1st operand should be 0, else use pc+2
 assign address_to_add_to_pc_for_b_or_br = 
@@ -145,7 +141,6 @@ assign address_to_add_to_pc_for_b_or_br =
 				16'hFFFF); // Default case
 
 //Memory
-
 assign id_ex_data1_in = (decoded_instr_type == 4'b1110) ? if_id_pc_add_2_out : srcData1;		// If PCS, pass the PC forward and the ALU will know how to handle it
 
 assign id_ex_data2_in = (decoded_instr_type == 4'b1010) ? {8'b0, dec_instr[7:0]} :		// Use byte from instruction for LLB
@@ -159,18 +154,18 @@ assign id_ex_memRead_in = decoded_instr_type == 4'h8; //LW
 assign id_ex_memWrite_in = decoded_instr_type == 4'h9; //SW
 											
 //WriteBack
-
-// If a reg value must be updated
 assign id_ex_regWrite_in =  ~dec_instr[15] | //ALU Op 
 				id_ex_memRead_in|//LW
 				is_LLB_or_LHB | //LLB or LHB
 				is_PCS; //PCS
+
 //Mux selector if value should come from memory or alu result		
 assign id_ex_memToReg_in = id_ex_memRead_in; // 0:Alu op , 1:SW(only instr to write to reg from memory)
 
-
+//Generate PC with branch address
 adder_16bit pc_add_imm_module(.A(pc_plus_2_or_zero), .B(address_to_add_to_pc_for_b_or_br), .Sub(1'b0), .Sum(pc_with_branch), .Zero(), .Ovfl(), .Sign());
 
+//Prevents writes to R0
 assign regWriteUnlessR0 = |mem_wb_dstReg_out ? mem_wb_regWrite_out : 1'b0; //Do not write to R0
 RegisterFile regFile(.clk(clk), .rst(~rst_n), .SrcReg1(srcReg1), .SrcReg2(srcReg2), .DstReg(mem_wb_dstReg_out), .WriteReg(mem_wb_regWrite_out), .DstData(writeback_write_data), .SrcData1(srcData1), .SrcData2(srcData2));
 
@@ -203,9 +198,7 @@ assign ex_mem_dataIn_in = (fwd_mem_to_ex_srcReg2 & id_ex_memWrite_out) ? writeba
 /////////////////////
 
 assign memEnable = (ex_mem_memRead_out | ex_mem_memWrite_out); // instr must be a read or write (& not a halt)
-assign data_mem_data_in = (fwd_mem_to_mem) ? writeback_write_data : ex_mem_dataIn_out;
-
-//memory1c data_mem(.clk(clk), .rst(~rst_n), .data_out(mem_wb_read_memData_in), .data_in(data_mem_data_in), .addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out));
+assign data_mem_data_in = (fwd_mem_to_mem) ? writeback_write_data : ex_mem_dataIn_out; //value to be stored in the Register File
 
 WB_Register MEM_WB_WriteBack(.clk(clk), .rst(~rst_n), .stall_en(1'b0), .d_cache_miss(d_cache_miss), .flush_en(1'b0), .RegWrite_in(ex_mem_regWrite_out & |mem_instr), .MemToReg_in(ex_mem_memToReg_out), .RegWrite_out(mem_wb_regWrite_out), .MemToReg_out(mem_wb_memToReg_out));
 assign writeback_write_data = (mem_wb_memToReg_out) ? mem_wb_read_data_out : mem_wb_alu_result_out;

@@ -21,8 +21,8 @@ assign b_lt_or_eq = (C == 3'b101) && ((N_flag == 1'b1) | (Z_flag == 1'b1)); 				
 assign b_ovfl = (C == 3'b110) && (V_flag == 1'b1); 							// Overflow (V = 1)
 assign b_uncond = (C == 3'b111); 									// Unconditional
 
-assign b_opcode = (opcode == 4'hC);
-assign br_opcode = (opcode == 4'hD);
+assign b_opcode = (opcode == 4'hC);	//Branch statement								
+assign br_opcode = (opcode == 4'hD);	//Branch Register
 assign condition_met = b_ne | b_eq | b_gt | b_lt | b_gt_or_eq | b_lt_or_eq | b_ovfl;
 
 assign take_branch = (b_opcode & ((condition_met & hasStalled) | b_uncond)) |

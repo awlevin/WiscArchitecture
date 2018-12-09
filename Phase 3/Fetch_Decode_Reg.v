@@ -7,11 +7,10 @@ output flush_next_instr;
 
 wire rst;
 
-assign rst = (~rst_n | flush_en);
+assign rst = (~rst_n | flush_en); //asserted for global reset or when an instruction should be flushed
 
-//TODO ;'( this might be wrong
-dff flush(.clk(clk), .rst(~rst_n), .q(flush_next_instr), .d(flush_en), .wen(~stall_en));
-dff_16bit pc_add(.clk(clk), .rst(rst), .q(pc_add_out), .d(pc_add_in), .wen(~stall_en));
-dff_16bit instr(.clk(clk), .rst(rst), .q(instr_out), .d(instr_in), .wen(~stall_en));
+dff flush(.clk(clk), .rst(~rst_n), .q(flush_next_instr), .d(flush_en), .wen(~stall_en)); //store if next instr should be flushed
+dff_16bit pc_add(.clk(clk), .rst(rst), .q(pc_add_out), .d(pc_add_in), .wen(~stall_en));  //PC + 2
+dff_16bit instr(.clk(clk), .rst(rst), .q(instr_out), .d(instr_in), .wen(~stall_en)); 	 //stored instruction value
 
 endmodule
