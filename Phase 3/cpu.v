@@ -11,7 +11,7 @@ wire [15:0] next_pc, pc_out, curr_pc, pc_plus_2, address_to_add_to_pc_for_b_or_b
 wire [15:0] instr,saved_instr,instr_out;
 
 wire [15:0] ex_instr, mem_instr, wb_instr;
-
+wire saved_hlt;
 // Decode Wires
 wire [15:0] if_id_pc_add_2_out,pc_plus_2_or_zero, dec_instr, srcData1, srcData2;
 wire [3:0] srcReg1, srcReg2, id_ex_dstReg_in, id_ex_dstReg_out,id_ex_aluOp_in, decoded_instr_type;
@@ -27,6 +27,7 @@ wire hasStalled,shouldStall,flush_next_instr;
 wire [3:0] if_id_opcode_out;
 wire [15:0] pc_from_cycle_before_halt_decoded;
 wire hlt_found,lastInstrWasHalt;
+wire hazard_stall_en,branch_stall_en,stall_en, rst_id_ex_reg;
 
 // Execute Wires
 wire id_ex_aluSrc_out;
@@ -51,9 +52,9 @@ wire [15:0] data_mem_data_in;
 wire cache_miss, i_cache_miss, d_cache_miss;
 assign cache_miss = i_cache_miss | d_cache_miss;
 
-dff_16bit saved_instr_reg(.clk(clk),.rst(~rst_n),.d(instr),.q(saved_instr),.wen(~cache_miss));
+dff_16bit saved_instr_reg(.clk(clk),.rst(~rst_n),.d(instr),.q(saved_instr),.wen(~cache_miss & ~hlt_found));
 
-assign instr = cache_miss ? saved_instr : instr_out;
+assign instr = cache_miss | hlt_found ? saved_instr : instr_out;
 
 memory mem(.clk(clk), .rst(~rst_n), .instruction_out(instr_out), .data_out(mem_wb_read_memData_in), .I_Cache_miss(i_cache_miss), .D_Cache_miss(d_cache_miss), .mem_data_in(data_mem_data_in), .pc(pc_out), .mem_addr(ex_mem_alu_result_out), .enable(memEnable), .wr(ex_mem_memWrite_out),.decoded_instr_is_hlt(hlt_found));
 
@@ -62,8 +63,8 @@ memory mem(.clk(clk), .rst(~rst_n), .instruction_out(instr_out), .data_out(mem_w
 ////////////////////////
 //If an instruction is a halt, we must stop writing to registers, stop incrementing the pc, stop reading and writing to memory
 //Halt wires
-hlt_register hlt_reg(.clk(clk), .rst_n(rst_n), .hlt_found(hlt_found), .hlt(hlt), .lastInstrWasHalt(lastInstrWasHalt));
-
+hlt_register hlt_reg(.clk(clk), .rst_n(rst_n), .hlt_found(hlt_found), .hlt(saved_hlt), .lastInstrWasHalt(lastInstrWasHalt));
+assign hlt = saved_hlt & ~stall_en;
 ////////////////////////
 //  FORWARDING LOGIC  //
 ////////////////////////
@@ -73,7 +74,7 @@ ForwardingUnit fwd_unit(.ex_mem_dstReg(ex_mem_dstReg_out), .id_ex_srcReg1(id_ex_
 ////////////////////////
 //  HAZARD DETECTION  //
 ////////////////////////
-wire hazard_stall_en,branch_stall_en,stall_en, rst_id_ex_reg;
+
 assign stall_en = hazard_stall_en | branch_stall_en | cache_miss;
 assign rst_id_ex_reg = (~rst_n | (stall_en & ~d_cache_miss));
 assign if_id_opcode_out = dec_instr[15:12];
@@ -94,7 +95,8 @@ PC_Register pc_register(.clk(clk), .rst(~rst_n), .stall_en(stall_en), .next_pc(n
 adder_16bit pc_add_2_module(.A(pc_out), .B(16'h0002), .Sub(1'b0), .Sum(pc_plus_2), .Zero(), .Ovfl(), .Sign());
 dff_16bit pc_before_halt(.clk(clk), .rst(~rst_n), .d(pc_out), .q(pc_from_cycle_before_halt_decoded), .wen(1'b1));
 
-assign next_pc = (take_branch) ? pc_with_branch : pc_plus_2;
+assign next_pc = (take_branch) ? pc_with_branch : 
+		 (&(instr_out[15:12]) | hlt_found) ?  pc_out : pc_plus_2;
 assign pc_out = hlt_found | lastInstrWasHalt ? pc_from_cycle_before_halt_decoded : curr_pc;
 
 /////////////////////
