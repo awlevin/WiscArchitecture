@@ -70,9 +70,6 @@ assign LRU_block_selected = cache_hit ? block1_hit : (write_tag_array & isLRU0);
 
 assign cacheEn = (writeEn | readEn);
 
-//wire [15:0] address_shifted_right1;
-//assign address_shifted_right1 = address >> 1; // because address is byte aligned by 1, it must be divided by 2
-
 assign tagBits = address[15:10];
 assign setBits = address[9:4];
 assign offsetBits = address[3:1]; // if miss detected, must use address coming out of fill_fsm, which has the incremented offset
@@ -84,13 +81,11 @@ assign valid1 = storedBlock1[7];
 assign tagBlock1 = storedBlock1[5:0];
 
 assign dataOut = cache_hit ? dataArrayOut : cache_miss_dataOut;
-//assign writeDataLine0 = miss_detected & ((~isLRU1 & isLRU0) | (~isLRU1 & ~isLRU0));
-//assign writeDataLine1 = miss_detected & (~(isLRU1 & ~isLRU0) | (~isLRU1 & ~isLRU0);
 
 assign LRU_invalid = ~(isLRU0 | isLRU1) | (isLRU0 & isLRU1);
 
-assign metaData_entry0_valid = valid0 | isLRU0;
-assign metaData_entry1_valid = valid1 | isLRU1;
+assign metaData_entry0_valid = valid0 | (isLRU0 & miss_detected);
+assign metaData_entry1_valid = valid1 | (isLRU1 & miss_detected);
 
 assign metaData_entry0_LRU = (miss_detected & ((~isLRU0 & ~LRU_invalid) | ~LRU_invalid)) | 	//if a miss occured, toggle LRU of this block, except for cold misses
 				(cache_hit & block1_hit);			//if a cache hit occurred, update LRU based on if the hit was in this block
@@ -130,12 +125,7 @@ assign dataWrite = (write_data_array & miss_detected) | (((tagBits == tagBlock0)
 
 assign SetEnable = (1 << setBits); // Enables two blocks in the tag array tied to a set (0 through 63)
 
-//mux fixes a metastability issue on the last cycle of the miss
-//assign miss_detected =  write_tag_array ? 1'b1 : ~(block0_hit | block1_hit);	// Asserted if data is not in either block
-//assign miss_beta = miss_detected & (writeEn | readEn);
-
 assign miss_detected =  cacheEn & ~rst ? write_tag_array ? 1'b1 : ~(block0_hit | block1_hit) : 1'b0 ;	// Asserted if data is not in either block
-//assign miss_beta = miss_detected & (writeEn | readEn);
 
 assign cache_hit = cacheEn & ~rst ? ~miss_detected : 1'b0;
 
@@ -145,10 +135,6 @@ assign dataWordEnable = miss_detected ? oneHot_offset :(1 << offsetBits); // Ena
 
 assign dataBlock0Enable = (1 << (setBits << 1));
 assign dataBlock1Enable = (2 << (setBits << 1)); //WE MIGHT BE DUPLICATING SHIFTERS CHECK IF SetEnable CAN BE USED
-/**
-assign dataBlock0Enable = ((1 << setBits) << setBits);
-assign dataBlock1Enable = ((2 << setBits) << setBits);
-**/
 
 
 assign dataBlockEnable = (block0_hit | (miss_detected & ~isLRU1)) ? dataBlock0Enable :		// Enables one block in an even bit position or
@@ -158,11 +144,6 @@ assign dataBlockEnable = (block0_hit | (miss_detected & ~isLRU1)) ? dataBlock0En
 
 endmodule
 
-//module miss_reg(clk,rst,miss_detected,);
-
-//endmodule
-//counts to 8
-//NEEDS rst logic
 module OneHotCounter(clk,rst,startCount,offset_in,offset_out);
 input clk,rst,startCount;
 input [7:0] offset_in;
@@ -188,31 +169,4 @@ always @(posedge clk) begin
         end
   end
 
-/**
-always @(posedge clk) begin
-	count_state = next_count_state;
-	case(count_state)
-		IDLE: begin
-			if(startCount)begin
-				next_count_state = COUNT;
-				counter = 8'h01;
-			end
-			else begin
-				next_count_state = IDLE;
-				counter = 8'h00;
-			end
-		end
-		COUNT: begin
-			if(counter == 8'h00)begin
-				next_count_state = COUNT;
-				counter = 8'h00;
-			end
-			else begin
-				next_count_state = IDLE;
-				counter = counter << 1;
-			end
-		end
-	endcase
-end
-**/
 endmodule

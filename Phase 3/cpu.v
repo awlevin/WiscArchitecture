@@ -118,7 +118,7 @@ dff stallStatus(.clk(clk), .rst(~rst_n), .q(hasStalled), .d(shouldStall), .wen(~
 Branch_Decision_Unit branch_unit(.take_branch(take_branch), .stall_en(branch_stall_en), .hasStalled(hasStalled), .br_hazard(hazard_stall_en), .opcode(decoded_instr_type), .flags(flags), .C(ccc));
 
 //Halt logic
-assign hlt_found = &decoded_instr_type;
+assign hlt_found = &decoded_instr_type & ~cache_miss;
 
 assign is_LLB_or_LHB = (dec_instr[15:13]==3'b101);
 assign is_PCS = decoded_instr_type == 4'hE;
