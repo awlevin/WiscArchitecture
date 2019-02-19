@@ -1,5 +1,5 @@
 # WiscArchitecture
-Class project where we designed a fully functional CPU architecture. The ISA (instruction set architecture) is included in the PDF's/.docx files within each phase. 
+Class project where we designed a fully functional CPU. The ISA (instruction set architecture) is included in the PDF's/.docx files within each phase. 
 
 ## Phase 1
 A single cycle CPU
