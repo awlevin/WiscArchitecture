@@ -4,7 +4,7 @@
 
 *A 16-bit processor built from scratch in Verilog, one phase at a time.*
 
-CS/ECE 552 (Computer Architecture) is one of the most involved courses in computer engineering at UW-Madison, and for electrical engineers it counts as senior design. Over the spring 2018 semester our three-person team built a working processor from nothing: ALU, register file, control, pipeline, and cache. Each phase keeps the same instruction set and rebuilds the machine underneath it.
+CS/ECE 552 (Computer Architecture) is one of the most involved courses in computer engineering at UW-Madison, and for electrical engineers it counts as senior design. Over the fall 2018 semester our three-person team built a working processor from nothing: ALU, register file, control, pipeline, and cache. Each phase keeps the same instruction set and rebuilds the machine underneath it.
 
 The ISA is documented in the PDF and .docx files inside each phase directory. `ece552f2018-projectreport.doc` is our write-up for the whole project.
 
